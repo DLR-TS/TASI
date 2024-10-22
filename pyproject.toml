@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "tasi"
+version = "0.1.0"
+description = "Library for Traffic Analysis and Situation Interpretation"
+authors = ["Lars Klitzke <lars.klitzke@dlr.de>", "Clemens Schicktanz <clemens.schicktanz@dlr.de"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.9.5"
+pandas = "2.0.3"
+numpy = "1.24.4"
+numba = "0.58.1"
+typing-extensions = "4.12.2"
+
+[tool.poetry.group.test.dependencies]
+coverage
+ipython
+pytest
+pytest-xdist
+pytest-cov
+
+[tool.poetry.group.dev.dependencies]
+yapf
+pylint
+
+[tool.poetry.group.docs.dependencies]
+ipython = '8.9.0'
+sphinx = '5.0.2'
+nbsphinx = '0.8.12'
+pydata-sphinx-theme = '0.15.4'
+sphinxcontrib-apidoc
+sphinx-copybutton
+sphinx_markdown_parser
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[project.scripts]
+download-dlr-ut-dataset = "tasi.dlr.dataset."
