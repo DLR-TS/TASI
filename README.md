@@ -1,17 +1,9 @@
 # TrAffic Situation analysis and Interpretation
 TASI is a library to provide high-performance, easy-to-use data structures and data analysis tools for Python based
-TrAffic Situation analysis and Interpretation applications.
+traffic situation analysis and interpretation applications.
 
-> **TASI** is powered by [`Numpy`](https://numpy.org/), [`Pandas`](https://pandas.pydata.org/),
-> [`GeoPandas`](https://geopandas.org/) and [`Numba`](http://numba.pydata.org/)
-
-
-You are now ready to go. You may take a look into the [TASI
-Documentation](https://igm-mov.pages.gitlab.dlr.de/products/tasi/index.html). For an overview of the major entities
-provided by TASI, head over to the [User
-Guide](https://igm-mov.pages.gitlab.dlr.de/products/tasi/user_guide/tasi_types.html). If you want to contribute to `TASI`,
-visit [Development
-Documentation](https://igm-mov.pages.gitlab.dlr.de/products/tasi/development/index.html) for further instructions.
+> **TASI** is backed by those wonderful libraries [`Numpy`](https://numpy.org/), [`Pandas`](https://pandas.pydata.org/),
+> and [`Numba`](http://numba.pydata.org/)
 
 
 ## Notes
