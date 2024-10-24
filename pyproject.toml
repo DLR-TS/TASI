@@ -24,13 +24,13 @@ yapf
 pylint
 
 [tool.poetry.group.docs.dependencies]
-ipython = '8.9.0'
-sphinx = '5.0.2'
-nbsphinx = '0.8.12'
-pydata-sphinx-theme = '0.15.4'
-sphinxcontrib-apidoc
-sphinx-copybutton
-sphinx_markdown_parser
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "tasi/_version.py"
+versionfile_build = "tasi/_version.py"
+tag_prefix = ""
+parentdir_prefix = "tasi-"
 
 [build-system]
 requires = ["poetry-core"]
