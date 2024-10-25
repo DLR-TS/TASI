@@ -5,6 +5,14 @@ description = "Library for Traffic Analysis and Situation Interpretation"
 authors = ["Lars Klitzke <lars.klitzke@dlr.de>", "Clemens Schicktanz <clemens.schicktanz@dlr.de"]
 readme = "README.md"
 
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "tasi/_version.py"
+versionfile_build = "tasi/_version.py"
+tag_prefix = ""
+parentdir_prefix = "tasi-"
+
 [tool.poetry.dependencies]
 python = "3.9.5"
 pandas = "2.0.3"
