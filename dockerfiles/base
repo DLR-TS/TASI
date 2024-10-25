@@ -1,0 +1,17 @@
+ARG BASE_VERSION=3.12
+FROM harbor.tanzu.intra.dlr.de/dockerts-proxy/bitnami/python:${BASE_VERSION}
+
+ENV MAINTAINER="Lars Klitzke, Lars.Klitzke@dlr.de"
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
+ENV HTTP_PROXY=http://ts-update-server-bs.intra.dlr.de:3128
+ENV HTTPS_PROXY=http://ts-update-server-bs.intra.dlr.de:3128
+ENV http_proxy=http://ts-update-server-bs.intra.dlr.de:3128
+ENV https_proxy=http://ts-update-server-bs.intra.dlr.de:3128
+
+COPY dist/*.whl /deps/
+
+WORKDIR /deps
+
+RUN python3 -m pip install -U *.whl; rm -r *.whl
