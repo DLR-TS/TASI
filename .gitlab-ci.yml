@@ -107,6 +107,7 @@ coverage:
   before_script:
     - pip install poetry
     - poetry install --with=test
+    - poetry shell
 
   script:
     - pytest tests --cov=tasi --cov-report=html:coverage -n auto
@@ -131,6 +132,7 @@ doc:
     - apt-get update && apt-get install -y graphviz pandoc
     - pip install poetry
     - poetry install --with=docs
+    - poetry shell
 
   script:
     - SPHINXOPTS="-j 8" make -C doc html
