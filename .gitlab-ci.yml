@@ -73,6 +73,12 @@ image_base:
 
   stage: images
 
+  before_script:
+    # add host names
+    - echo "{\"auths\":{\"${TANZU_REGISTRY}\":{\"auth\":\"${TANZU_REGISTRY_PASSWORD}\"}},\"proxies\":{\"default\":{\"httpProxy\":\"${HTTP_PROXY}\",\"httpsProxy\":\"${HTTP_PROXY}\"}}}" >/kaniko/.docker/config.json
+
+
+
   script:
     - |
       /kaniko/executor \
@@ -198,6 +204,9 @@ docker:
       --insecure-registry ${REGISTRY_TS_URL} \
       --insecure-pull \
       --skip-tls-verify \
+      --build-arg https_proxy=$HTTPS_PROXY \
+      --build-arg http_proxy=$HTTP_PROXY \
+      --skip-tls-verify-registry=${REGISTRY_TS_URL} \
       --build-arg BASE_VERSION=${CI_COMMIT_SHORT_SHA} \
       --destination "${DESTINATION}"
   only:
