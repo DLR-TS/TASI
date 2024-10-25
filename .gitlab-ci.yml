@@ -83,7 +83,7 @@ image_base:
       --insecure-pull \
       --skip-tls-verify \
       --build-arg BASE_VERSION=${TASI_PYTHON_BASE_VERSION} \
-      --destination "$REGISTRY_TS_URL/tasi/base:${CI_COMMIT_SHORT_SHA}"
+      --destination "$REGISTRY_TS_URL/scenimini/tasi/base:${CI_COMMIT_SHORT_SHA}"
 
   needs:
     - job: wheel
@@ -92,7 +92,7 @@ image_base:
 coverage:
   stage: test
 
-  image: ${REGISTRY_TS_URL}/tasi/base:${CI_COMMIT_SHORT_SHA}
+  image: ${REGISTRY_TS_URL}/scenimini/tasi/base:${CI_COMMIT_SHORT_SHA}
 
   # regex to grep coverage
   coverage: '/TOTAL.* (\d{1,3}%)/'
