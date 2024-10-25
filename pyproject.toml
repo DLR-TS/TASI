@@ -1,3 +1,7 @@
+[build-system]
+requires = [ "poetry-core",]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry]
 name = "tasi"
 version = "0.1.0"
@@ -21,28 +25,33 @@ numba = "0.58.1"
 typing-extensions = "4.12.2"
 
 [tool.poetry.group.test.dependencies]
-coverage
-ipython
-pytest
-pytest-xdist
-pytest-cov
+coverage = "^7.6.4"
+ipython = "^8.18.1"
+pytest = "^8.3.3"
+pytest-xdist = "^3.6.1"
+pytest-cov = "^5.0.0"
 
 [tool.poetry.group.dev.dependencies]
-yapf
-pylint
+yapf = "^0.40.2"
+pylint = "^3.3.1"
+
+[tool.poetry.group.build.dependencies]
+wheel = "*"
+toml = "*"
 
 [tool.poetry.group.docs.dependencies]
-[tool.versioneer]
-VCS = "git"
-style = "pep440"
-versionfile_source = "tasi/_version.py"
-versionfile_build = "tasi/_version.py"
-tag_prefix = ""
-parentdir_prefix = "tasi-"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[project.scripts]
-download-dlr-ut-dataset = "tasi.dlr.dataset."
+ipython = "^8.18.1"
+sphinx = "7.4.7"
+nbsphinx = "0.8.12"
+pydata-sphinx-theme = "^0.15.4"
+docutils = "*"
+markdown = "*"
+markdown-it-py = "*"
+pymdown-extensions = "*"
+sphinxcontrib-apidoc = "*"
+sphinx-copybutton = "*"
+sphinx_markdown_parser = "*"
+sphinx-gallery = "0.18.0"
+myst-parser = "3.0.1"
+numpydoc = "1.8.0"
+sphinx-toggleprompt = "0.5.2"
