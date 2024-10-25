@@ -21,12 +21,9 @@ variables:
 
 .kaniko_base: &kaniko_base
   stage: deploy
-  tags:
-    - docker
-    - kubernetes
 
   image:
-    name: ${REGISTRY_URL}/ci/kaniko-executor:debug
+    name: ${REGISTRY_TS_URL}/ci/kaniko-executor:debug
     entrypoint: [""]
 
 
@@ -34,11 +31,8 @@ wheel:
   <<: *git_working_dir
 
   stage: build
-  tags:
-    - docker
-    - kubernetes
 
-  image: ${REGISTRY_URL}/bitnami/python:${TASI_PYTHON_BASE_VERSION}
+  image: ${REGISTRY_TS_URL}/dockerts-proxy/bitnami/python:${TASI_PYTHON_BASE_VERSION}
 
   before_script:
   - pip install poetry
@@ -60,7 +54,7 @@ sdist:
 
   stage: build
 
-  image: ${REGISTRY_URL}/bitnami/python:${TASI_PYTHON_BASE_VERSION}
+  image: ${REGISTRY_TS_URL}/dockerts-proxy/bitnami/python:${TASI_PYTHON_BASE_VERSION}
 
   before_script:
   - pip install poetry
@@ -88,11 +82,11 @@ image_base:
       --context dir://$CI_PROJECT_DIR \
       --dockerfile dockerfiles/base \
       --insecure \
-      --insecure-registry ${REGISTRY_URL} \
+      --insecure-registry ${REGISTRY_TS_URL} \
       --insecure-pull \
       --skip-tls-verify \
       --build-arg BASE_VERSION=${TASI_PYTHON_BASE_VERSION} \
-      --destination "$REGISTRY_URL/tasi/base:${CI_COMMIT_SHORT_SHA}"
+      --destination "$REGISTRY_TS_URL/tasi/base:${CI_COMMIT_SHORT_SHA}"
 
   needs:
     - job: wheel
@@ -101,7 +95,7 @@ image_base:
 coverage:
   stage: test
 
-  image: ${REGISTRY_URL}/tasi/base:${CI_COMMIT_SHORT_SHA}
+  image: ${REGISTRY_TS_URL}/tasi/base:${CI_COMMIT_SHORT_SHA}
 
   # regex to grep coverage
   coverage: '/TOTAL.* (\d{1,3}%)/'
@@ -127,7 +121,7 @@ doc:
 
   stage: test
 
-  image: ${REGISTRY_URL}/tasi/base:${CI_COMMIT_SHORT_SHA}
+  image: ${REGISTRY_TS_URL}/tasi/base:${CI_COMMIT_SHORT_SHA}
 
   before_script:
     - apt-get update && apt-get install -y graphviz pandoc
@@ -176,7 +170,7 @@ pages:
   tags:
     - docker
 
-  image: ${REGISTRY_URL}/python:latest
+  image: ${REGISTRY_TS_URL}/python:latest
 
   variables:
     REGISTRY: http://tsdocker.aim.ts.dlr.de/repository/tspypi/
@@ -185,7 +179,7 @@ pages:
     - python -m pip install --upgrade twine keyrings.alt
 
     # add host names
-    - echo -e "${REGISTRY_IP}      ${REGISTRY_URL%:5000}" >> /etc/hosts
+    - echo -e "${REGISTRY_IP}      ${REGISTRY_TS_URL%:5000}" >> /etc/hosts
     - cat /etc/hosts
 
 
@@ -196,15 +190,15 @@ docker:
     # set tag of docker image based on current tag
     - |
       if [ "$CI_COMMIT_REF_NAME" = "master" ]; \
-      then DESTINATION="$REGISTRY_URL/tasi:latest"; \
-      else DESTINATION="$REGISTRY_URL/tasi:${CI_COMMIT_REF_NAME}"; \
+      then DESTINATION="$REGISTRY_TS_URL/tasi:latest"; \
+      else DESTINATION="$REGISTRY_TS_URL/tasi:${CI_COMMIT_REF_NAME}"; \
       fi
     - |
       /kaniko/executor \
       --context dir://$CI_PROJECT_DIR \
       --dockerfile dockerfiles/release \
       --insecure \
-      --insecure-registry ${REGISTRY_URL} \
+      --insecure-registry ${REGISTRY_TS_URL} \
       --insecure-pull \
       --skip-tls-verify \
       --build-arg BASE_VERSION=${CI_COMMIT_SHORT_SHA} \
