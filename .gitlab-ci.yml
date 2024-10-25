@@ -75,7 +75,8 @@ image_base:
 
   before_script:
     # add host names
-    - echo "{\"auths\":{\"${TANZU_REGISTRY}\":{\"auth\":\"${TANZU_REGISTRY_PASSWORD}\"}},\"proxies\":{\"default\":{\"httpProxy\":\"${HTTP_PROXY}\",\"httpsProxy\":\"${HTTP_PROXY}\"}}}" >/kaniko/.docker/config.json
+    - echo "{\"auths\":{\"${REGISTRY_TS_URL}\":{\"auth\":\"${TANZU_REGISTRY_PASSWORD}\"}},\"proxies\":{\"default\":{\"httpProxy\":\"${HTTP_PROXY}\",\"httpsProxy\":\"${HTTP_PROXY}\"}}}" > /kaniko/.docker/config.json
+    - cat /kaniko/.docker/config.json
 
 
 
