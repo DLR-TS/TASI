@@ -36,9 +36,8 @@ wheel:
 
   before_script:
   - pip install poetry
-  - poetry env use 3.12
-  - poetry install --with=build
   - python update-version.py
+  - poetry install --with=build
   - source `poetry env info --path` /bin/activate
 
   script:
@@ -58,7 +57,7 @@ sdist:
 
   before_script:
   - pip install poetry
-  - poetry env use 3.12
+  - python update-version.py
   - poetry install --with=build
   - python update-version.py
   - source `poetry env info --path` /bin/activate
