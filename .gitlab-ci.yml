@@ -77,8 +77,6 @@ sdist:
       - dist
     expire_in: 1 week
 
-
-
 image_base:
   <<: *kaniko_base
 
@@ -127,7 +125,7 @@ coverage:
 doc:
   <<: *git_working_dir
 
-  stage: build
+  stage: test
 
   image: ${REGISTRY_URL}/tasi/base:${CI_COMMIT_SHORT_SHA}
 
