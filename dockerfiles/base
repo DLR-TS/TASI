@@ -14,4 +14,4 @@ COPY dist/*.whl /deps/
 
 WORKDIR /deps
 
-RUN python3 -m pip install -U *.whl; rm -r *.whl
+RUN pip install *.whl; rm -r *.whl
