@@ -194,8 +194,8 @@ docker:
     # set tag of docker image based on current tag
     - |
       if [ "$CI_COMMIT_REF_NAME" = "master" ]; \
-      then DESTINATION="$REGISTRY_TS_URL/tasi:latest"; \
-      else DESTINATION="$REGISTRY_TS_URL/tasi:${CI_COMMIT_REF_NAME}"; \
+      then DESTINATION="$REGISTRY_TS_URL/scenimini/tasi:latest"; \
+      else DESTINATION="$REGISTRY_TS_URL/scenimini/tasi:${CI_COMMIT_REF_NAME}"; \
       fi
     - |
       /kaniko/executor \
