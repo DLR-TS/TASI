@@ -38,7 +38,6 @@ wheel:
   - pip install poetry toml
   - python update-version.py
   - poetry install --with=build
-  - source `poetry env info --path` /bin/activate
 
   script:
     - poetry build --format=wheel
@@ -60,7 +59,6 @@ sdist:
   - python update-version.py
   - poetry install --with=build
   - python update-version.py
-  - source `poetry env info --path` /bin/activate
 
   script:
     - poetry build --format=sdist
