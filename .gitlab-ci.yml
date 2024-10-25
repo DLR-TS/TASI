@@ -1,5 +1,6 @@
 stages:
   - build
+  - images
   - test
   - images
   - extra-test
