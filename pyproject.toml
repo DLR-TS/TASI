@@ -18,10 +18,10 @@ tag_prefix = ""
 parentdir_prefix = "tasi-"
 
 [tool.poetry.dependencies]
-python = "3.9.5"
-pandas = "2.0.3"
-numpy = "1.24.4"
-numba = "0.58.1"
+python = "3.12.0"
+pandas = "2.2.3"
+numpy = "2.0.2"
+numba = "0.60.0"
 typing-extensions = "4.12.2"
 
 [tool.poetry.group.test.dependencies]
