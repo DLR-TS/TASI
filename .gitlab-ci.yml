@@ -23,7 +23,7 @@ variables:
   stage: deploy
 
   image:
-    name: ${REGISTRY_TS_URL}/ci/kaniko-executor:debug
+    name: ${REGISTRY_TS_URL}/scenimini/ci/kaniko-executor:debug
     entrypoint: [""]
 
 
