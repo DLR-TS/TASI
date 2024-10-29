@@ -4,109 +4,79 @@ stages:
   - test
   - deploy
 
-variables:
-  TASI_PYTHON_BASE_VERSION: 3.12
-
 # Some templates
-.git_working_dir: &git_working_dir
-  before_script:
-    - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
-    - "which git || ( apt-get update -y && apt-get install git -y )"
-    - eval $(ssh-agent -s)
-    - ssh-add <(echo "$GIT_SSH_PRIV_KEY")
-    - echo "$KNOWN_HOSTS"  >> ~/.ssh/known_hosts
-    - git init .
-    - git fetch
-    - git pull origin $CI_BUILD_REF_NAME
-
 .kaniko_base: &kaniko_base
   stage: deploy
 
   image:
-    name: ${REGISTRY_TS_URL}/scenimini/ci/kaniko-executor:debug
+    name: ${REGISTRY}/ci/kaniko:latest
     entrypoint: [""]
+    pull_policy: always
 
+.build_base: &build_base
+  stage: build
+
+  image: ${REGISTRY}/python:3.12
+
+  before_script:
+  - python update-version.py
+  - poetry install --with=build
+
+  script:
+    - poetry build --format=${CI_JOB_NAME}
+
+  artifacts:
+    paths:
+      - dist
+    expire_in: 1 week
+
+
+.test_base : &test_base
+  <<: *build_base 
+
+  stage: test
+
+  image: ${REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}
+
+  before_script:
+  - python update-version.py
+  - poetry install --with=test
 
 wheel:
-  <<: *git_working_dir
-
-  stage: build
-
-  image: ${REGISTRY_TS_URL}/dockerts-proxy/bitnami/python:${TASI_PYTHON_BASE_VERSION}
-
-  before_script:
-  - pip install poetry toml
-  - python update-version.py
-  - poetry install --with=build
-
-  script:
-    - poetry build --format=wheel
-
-  artifacts:
-    paths:
-      - dist
-    expire_in: 1 week
+  <<: *build_base
 
 sdist:
-  <<: *git_working_dir
-
-  stage: build
-
-  image: ${REGISTRY_TS_URL}/dockerts-proxy/bitnami/python:${TASI_PYTHON_BASE_VERSION}
-
-  before_script:
-  - pip install poetry toml
-  - python update-version.py
-  - poetry install --with=build
-  - python update-version.py
-
-  script:
-    - poetry build --format=sdist
-
-  artifacts:
-    paths:
-      - dist
-    expire_in: 1 week
+  <<: *build_base
 
 image_base:
   <<: *kaniko_base
 
   stage: images
 
-  before_script:
-    # add host names
-    - echo "{\"auths\":{\"${REGISTRY_TS_URL}\":{\"auth\":\"${TANZU_REGISTRY_PASSWORD}\"}},\"proxies\":{\"default\":{\"httpProxy\":\"${HTTP_PROXY}\",\"httpsProxy\":\"${HTTP_PROXY}\"}}}" > /kaniko/.docker/config.json
-    - cat /kaniko/.docker/config.json
-
-
-
   script:
+    - ls -l 
+    - ls -l dist
+    - |
+      echo "FROM ${REGISTRY}/python:3.12
+      RUN mkdir /deps
+      COPY dist/*.whl /deps/
+      RUN pip install /deps/*.whl; rm -r /deps" > dockerfile 
+
     - |
       /kaniko/executor \
       --context dir://$CI_PROJECT_DIR \
-      --dockerfile dockerfiles/base \
-      --insecure \
-      --insecure-registry ${REGISTRY_TS_URL} \
-      --insecure-pull \
-      --skip-tls-verify \
-      --build-arg BASE_VERSION=${TASI_PYTHON_BASE_VERSION} \
-      --destination "$REGISTRY_TS_URL/scenimini/tasi/base:${CI_COMMIT_SHORT_SHA}"
+      --dockerfile dockerfile \
+      --destination "${REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}"
 
   needs:
     - job: wheel
       artifacts: true
 
-coverage:
-  stage: test
-
-  image: ${REGISTRY_TS_URL}/scenimini/tasi/base:${CI_COMMIT_SHORT_SHA}
-
+test:
+  <<: *test_base
+  
   # regex to grep coverage
   coverage: '/TOTAL.* (\d{1,3}%)/'
-
-  before_script:
-    - pip install poetry
-    - poetry install --with=test
 
   script:
     - poetry run pytest tests --cov=tasi --cov-report=html:coverage -n auto
@@ -119,18 +89,8 @@ coverage:
   needs:
     - job: image_base
 
-
 doc:
-  <<: *git_working_dir
-
-  stage: test
-
-  image: ${REGISTRY_TS_URL}/scenimini/tasi/base:${CI_COMMIT_SHORT_SHA}
-
-  before_script:
-    - apt-get update && apt-get install -y graphviz pandoc
-    - pip install poetry
-    - poetry install --with=docs
+  <<: *test_base
 
   script:
     - SPHINXOPTS="-j 8" poetry run make -C doc html
@@ -163,29 +123,10 @@ pages:
       - public # All relevant content needs to be available here
 
   needs:
-    - job: coverage
+    - job: test
       artifacts: true
     - job: doc
       artifacts: true
-
-.twine_deploy: &twine_deploy
-  stage: deploy
-
-  tags:
-    - docker
-
-  image: ${REGISTRY_TS_URL}/python:latest
-
-  variables:
-    REGISTRY: http://tsdocker.aim.ts.dlr.de/repository/tspypi/
-
-  before_script:
-    - python -m pip install --upgrade twine keyrings.alt
-
-    # add host names
-    - echo -e "${REGISTRY_IP}      ${REGISTRY_TS_URL%:5000}" >> /etc/hosts
-    - cat /etc/hosts
-
 
 docker:
   <<: *kaniko_base
@@ -193,28 +134,23 @@ docker:
   script:
     # set tag of docker image based on current tag
     - |
-      if [ "$CI_COMMIT_REF_NAME" = "master" ]; \
-      then DESTINATION="$REGISTRY_TS_URL/scenimini/tasi:latest"; \
-      else DESTINATION="$REGISTRY_TS_URL/scenimini/tasi:${CI_COMMIT_REF_NAME}"; \
+      if [[ "$CI_COMMIT_REF_NAME" = "master"]] || [[ "$CI_COMMIT_REF_NAME" = "main" ]]; \
+      then DESTINATION="${REGISTRY_TS_URL}/scenimini/tasi:latest"; \
+      else DESTINATION="${REGISTRY_TS_URL}/scenimini/tasi:${CI_COMMIT_REF_NAME}"; \
       fi
+    - echo "FROM ${REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}" > dockerfile 
     - |
       /kaniko/executor \
       --context dir://$CI_PROJECT_DIR \
-      --dockerfile dockerfiles/release \
-      --insecure \
-      --insecure-registry ${REGISTRY_TS_URL} \
-      --insecure-pull \
-      --skip-tls-verify \
-      --build-arg https_proxy=$HTTPS_PROXY \
-      --build-arg http_proxy=$HTTP_PROXY \
-      --skip-tls-verify-registry=${REGISTRY_TS_URL} \
-      --build-arg BASE_VERSION=${CI_COMMIT_SHORT_SHA} \
+      --dockerfile dockerfile \
       --destination "${DESTINATION}"
-  only:
-    - master
-    - tags
 
+  only:
+    - master 
+    - main 
+    - tags 
+    
   needs:
     - job: wheel
       artifacts: true
-    - job: coverage
+    - job: test
