@@ -23,6 +23,7 @@ pandas = "2.2.3"
 numpy = "2.0.2"
 numba = "0.60.0"
 typing-extensions = "4.12.2"
+coloredlogs = "^15.0.1"
 
 [tool.poetry.group.test.dependencies]
 coverage = "^7.6.4"
@@ -55,3 +56,6 @@ sphinx-gallery = "0.18.0"
 myst-parser = "3.0.1"
 numpydoc = "1.8.0"
 sphinx-toggleprompt = "0.5.2"
+
+[tool.poetry.scripts]
+dlr-downloader = 'tasi.dlr.dataset:download'

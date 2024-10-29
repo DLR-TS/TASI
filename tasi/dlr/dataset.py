@@ -8,7 +8,7 @@ import requests
 
 from tasi.dataset import TrajectoryDataset
 
-DLR_FOKR_DATASET_URL = 'https://zenodo.org/records/13907201/files/DLR-Urban-Traffic-dataset_v1-0-1.zip'
+DLR_FOKR_DATASET_URL = 'https://zenodo.org/records/13907201/files/DLR-Urban-Traffic-dataset_v{version}.zip'
 
 
 class ObjectClass(IntEnum):
@@ -126,3 +126,38 @@ class FokrTrajectoryDataset(TrajectoryDataset):
             ObjectDataset: Dataset of all motorized objects.
         """
         return self.get_by_object_class([ObjectClass.pedestrian, ObjectClass.bicycle])
+
+
+def download(name: str, version: str, path: Path):
+
+    if name.lower() == "urban":
+        path = Path(name)
+
+        url = DLR_FOKR_DATASET_URL.format(version=version.replace('.', '-'))
+
+        logging.info(f'Downloading DLR Urban Traffic dataset from %s', url)
+
+        with tempfile.NamedTemporaryFile('w+b') as f:
+            f.write(requests.get(url).content)
+
+            with zipfile.ZipFile(f) as tempzip:
+                tempzip.extractall(path.name)
+                logging.info('OpenDRIVE map available at %s', path.name)
+
+
+if __name__ == '__main__':
+
+    from tasi.logging import init
+
+    init()
+
+    import argparse
+    import sys
+
+    parser = argparse.ArgumentParser(prog='dlr-downloader')
+    parser.add_argument('--name', choices=['urban', 'highway'], type=str, required=True)
+    parser.add_argument('--version', type=str, required=True)
+    parser.add_argument('--path', type=str, required=True)
+    arguments = parser.parse_args(sys.argv[1:])
+
+    download(arguments.name, arguments.version, Path(arguments.path))
