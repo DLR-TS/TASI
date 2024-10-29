@@ -136,7 +136,6 @@ extra-osi:
     - uv run python -c "from tasi.io.osi import *"
 
 
-
 doc:
   <<: *test_base
 
