@@ -21,6 +21,8 @@ import numpy as np
 import pandas as pd
 from typing_extensions import Self
 
+from tasi.utils import to_pandas_multiindex
+
 __all__ = [
     'Dataset',
     'TrajectoryDataset',
@@ -149,6 +151,36 @@ class Dataset(pd.DataFrame):
         # select the entries
         return self.loc[valid_since & valid_until]
 
+    @classmethod
+    def from_csv(cls, file: str, indices: Union[List, str] = (), **kwargs) -> Self:
+        """
+        Read a dictionary-alike object from a `.csv` file as a pandas DataFrame.
+
+        Args:
+            file (str): The path and name of the dataset `.csv` file
+            indices (Union[List, str]): The name of the columns to use as index
+
+        """
+        if indices and not hasattr(kwargs, 'index_col'):
+            kwargs['index_col'] = indices
+
+        # read csv data
+        df = pd.read_csv(file, **kwargs)
+
+        # parse dates
+        df['timestamp'] = pd.to_datetime(df['timestamp'], format='ISO8601')
+
+        # try to set index
+        try:
+            df.set_index(cls.INDEX_COLUMNS, inplace=True)
+        except KeyError:
+            try:
+                df.set_index(cls.TIMESTAMP_COLUMN, inplace=True)
+            except KeyError:
+                pass
+
+        return cls(df)
+
 
 class TrajectoryDataset(Dataset):
 
@@ -176,21 +208,38 @@ class TrajectoryDataset(Dataset):
 
         return self.atid(index)
 
-    def most_likely_class(self) -> pd.Series:
+    def most_likely_class(self, by: str = 'trajectory', broadcast: bool = False) -> pd.Series:
         """
-        Get the name of the most probable object class for each traffic participant of the dataset
+        Get the name of the most probable object class for each pose or trajectory of the dataset
+
+        Args:
+            by (str): By which object the most likely class should be determined. Possible values: 'pose', 'trajectory'
+            broadcast (bool, optional): Specifies whether the most likely class should be broadcasted to each pose of the dataset.
+                The option only changes the output for trajectories. Defaults to False.
 
         Returns:
-            pd.Series: Information about the most probable object class. Return the most likely object class of each trajectory.
+            pd.Series: Information about the most probable object class.
+                If `by` is "pose" and broadcast is "False" or "True" return the most likely object class of each pose.
+                If `by` is "trajectory" and broadcast is "False" return the most likely object class of each trajectory.
+                If `by` is "trajectory" and broadcast is "True" return the most likely object class of each trajectory
+                for each pose.
 
         Raises:
             ValueError: If the value of "by" is neither 'pose' nor 'trajectory'.
         """
-        trajectory_class = self.classifications.droplevel(axis=1, level=1).groupby(
-            self.ID_COLUMN
-        ).apply(lambda tj_classes: tj_classes.mean().idxmax())
+        if by == 'pose':
+            return self.classifications.idxmax(axis=1)
 
-        return trajectory_class
+        elif by == 'trajectory':
+            trajectory_class = self.classifications.groupby('id').apply(lambda tj_classes: tj_classes.mean().idxmax())
+
+            if broadcast:
+                return self.apply(lambda ser: trajectory_class[ser.name[1]], axis=1)
+            else:
+                return trajectory_class
+
+        else:
+            raise ValueError("'by' must be one of 'pose' or 'trajectory'.")
 
     def get_by_object_class(self, object_class: Union[List[ObjectClass], ObjectClass]):
         """
@@ -209,21 +258,35 @@ class TrajectoryDataset(Dataset):
         if not isinstance(object_class, list):
             object_class = [object_class]
 
-        return self[self.most_likely_class(by='trajectory', broadcast=True).isin(object_classes)]
+        return self[self.most_likely_class(by='trajectory', broadcast=True).isin(object_class)]
+
+    @classmethod
+    def from_csv(cls, *args, **kwargs) -> Self:
+
+        df = super().from_csv(*args, **kwargs)
+
+        # ensure the column is a pandas MultiIndex
+        df.columns = to_pandas_multiindex(df.columns.to_list())
+
+        return cls(df)
 
 
 class WeatherDataset(Dataset):
 
-    @classmethod
-    def from_dataframe(cls, df: pd.DataFrame) -> Self:
-        pass
+    pass
+
+
+class AirQualityDataset(Dataset):
+
+    pass
+
+
+class RoadConditionDataset(Dataset):
+
+    pass
 
 
 class TrafficLightDataset(Dataset):
-
-    @classmethod
-    def from_dataframe(cls, df: pd.DataFrame) -> Self:
-        pass
 
     def signal(self, signal_id: int):
         """
@@ -237,14 +300,14 @@ class TrafficLightDataset(Dataset):
         """
         return self.xs(signal_id, level=1)
 
-    def state(self, eventstate: int):
+    def signal_state(self, signal_state: int):
         """
-        Filter the dataset by an event state.
+        Filter the dataset by an signal state.
 
         Args:
-            eventstate (int): The eventstate used for filtering.
+            signal_state (int): The signal state used for filtering.
 
         Returns:
-            TraiffLightDataset: The data with the user defined eventstate.
+            TraiffLightDataset: The data with the user defined signal state.
         """
-        return self.loc[self.eventstate == eventstate]
+        return self.loc[self['state'] == signal_state]
