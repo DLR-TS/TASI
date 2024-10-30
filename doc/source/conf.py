@@ -4,7 +4,6 @@
 import sys, os
 import warnings
 
-
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -25,7 +24,6 @@ extensions = [
     "matplotlib.sphinxext.plot_directive",
 ]
 
-
 # continue doc build and only print warnings/errors in examples
 ipython_warning_is_error = False
 ipython_exec_lines = [
@@ -39,11 +37,9 @@ ipython_exec_lines = [
 numpydoc_show_class_members = False
 autodoc_typehints = "none"
 
-
 # Add any paths that contain templates here, relative to this directory.
 
 templates_path = ["_templates"]
-
 
 autosummary_generate = True
 
@@ -62,14 +58,12 @@ warnings.filterwarnings(
 # The suffix of source filenames.
 source_suffix = [".rst"]
 
-
 # The master toctree document.
 master_doc = "index"
 
 # General information about the project.
 project = "TASI"
 copyright = "2024-, DLR TS and contributors"
-
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -85,7 +79,6 @@ if "+" in version:
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
-
 
 # -- Options for HTML output ---------------------------------------------------
 
@@ -136,9 +129,7 @@ html_static_path = ["_static"]
 
 # Add redirect for previously existing pages, each item is like `(from_old, to_new)`
 
-html_js_files = [
-    "logos/DLR_black.js"
-]
+html_js_files = ["logos/DLR_black.js"]
 
 nbsphinx_prolog = r"""
 {% set docname = env.doc2path(env.docname, base=None) %}
@@ -184,7 +175,8 @@ intersphinx_mapping = {
 
 
 def setup(app):
-    app.add_css_file("custom.css")  # may also be an URL
+    app.add_css_file("custom.css")    # may also be an URL
+
 
 # based on pandas implementation with added support of properties
 def linkcode_resolve(domain, info):
@@ -216,7 +208,7 @@ def linkcode_resolve(domain, info):
     try:
         fn = inspect.getsourcefile(inspect.unwrap(obj))
     except TypeError:
-        try:  # property
+        try:    # property
             fn = inspect.getsourcefile(inspect.unwrap(obj.fget))
         except AttributeError:
             fn = None
@@ -226,7 +218,7 @@ def linkcode_resolve(domain, info):
     try:
         source, lineno = inspect.getsourcelines(obj)
     except TypeError:
-        try:  # property
+        try:    # property
             source, lineno = inspect.getsourcelines(obj.fget)
         except AttributeError:
             lineno = None
@@ -241,11 +233,50 @@ def linkcode_resolve(domain, info):
     fn = os.path.relpath(fn, start=os.path.dirname(tasi.__file__))
 
     if "+" in tasi.__version__:
-        return (
-            f"https://github.com/dlr-ts/tasi/blob/main/tasi/{fn}{linespec}"
-        )
+        return (f"https://github.com/dlr-ts/tasi/blob/main/tasi/{fn}{linespec}")
     else:
-        return (
-            f"https://github.com/dlr-ts/tasi/blob/"
-            f"v{tasi.__version__}/tasi/{fn}{linespec}"
-        )
+        return (f"https://github.com/dlr-ts/tasi/blob/"
+                f"v{tasi.__version__}/tasi/{fn}{linespec}")
+
+
+# -- Options for nbsphinx ------------------------------------------------
+import os
+import jinja2
+
+nbsphinx_allow_errors = False
+
+# If false, no module index is generated.
+html_use_modindex = True
+
+# convert all cell-based jupyter notebooks
+SOURCE_PATH = os.path.dirname(os.path.abspath(__file__))
+
+nbsphinx_custom_formats = {
+    '.pct.py': ['jupytext.reads', {
+        'fmt': 'py:percent'
+    }],
+}
+
+# render the index templates in the user-guide
+
+USER_GUIDE_ROOT = os.path.join(SOURCE_PATH, 'user_guide')
+
+if os.path.exists(USER_GUIDE_ROOT):
+
+    for section in [d for d in os.listdir(USER_GUIDE_ROOT) if os.path.isdir(os.path.join(USER_GUIDE_ROOT, d))]:
+
+        # the target directory for the jupyter notebooks
+        SECTION_NOTEBOOK_ROOT = os.path.join(USER_GUIDE_ROOT, section)
+
+        # list up all notebooks
+        NOTEBOOKS = [
+            f for f in os.listdir(SECTION_NOTEBOOK_ROOT)
+            if f.endswith('.pct.py') or (f.endswith('.rst') and 'index' not in f)
+        ]
+
+        # taken from https://github.com/pandas-dev/pandas/blob/c45e92c3956fd2638980ac46e6e93ec3b6cc7c52/doc/source/conf.py#L87
+        with open(os.path.join(SECTION_NOTEBOOK_ROOT, 'index.rst.template')) as f:
+            t = jinja2.Template(f.read())
+
+        with open(os.path.join(SECTION_NOTEBOOK_ROOT, 'index.rst'), 'w') as f:
+            f.write(t.render(examples='\n'.join(sorted(NOTEBOOKS))))

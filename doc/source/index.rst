@@ -21,11 +21,11 @@ custom models to represent traffic data and utilizes `Matplotlib`_ for visualiza
    Home <self>
    About <about>
    Getting started <getting_started>
-   User guide <user_guide>
+   User guide <user_guide/index>
 
 .. container:: button
 
-    :doc:`Getting started <getting_started>` :doc:`User guide <user_guide>`
+    :doc:`Getting started <getting_started>` :doc:`User guide <user_guide/index>`
     :doc:`About TASI <about>` :doc:`Contribute <contribute>`
     |DLR TS|
 

@@ -17,7 +17,7 @@ be used for. If you have any questions or comments, feel free to raise an issue!
                <div class="card text-center intro-card shadow ">
                   <img src="_static/bar-chart-fill.svg" class="card-img-top" alt="tasi data analysis icon" height="52">
                   <div class="card-body">
-                     <h5 class="card-title"><a href="data_analysis/index.html">Data Analysis </a></h5>
+                     <h5 class="card-title"><a href="data_analysis/index.html">Data Analysis</a></h5>
                      <p class="card-text">If you want to analyze trajectories, head over to the chapter of <em>Data
                            Analysis</em> using <code class="docutils literal notranslate"><span class="pre">tasi</span></code>
                         for some examples.</p>
@@ -72,4 +72,3 @@ be used for. If you have any questions or comments, feel free to raise an issue!
    data_analysis/index
    data_loading_and_saving/index
    data_visualization/index
-   faq/index

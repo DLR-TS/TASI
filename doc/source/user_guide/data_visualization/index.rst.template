@@ -1,0 +1,15 @@
+:html_theme.sidebar_secondary.remove:
+
+.. data_viusalization:
+
+******************
+Data Visualization
+******************
+
+Welcome to the User-Guide section for data visualization 😀 In this section you will find some examples of data
+visualization for different use-cases.
+
+.. toctree::
+   :maxdepth: 1
+
+{{ examples | indent(3, True) }}
