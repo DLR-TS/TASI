@@ -19,8 +19,8 @@ stages:
   image: ${REGISTRY}/python:3.12
 
   before_script:
-  - python update-version.py
-  - poetry install --with=build
+    - python update-version.py
+    - poetry install --with=build
 
   script:
     - poetry build --format=${CI_JOB_NAME}
@@ -30,17 +30,18 @@ stages:
       - dist
     expire_in: 1 week
 
-
-.test_base : &test_base
-  <<: *build_base 
+.test_base: &test_base
+  <<: *build_base
 
   stage: test
 
   image: ${REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}
 
   before_script:
-  - python update-version.py
-  - poetry install --with=test
+    - apt-get update && apt-get install -y pandoc
+    - python update-version.py
+    - poetry install --with=test
+    - dlr-downloader --name urban --version 1.0.0 --path /tmp
 
 wheel:
   <<: *build_base
@@ -54,13 +55,13 @@ image_base:
   stage: images
 
   script:
-    - ls -l 
+    - ls -l
     - ls -l dist
     - |
       echo "FROM ${REGISTRY}/python:3.12
       RUN mkdir /deps
       COPY dist/*.whl /deps/
-      RUN pip install /deps/*.whl; rm -r /deps" > dockerfile 
+      RUN pip install /deps/*.whl; rm -r /deps" > dockerfile
 
     - |
       /kaniko/executor \
@@ -74,7 +75,7 @@ image_base:
 
 test:
   <<: *test_base
-  
+
   # regex to grep coverage
   coverage: '/TOTAL.* (\d{1,3}%)/'
 
@@ -138,7 +139,7 @@ docker:
       then DESTINATION="${REGISTRY_TS_URL}/scenimini/tasi:latest"; \
       else DESTINATION="${REGISTRY_TS_URL}/scenimini/tasi:${CI_COMMIT_REF_NAME}"; \
       fi
-    - echo "FROM ${REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}" > dockerfile 
+    - echo "FROM ${REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}" > dockerfile
     - |
       /kaniko/executor \
       --context dir://$CI_PROJECT_DIR \
@@ -146,10 +147,10 @@ docker:
       --destination "${DESTINATION}"
 
   only:
-    - master 
-    - main 
-    - tags 
-    
+    - master
+    - main
+    - tags
+
   needs:
     - job: wheel
       artifacts: true

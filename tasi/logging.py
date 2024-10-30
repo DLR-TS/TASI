@@ -12,7 +12,8 @@ MSG_TEMPLATE = "[%(asctime)s | %(filename)s:%(funcName)s:%(lineno)d] > %(levelna
 
 LOGGER = "tasi"
 
-def init(console_level: int = logging.INFO, file_level: int = logging.DEBUG, filename: str = None):
+
+def init_logger(console_level: int = logging.INFO, file_level: int = logging.DEBUG, filename: str = None):
 
     # get the current root logger
     logger = logging.getLogger()
@@ -35,4 +36,3 @@ def init(console_level: int = logging.INFO, file_level: int = logging.DEBUG, fil
     handler.setFormatter(coloredlogs.ColoredFormatter(fmt=MSG_TEMPLATE))
     handler.setLevel(console_level)
     logger.addHandler(handler)
-
