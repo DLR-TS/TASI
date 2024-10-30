@@ -130,7 +130,7 @@ html_theme_options = {
     ]
 }
 
-html_title = "TASI"
+html_title = project
 
 html_context = {
     "header": header,
