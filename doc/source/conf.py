@@ -68,7 +68,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "TASI"
-copyright = "2024-, TASI developers"
+copyright = "2024-, DLR TS and contributors"
 
 
 # The version info for the project you're documenting, acts as replacement for
@@ -112,7 +112,7 @@ html_theme_options = {
     ]
 }
 
-html_title = "TASI"
+html_title = project
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
