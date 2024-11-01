@@ -2910,6 +2910,20 @@ standalone = ["Sphinx (>=5)"]
 test = ["pytest"]
 
 [[package]]
+name = "sphinxemoji"
+version = "0.3.1"
+description = "An extension to use emoji codes in your Sphinx documentation"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "sphinxemoji-0.3.1-py3-none-any.whl", hash = "sha256:dae483695f8d1e90a28a6e9bbccc08d256202afcc1d0fbd33b51b3b4352d439e"},
+    {file = "sphinxemoji-0.3.1.tar.gz", hash = "sha256:23ecff1f1e765393e49083b45386b7da81ced97c9a18a1dfd191460a97da3b11"},
+]
+
+[package.dependencies]
+sphinx = ">=5.0"
+
+[[package]]
 name = "stack-data"
 version = "0.6.3"
 description = "Extract data from python stack frames and tracebacks for informative displays"
@@ -3164,4 +3178,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12.0"
-content-hash = "165533d26015ac099a0c4f583172e643e6b7241dc2f63ca41267b42213a61fd1"
+content-hash = "d99f032cb657a368a7c8170174dc6762672043b1528d5ac53408528343e21df2"

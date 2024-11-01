@@ -1,155 +1,172 @@
 stages:
-  - build
-  - images
-  - test
-  - deploy
+    - build
+    - images
+    - test
+    - deploy
 
 # Some templates
 .kaniko_base: &kaniko_base
-  stage: deploy
+    stage: deploy
 
-  image:
-    name: ${REGISTRY}/ci/kaniko:latest
-    entrypoint: [""]
-    pull_policy: always
+    image:
+        name: ${REGISTRY}/ci/kaniko:latest
+        entrypoint: [""]
+        pull_policy: always
 
 .build_base: &build_base
-  stage: build
+    stage: build
 
-  image: ${REGISTRY}/python:3.12
+    image: ${REGISTRY}/python:3.12
 
-  before_script:
-    - python update-version.py
-    - poetry install --with=build
+    before_script:
+        - poetry install --with=build
+        - poetry run python update-version.py
 
-  script:
-    - poetry build --format=${CI_JOB_NAME}
+    script:
+        - poetry build --format=${CI_JOB_NAME}
 
-  artifacts:
-    paths:
-      - dist
-    expire_in: 1 week
+    artifacts:
+        paths:
+            - dist
+        expire_in: 1 week
 
 .test_base: &test_base
-  <<: *build_base
+    <<: *build_base
 
-  stage: test
+    stage: test
 
-  image: ${REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}
+    image: ${REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}
 
-  before_script:
-    - apt-get update && apt-get install -y pandoc
-    - python update-version.py
-    - poetry install --with=test
-    - dlr-downloader --name urban --version 1.0.0 --path /tmp
+    before_script:
+        - apt-get update && apt-get install -y pandoc
+        - poetry install --with=test
+        - poetry run python update-version.py
+        - dlr-downloader --name urban --version 1.0.0 --path /tmp
 
 wheel:
-  <<: *build_base
+    <<: *build_base
 
 sdist:
-  <<: *build_base
+    <<: *build_base
 
 image_base:
-  <<: *kaniko_base
+    <<: *kaniko_base
 
-  stage: images
+    stage: images
 
-  script:
-    - |
-      echo "FROM ${REGISTRY}/python:3.12
-      RUN mkdir /deps
-      COPY dist/*.whl /deps/
-      RUN pip install /deps/*.whl; rm -r /deps" > dockerfile
+    script:
+        - |
+            echo "FROM ${REGISTRY}/python:3.12
+            RUN mkdir /deps
+            COPY dist/*.whl /deps/
+            RUN pip install /deps/*.whl; rm -r /deps" > dockerfile
 
-    - |
-      /kaniko/executor \
-      --context dir://$CI_PROJECT_DIR \
-      --dockerfile dockerfile \
-      --destination "${REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}"
+        - |
+            /kaniko/executor \
+            --context dir://$CI_PROJECT_DIR \
+            --dockerfile dockerfile \
+            --destination "${REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}"
 
-  needs:
-    - job: wheel
-      artifacts: true
+    needs:
+        - job: wheel
+          artifacts: true
 
 test:
-  <<: *test_base
+    <<: *test_base
 
-  # regex to grep coverage
-  coverage: '/TOTAL.* (\d{1,3}%)/'
+    # regex to grep coverage
+    coverage: '/TOTAL.* (\d{1,3}%)/'
 
-  script:
-    - poetry run pytest tests --cov=tasi --cov-report=html:coverage -n auto
+    script:
+        - poetry run pytest tests --cov=tasi --cov-report=html:coverage -n auto
 
-  artifacts:
-    paths:
-      # save the coverage results to create html results in the next stage
-      - coverage
+    artifacts:
+        paths:
+            # save the coverage results to create html results in the next stage
+            - coverage
 
-  needs:
-    - job: image_base
+    needs:
+        - job: image_base
 
 doc:
-  <<: *test_base
+    <<: *test_base
 
-  script:
-    - SPHINXOPTS="-j 8" poetry run make -C doc html
-    # move the HTML doc to the local directory
-    - mv doc/build/html ./html
+    script:
+        - SPHINXOPTS="-j 8" poetry run make -C doc html
+        # move the HTML doc to the local directory
+        - mv doc/build/html ./html
 
-  artifacts:
-    paths:
-      - html
-    expire_in: 1 week
+    artifacts:
+        paths:
+            - html
+        expire_in: 1 week
 
-  needs:
-    - job: image_base
+    needs:
+        - job: image_base
 
 pages:
-  stage: deploy
+    stage: deploy
 
-  script:
-    # rename the documentation to public
-    - mv html public/
-    # move the html coverage results into the documentation page
-    - mv coverage public/coverage
+    script:
+        # rename the documentation to public
+        - mv html public/
+        # move the html coverage results into the documentation page
+        - mv coverage public/coverage
 
-  only:
-    - master
-    - tags
+    only:
+        - master
+        - tags
 
-  artifacts:
-    paths:
-      - public # All relevant content needs to be available here
+    artifacts:
+        paths:
+            - public # All relevant content needs to be available here
 
-  needs:
-    - job: test
-      artifacts: true
-    - job: doc
-      artifacts: true
+    needs:
+        - job: test
+          artifacts: true
+        - job: doc
+          artifacts: true
+
+pypi:
+    stage: deploy
+
+    image: ${REGISTRY}/python:3.12
+
+    script:
+        - poetry config pypi-token.pypi ${PYPI_TOKEN}
+        - poetry publish
+
+    only:
+        - tags
+
+    needs:
+        - job: wheel
+          artifacts: true
+        - job: test
 
 docker:
-  <<: *kaniko_base
+    <<: *kaniko_base
 
-  script:
-    # set tag of docker image based on current tag
-    - |
-      if [[ "$CI_COMMIT_REF_NAME" = "master"]] || [[ "$CI_COMMIT_REF_NAME" = "main" ]]; \
-      then DESTINATION="${REGISTRY_TS_URL}/scenimini/tasi:latest"; \
-      else DESTINATION="${REGISTRY_TS_URL}/scenimini/tasi:${CI_COMMIT_REF_NAME}"; \
-      fi
-    - echo "FROM ${REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}" > dockerfile
-    - |
-      /kaniko/executor \
-      --context dir://$CI_PROJECT_DIR \
-      --dockerfile dockerfile \
-      --destination "${DESTINATION}"
+    script:
+        # set tag of docker image based on current tag
+        - |
+            if [[ "$CI_COMMIT_REF_NAME" = "master"]] || [[ "$CI_COMMIT_REF_NAME" = "main" ]]; \
+            then DESTINATION="${REGISTRY_TS_URL}/scenimini/tasi:latest"; \
+            else DESTINATION="${REGISTRY_TS_URL}/scenimini/tasi:${CI_COMMIT_REF_NAME}"; \
+            fi
+        - echo "FROM ${REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}" > dockerfile
+        - |
+            /kaniko/executor \
+            --context dir://$CI_PROJECT_DIR \
+            --dockerfile dockerfile \
+            --destination "${DESTINATION}"
 
-  only:
-    - master
-    - main
-    - tags
+    only:
+        - master
+        - main
+        - tags
 
-  needs:
-    - job: wheel
-      artifacts: true
-    - job: test
+    needs:
+        - job: wheel
+          artifacts: true
+        - job: test
