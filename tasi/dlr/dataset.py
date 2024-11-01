@@ -86,15 +86,19 @@ class DLRUTDatasetManager(DLRDatasetManager):
     class VERSIONS(Enum):
         v1_0_0 = "v1.0.0"
         v1_0_1 = "v1.0.1"
+        v1_1_0 = "v1.1.0"
+        
 
     VERSION = {
         VERSIONS.v1_0_0.value : 11396372,
-        VERSIONS.v1_0_1.value : 13907201
+        VERSIONS.v1_0_1.value : 13907201,
+        VERSIONS.v1_1_0.value : 14025010
     }
         
     ARCHIVE = {
         VERSIONS.v1_0_0.value : "DLR-UT",
         VERSIONS.v1_0_1.value : "DLR-Urban-Traffic-dataset",
+        VERSIONS.v1_1_0.value : "DLR-Urban-Traffic-dataset",
     }
 
     @classmethod
@@ -106,7 +110,7 @@ class DLRUTDatasetManager(DLRDatasetManager):
 
         # fix name of DLR UT v1.0.1 dataset
         if self.version == self.VERSIONS.v1_0_1.value:
-            return f'DLR-UT_v1-0-0'
+            return 'DLR-UT_v1-0-0'
 
         return f'{self.archivename}_{self.version.replace('.', '-')}'
 
