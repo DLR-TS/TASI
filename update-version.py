@@ -11,7 +11,7 @@ with open("pyproject.toml", "r") as f:
 # Ersetze die Version
 pyproject["tool"]["poetry"]["version"] = version
 
-# Schreibe die geänderte Version zurück in pyproject.toml
+# Schreibe die geaenderte Version zurueck in pyproject.toml
 with open("pyproject.toml", "w") as f:
     toml.dump(pyproject, f)
 
