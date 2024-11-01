@@ -12,7 +12,7 @@ init_logger()
 import os
 from tasi.dlr.dataset import DLRUTDatasetManager
 
-dataset = DLRUTDatasetManager(DLRUTDatasetManager.VERSIONS.v1_0_0)
+dataset = DLRUTDatasetManager(DLRUTDatasetManager.VERSIONS.v1_1_0)
 path = dataset.load(path='/tmp')
 path
 
@@ -25,6 +25,7 @@ folders
 #%% [markdown]
 # ## Trajectory Data
 # ### Load Trajectory Data
+
 #%%
 # get the first file of a folder
 def get_first_file(path: str, data_type: str) -> str:
@@ -138,6 +139,7 @@ traffic_lights.signal_state(7)
 #%% [markdown]
 # ## Weather Data
 # ### Load Weather Data
+
 #%%
 # choose specifc file
 weather_file = get_first_file(path, 'weather')
@@ -157,6 +159,7 @@ weather.air_temperature.plot()
 #%% [markdown]
 # ## Air Quality Data
 # ### Load Air Quality Data
+
 #%%
 # choose specifc file
 air_quality_file = get_first_file(path, 'air_quality')
@@ -176,15 +179,18 @@ air_quality.mean()
 #%% [markdown]
 # ## Road Condition Data (Comming Soon)
 # ### Load Road Condition Data
+
 # %%
 # choose specifc file
-# road_condition_file = get_first_file(path, 'road_condition')
-# road_condition_file
-# #%%
-# # load data from csv file
-# from tasi.dataset import RoadConditionDataset
-# road_conditions = RoadConditionDataset.from_csv(road_condition_file)
-# road_conditions
+road_condition_file = get_first_file(path, 'road_condition')
+road_condition_file
+
+#%%
+# load data from csv file
+from tasi.dataset import RoadConditionDataset
+road_conditions = RoadConditionDataset.from_csv(road_condition_file)
+road_conditions
+
 # %%
 # visualize surface temperatur over time
-# road_conditions.surface_temperature.plot()
+road_conditions.surface_temperature.plot()
