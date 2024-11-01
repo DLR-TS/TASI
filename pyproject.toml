@@ -4,9 +4,9 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "tasi"
-version = "0.1.0"
+version = "0.1.0+1.gc77fc0d.dirty"
 description = "Library for Traffic Analysis and Situation Interpretation"
-authors = ["Lars Klitzke <lars.klitzke@dlr.de>", "Clemens Schicktanz <clemens.schicktanz@dlr.de"]
+authors = [ "Lars Klitzke <lars.klitzke@dlr.de>", "Clemens Schicktanz <clemens.schicktanz@dlr.de",]
 readme = "README.md"
 
 [tool.versioneer]
@@ -14,8 +14,15 @@ VCS = "git"
 style = "pep440"
 versionfile_source = "tasi/_version.py"
 versionfile_build = "tasi/_version.py"
-tag_prefix = ""
+tag_prefix = "v"
 parentdir_prefix = "tasi-"
+
+[tool.autopep8]
+max_line_length = 100
+ignore = "E501,W6"
+in-place = true
+recursive = true
+aggressive = 3
 
 [tool.poetry.dependencies]
 python = "^3.12.0"
@@ -25,6 +32,9 @@ numba = "0.60.0"
 typing-extensions = "4.12.2"
 coloredlogs = "^15.0.1"
 matplotlib = "3.9.2"
+
+[tool.poetry.scripts]
+dlr-downloader = "tasi.dlr.dataset:download"
 
 [tool.poetry.group.test.dependencies]
 coverage = "^7.6.4"
@@ -59,13 +69,3 @@ numpydoc = "1.8.0"
 sphinx-toggleprompt = "0.5.2"
 ipykernel = "*"
 jupytext = "^1.16.4"
-
-[tool.poetry.scripts]
-dlr-downloader = 'tasi.dlr.dataset:download'
-
-[tool.autopep8]
-max_line_length = 100
-ignore = "E501,W6"  # or ["E501", "W6"]
-in-place = true
-recursive = true
-aggressive = 3

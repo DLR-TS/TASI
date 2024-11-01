@@ -55,8 +55,6 @@ image_base:
   stage: images
 
   script:
-    - ls -l
-    - ls -l dist
     - |
       echo "FROM ${REGISTRY}/python:3.12
       RUN mkdir /deps
