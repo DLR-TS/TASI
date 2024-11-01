@@ -6,13 +6,29 @@ from pathlib import Path
 
 import requests
 
-from tasi.dataset import TrajectoryDataset
+from tasi.dataset import TrafficLightDataset, TrajectoryDataset
+
+__all__ = [
+    'DLRDatasetManager',
+    'DLRUTDatasetManager',
+    'ObjectClass',
+    'DLRUTTrajectoryDataset',
+    'DLRUTTrafficLightDataset',
+    'download'
+]
 
 
 class DLRDatasetManager():
+    """A base class for DLR dataset management
 
-    BASE_URI = 'https://zenodo.org/records'
+    Attributes:
+        BASE_URI: The base URI for all DLR datasets on zenodo
+    """
 
+    BASE_URI: str = 'https://zenodo.org/records'
+    """str: The base URI of all DLR datasets
+    """
+    
     @property 
     def archivename(self):
         """The base name of the archive"""
@@ -35,6 +51,7 @@ class DLRDatasetManager():
 
     @property
     def version(self):
+        """The dataset version"""
         return self._version
 
     def __init__(self, version: str, **kwargs):
@@ -80,10 +97,16 @@ class DLRDatasetManager():
 
         return export_path
 
-
 class DLRUTDatasetManager(DLRDatasetManager):
+    """A manager to load the DLR UT dataset from zenodo
+
+    Attributes:
+        VERSIONS: The available dataset version
+    """
 
     class VERSIONS(Enum):
+        """The available versions of the UT dataset
+        """
         v1_0_0 = "v1.0.0"
         v1_0_1 = "v1.0.1"
         v1_1_0 = "v1.1.0"
@@ -114,7 +137,6 @@ class DLRUTDatasetManager(DLRDatasetManager):
 
         return f'{self.archivename}_{self.version.replace('.', '-')}'
 
-
 class ObjectClass(IntEnum):
     """
     The supported object classes
@@ -128,8 +150,7 @@ class ObjectClass(IntEnum):
     van = 6
     truck = 7
 
-
-class FokrTrajectoryDataset(TrajectoryDataset):
+class DLRUTTrajectoryDataset(TrajectoryDataset):
 
     @property
     def pedestrians(self):
@@ -137,7 +158,7 @@ class FokrTrajectoryDataset(TrajectoryDataset):
         Return the pedestrians of the dataset.
 
         Returns:
-            ObjectDataset: Dataset of all pedestrians.
+            DLRUTTrajectoryDataset: Dataset of all pedestrians.
         """
         return self.get_by_object_class(ObjectClass.pedestrian)
 
@@ -147,7 +168,7 @@ class FokrTrajectoryDataset(TrajectoryDataset):
         Return the bicycles of the dataset.
 
         Returns:
-            ObjectDataset: Dataset of all bicycles.
+            DLRUTTrajectoryDataset: Dataset of all bicycles.
         """
         return self.get_by_object_class(ObjectClass.bicycle)
 
@@ -157,7 +178,7 @@ class FokrTrajectoryDataset(TrajectoryDataset):
         Return the motorbikes of the dataset.
 
         Returns:
-            ObjectDataset: Dataset of all motorbikes.
+            DLRUTTrajectoryDataset: Dataset of all motorbikes.
         """
         return self.get_by_object_class(ObjectClass.motorbike)
 
@@ -167,7 +188,7 @@ class FokrTrajectoryDataset(TrajectoryDataset):
         Return the cars of the dataset.
 
         Returns:
-            ObjectDataset: Dataset of all cars.
+            DLRUTTrajectoryDataset: Dataset of all cars.
         """
         return self.get_by_object_class(ObjectClass.car)
 
@@ -177,7 +198,7 @@ class FokrTrajectoryDataset(TrajectoryDataset):
         Return the vans of the dataset.
 
         Returns:
-            ObjectDataset: Dataset of all vans.
+            DLRUTTrajectoryDataset: Dataset of all vans.
         """
         return self.get_by_object_class(ObjectClass.van)
 
@@ -187,7 +208,7 @@ class FokrTrajectoryDataset(TrajectoryDataset):
         Return the trucks of the dataset.
 
         Returns:
-            ObjectDataset: Dataset of all trucks.
+            DLRUTTrajectoryDataset: Dataset of all trucks.
         """
         return self.get_by_object_class(ObjectClass.truck)
 
@@ -197,7 +218,7 @@ class FokrTrajectoryDataset(TrajectoryDataset):
         Return the unknown objects of the dataset.
 
         Returns:
-            ObjectDataset: Dataset of all unknown objects.
+            DLRUTTrajectoryDataset: Dataset of all unknown objects.
         """
         return self.get_by_object_class(ObjectClass.unknown)
 
@@ -207,7 +228,7 @@ class FokrTrajectoryDataset(TrajectoryDataset):
         Return the background objects of the dataset.
 
         Returns:
-            ObjectDataset: Dataset of all background objects.
+            DLRUTTrajectoryDataset: Dataset of all background objects.
         """
         return self.get_by_object_class(ObjectClass.background)
 
@@ -217,7 +238,7 @@ class FokrTrajectoryDataset(TrajectoryDataset):
         Return the motorized road user of the dataset.
 
         Returns:
-            ObjectDataset: Dataset of all motorized objects.
+            DLRUTTrajectoryDataset: Dataset of all motorized objects.
         """
         return self.get_by_object_class([ObjectClass.motorbike, ObjectClass.car, ObjectClass.van, ObjectClass.truck])
 
@@ -227,9 +248,35 @@ class FokrTrajectoryDataset(TrajectoryDataset):
         Return the vulnerable road user of the dataset.
 
         Returns:
-            ObjectDataset: Dataset of all motorized objects.
+            DLRUTTrajectoryDataset: Dataset of all motorized objects.
         """
         return self.get_by_object_class([ObjectClass.pedestrian, ObjectClass.bicycle])
+
+class DLRUTTrafficLightDataset(TrafficLightDataset):
+    
+    def signal(self, signal_id: int):
+        """
+        Filter the dataset by a signal id.
+
+        Args:
+            signal_id (int): The id of the signal.
+
+        Returns:
+            `DLRUTTrafficLightDataset`: The data from the signal
+        """
+        return self.xs(signal_id, level=1)
+
+    def signal_state(self, signal_state: int):
+        """
+        Filter the dataset by an signal state.
+
+        Args:
+            signal_state (int): The signal state used for filtering.
+
+        Returns:
+            `DLRUTTrafficLightDataset`: The data with the user defined signal state.
+        """
+        return self.loc[self['state'] == signal_state]
 
 
 def download():

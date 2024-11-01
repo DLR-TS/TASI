@@ -17,12 +17,17 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.autodoc",
     "sphinx.ext.linkcode",
+    'sphinx.ext.napoleon',
     "myst_parser",
     "nbsphinx",
     "numpydoc",
     "sphinx_toggleprompt",
-    "matplotlib.sphinxext.plot_directive",
+    "matplotlib.sphinxext.plot_directive",    
+    'sphinxemoji.sphinxemoji',
 ]
+
+
+napoleon_google_docstring = True
 
 # continue doc build and only print warnings/errors in examples
 ipython_warning_is_error = False
@@ -60,6 +65,23 @@ source_suffix = [".rst"]
 
 # The master toctree document.
 master_doc = "index"
+
+header = f"""\
+.. currentmodule:: tasi
+
+.. ipython:: python
+   :suppress:
+
+   import numpy as np
+   import pandas as pd
+
+   np.random.seed(123456)
+   np.set_printoptions(precision=4, suppress=True)
+   pd.options.display.max_rows = 15
+
+   import os
+   os.chdir(r'{os.path.dirname(os.path.dirname(__file__))}')
+"""
 
 # General information about the project.
 project = "TASI"
@@ -105,7 +127,19 @@ html_theme_options = {
     ]
 }
 
+
+
+html_context = {
+    "header": header,
+}
+
 html_title = project
+
+html_sidebars = {
+    'about': [],
+    'development/index' : [],
+    'getting_started/index' :[]
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -259,24 +293,26 @@ nbsphinx_custom_formats = {
 
 # render the index templates in the user-guide
 
-USER_GUIDE_ROOT = os.path.join(SOURCE_PATH, 'user_guide')
+for section in ['user_guide', 'getting_started']:
 
-if os.path.exists(USER_GUIDE_ROOT):
+    section_path = os.path.join(SOURCE_PATH, 'user_guide')
 
-    for section in [d for d in os.listdir(USER_GUIDE_ROOT) if os.path.isdir(os.path.join(USER_GUIDE_ROOT, d))]:
+    if os.path.exists(section_path):
 
-        # the target directory for the jupyter notebooks
-        SECTION_NOTEBOOK_ROOT = os.path.join(USER_GUIDE_ROOT, section)
+        for section in [d for d in os.listdir(section_path) if os.path.isdir(os.path.join(section_path, d))]:
 
-        # list up all notebooks
-        NOTEBOOKS = [
-            f for f in os.listdir(SECTION_NOTEBOOK_ROOT)
-            if f.endswith('.pct.py') or (f.endswith('.rst') and 'index' not in f)
-        ]
+            # the target directory for the jupyter notebooks
+            notebook_path = os.path.join(section_path, section)
 
-        # taken from https://github.com/pandas-dev/pandas/blob/c45e92c3956fd2638980ac46e6e93ec3b6cc7c52/doc/source/conf.py#L87
-        with open(os.path.join(SECTION_NOTEBOOK_ROOT, 'index.rst.template')) as f:
-            t = jinja2.Template(f.read())
+            # list up all notebooks
+            NOTEBOOKS = [
+                f for f in os.listdir(notebook_path)
+                if f.endswith('.pct.py') or (f.endswith('.rst') and 'index' not in f)
+            ]
 
-        with open(os.path.join(SECTION_NOTEBOOK_ROOT, 'index.rst'), 'w') as f:
-            f.write(t.render(examples='\n'.join(sorted(NOTEBOOKS))))
+            # taken from https://github.com/pandas-dev/pandas/blob/c45e92c3956fd2638980ac46e6e93ec3b6cc7c52/doc/source/conf.py#L87
+            with open(os.path.join(notebook_path, 'index.rst.template')) as f:
+                t = jinja2.Template(f.read())
+
+            with open(os.path.join(notebook_path, 'index.rst'), 'w') as f:
+                f.write(t.render(examples='\n'.join(sorted(NOTEBOOKS))))
