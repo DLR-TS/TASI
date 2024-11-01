@@ -41,9 +41,9 @@ tj_file
 
 #%%
 # load data from csv file as TrajectoryDataset
-from tasi.dataset import TrajectoryDataset
+from tasi.dlr import DLRUTTrajectoryDataset
 
-ds = TrajectoryDataset.from_csv(tj_file)
+ds = DLRUTTrajectoryDataset.from_csv(tj_file)
 ds
 
 # %%
@@ -118,9 +118,9 @@ traffic_light_file
 
 #%%
 # load data from csv
-from tasi.dataset import TrafficLightDataset
+from tasi.dlr import DLRUTTrafficLightDataset
 
-traffic_lights = TrafficLightDataset.from_csv(traffic_light_file)
+traffic_lights = DLRUTTrafficLightDataset.from_csv(traffic_light_file)
 traffic_lights
 
 # %%

@@ -27,6 +27,8 @@ __all__ = [
     'Dataset',
     'TrajectoryDataset',
     'WeatherDataset',
+    'AirQualityDataset',
+    'RoadConditionDataset'
     'TrafficLightDataset',
 ]
 
@@ -42,10 +44,6 @@ class Dataset(pd.DataFrame):
     @property
     def _constructor(self):
         return self.__class__
-
-    @classmethod
-    def from_dataframe(cls, df: pd.DataFrame) -> Self:
-        raise NotImplementedError()
 
     @property
     def timestamps(self) -> np.ndarray[np.datetime64]:
@@ -123,6 +121,11 @@ class Dataset(pd.DataFrame):
 
     @property
     def interval(self) -> pd.Interval:
+        """Returns the time interval this dataset spans
+
+        Returns:
+            pd.Interval: The interval of this
+        """
         return pd.Interval(self.timestamps[0], self.timestamps[-1])
 
     def during(self, since: datetime, until: datetime, include_until: bool = False):
@@ -287,27 +290,5 @@ class RoadConditionDataset(Dataset):
 
 
 class TrafficLightDataset(Dataset):
-
-    def signal(self, signal_id: int):
-        """
-        Filter the dataset by a signal id.
-
-        Args:
-            signal_id (int): The id of the signal.
-
-        Returns:
-            TraiffLightDataset: The data from the signal
-        """
-        return self.xs(signal_id, level=1)
-
-    def signal_state(self, signal_state: int):
-        """
-        Filter the dataset by an signal state.
-
-        Args:
-            signal_state (int): The signal state used for filtering.
-
-        Returns:
-            TraiffLightDataset: The data with the user defined signal state.
-        """
-        return self.loc[self['state'] == signal_state]
+    
+    pass

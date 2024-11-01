@@ -349,7 +349,6 @@ class DLRUTDatasetManager(DLRDatasetManager):
         """
         return self._dataset("air_quality", path)
 
-
 class ObjectClass(IntEnum):
     """
     The supported object classes
@@ -581,6 +580,32 @@ class DLRTrafficVolumeDataset(AddIndexFromCSVMixin, TrafficVolumeDataset):
 
 DLRHTVersion = DLRHTDatasetManager.VERSION_ENUM
 DLRUTVersion = DLRUTDatasetManager.VERSION_ENUM
+
+class DLRUTTrafficLightDataset(TrafficLightDataset):
+    
+    def signal(self, signal_id: int):
+        """
+        Filter the dataset by a signal id.
+
+        Args:
+            signal_id (int): The id of the signal.
+
+        Returns:
+            `DLRUTTrafficLightDataset`: The data from the signal
+        """
+        return self.xs(signal_id, level=1)
+
+    def signal_state(self, signal_state: int):
+        """
+        Filter the dataset by an signal state.
+
+        Args:
+            signal_state (int): The signal state used for filtering.
+
+        Returns:
+            `DLRUTTrafficLightDataset`: The data with the user defined signal state.
+        """
+        return self.loc[self['state'] == signal_state]
 
 
 def download():

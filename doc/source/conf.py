@@ -130,6 +130,11 @@ html_theme_options = {
     ]
 }
 
+
+html_context = {
+    "header": header,
+}
+
 html_title = project
 
 html_context = {
