@@ -3,7 +3,7 @@
 .. tasi documentation master file, based on the (geo)pandas master file
 
 ******************
-TASI
+TASI |version|
 ******************
 
 TASI is a library to provide high-performance, easy-to-use data structures and data analysis
