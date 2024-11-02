@@ -349,6 +349,79 @@ class DLRUTDatasetManager(DLRDatasetManager):
         """
         return self._dataset("air_quality", path)
 
+    def _dataset(self, path: Path, variant: str) -> List[str]:
+        """Searches for files in the dataset specified at ``path`` for dataset information ``variant``
+
+        Args:
+            path (Path): The path of the dataset.
+            variant (str): The dataset information to search for
+
+        Returns:
+            List[str]: The files found in the dataset for the specified dataset information
+        """
+        if not isinstance(path, Path):
+            path = Path(path)
+
+        path = path.joinpath(self.name).joinpath(variant)
+
+        return [os.path.join(path, p) for p in sorted(os.listdir(path))]
+
+    def trajectory(self, path: Path) -> List[str]:
+        """List of files with trajectory data.
+
+        Args:
+            path (Path): The path of the dataset
+
+        Returns:
+            List[str]: The files with trajectory data
+        """
+        return self._dataset(path, "trajectories")
+
+    def traffic_lights(self, path: Path) -> List[str]:
+        """List of files with traffic light data.
+
+        Args:
+            path (Path): The path of the dataset
+
+        Returns:
+            List[str]: The files with traffic light data
+        """
+        return self._dataset(path, "traffic_lights")
+
+    def weather(self, path: Path) -> List[str]:
+        """List of files with weather data.
+
+        Args:
+            path (Path): The path of the dataset
+
+        Returns:
+            List[str]: The files with weather data
+        """
+        return self._dataset(path, "weather")
+
+    def air_quality(self, path: Path) -> List[str]:
+        """List of files with air quality data.
+
+        Args:
+            path (Path): The path of the dataset
+
+        Returns:
+            List[str]: The files with air quality data
+        """
+        return self._dataset(path, "air_quality")
+
+    def road_condition(self, path: Path) -> List[str]:
+        """List of files with road condition information.
+
+        Args:
+            path (Path): The path of the dataset
+
+        Returns:
+            List[str]: The files with road condition data
+        """
+        return self._dataset(path, "road_condition")
+
+
 class ObjectClass(IntEnum):
     """
     The supported object classes
@@ -581,8 +654,9 @@ class DLRTrafficVolumeDataset(AddIndexFromCSVMixin, TrafficVolumeDataset):
 DLRHTVersion = DLRHTDatasetManager.VERSION_ENUM
 DLRUTVersion = DLRUTDatasetManager.VERSION_ENUM
 
+
 class DLRUTTrafficLightDataset(TrafficLightDataset):
-    
+
     def signal(self, signal_id: int):
         """
         Filter the dataset by a signal id.
@@ -605,7 +679,7 @@ class DLRUTTrafficLightDataset(TrafficLightDataset):
         Returns:
             `DLRUTTrafficLightDataset`: The data with the user defined signal state.
         """
-        return self.loc[self['state'] == signal_state]
+        return self.loc[self["state"] == signal_state]
 
 
 def download():
