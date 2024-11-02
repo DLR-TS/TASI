@@ -133,7 +133,7 @@ pypi:
     image: ${REGISTRY}/python:3.12
 
     script:
-        - poetry config pypi-token.pypi ${PYPI_TOKEN}
+        - poetry config http-basic.pypi __token__ ${PYPI_TOKEN}
         - poetry publish
 
     only:
