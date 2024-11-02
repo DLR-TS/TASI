@@ -1,5 +1,7 @@
 import logging
+import os
 import tempfile
+from typing import List
 import zipfile
 from enum import Enum, IntEnum
 from pathlib import Path
@@ -11,6 +13,7 @@ from tasi.dataset import TrafficLightDataset, TrajectoryDataset
 __all__ = [
     'DLRDatasetManager',
     'DLRUTDatasetManager',
+    'DLRUTVersion',
     'ObjectClass',
     'DLRUTTrajectoryDataset',
     'DLRUTTrafficLightDataset',
@@ -97,31 +100,39 @@ class DLRDatasetManager():
 
         return export_path
 
-class DLRUTDatasetManager(DLRDatasetManager):
-    """A manager to load the DLR UT dataset from zenodo
 
-    Attributes:
-        VERSIONS: The available dataset version
+class DLRUTVersion(Enum):
+    """The available version of the DLR UT dataset
     """
 
-    class VERSIONS(Enum):
-        """The available versions of the UT dataset
-        """
-        v1_0_0 = "v1.0.0"
-        v1_0_1 = "v1.0.1"
-        v1_1_0 = "v1.1.0"
-        
+    v1_0_0 = "v1.0.0"
+    """The initial version of the dataset
+    """
+    
+    v1_0_1 = "v1.0.1"
+    """Contains only minor modifications in the documentation
+    """
+
+    v1_1_0 = "v1.1.0"
+    """The road condition information was moved into a new sub dataset from the weather data.
+    """
+
+class DLRUTDatasetManager(DLRDatasetManager):
+    """A manager to load the DLR UT dataset from zenodo
+    """
 
     VERSION = {
-        VERSIONS.v1_0_0.value : 11396372,
-        VERSIONS.v1_0_1.value : 13907201,
-        VERSIONS.v1_1_0.value : 14025010
+        DLRUTVersion.v1_0_0.value : 11396372,
+        DLRUTVersion.v1_0_1.value : 13907201,
+        DLRUTVersion.v1_1_0.value : 14025010
     }
+    """Dict[str, int]: An internal mapping between version and the zenodo id
+    """
         
     ARCHIVE = {
-        VERSIONS.v1_0_0.value : "DLR-UT",
-        VERSIONS.v1_0_1.value : "DLR-Urban-Traffic-dataset",
-        VERSIONS.v1_1_0.value : "DLR-Urban-Traffic-dataset",
+        DLRUTVersion.v1_0_0.value : "DLR-UT",
+        DLRUTVersion.v1_0_1.value : "DLR-Urban-Traffic-dataset",
+        DLRUTVersion.v1_1_0.value : "DLR-Urban-Traffic-dataset",
     }
 
     @classmethod
@@ -132,11 +143,83 @@ class DLRUTDatasetManager(DLRDatasetManager):
     def name(self):
 
         # fix name of DLR UT v1.0.1 dataset
-        if self.version == self.VERSIONS.v1_0_1.value:
+        if self.version == DLRUTVersion.v1_0_1.value:
             return 'DLR-UT_v1-0-0'
 
         return f'{self.archivename}_{self.version.replace('.', '-')}'
 
+    def _dataset(self, path: Path, variant: str) -> List[str]:
+        """Searches for files in the dataset specified at ``path`` for dataset information ``variant``
+
+        Args:
+            path (Path): The path of the dataset.
+            variant (str): The dataset information to search for
+
+        Returns:
+            List[str]: The files found in the dataset for the specified dataset information
+        """
+        if not isinstance(path, Path):
+            path = Path(path)
+
+        path = path.joinpath(self.name).joinpath(variant)
+
+        return [os.path.join(path, p) for p in sorted(os.listdir(path))]
+    
+    def trajectory(self, path: Path) -> List[str]:
+        """List of files with trajectory data.
+
+        Args:
+            path (Path): The path of the dataset
+
+        Returns:
+            List[str]: The files with trajectory data
+        """
+        return self._dataset(path, 'trajectories')
+    
+    def traffic_lights(self, path: Path) -> List[str]:
+        """List of files with traffic light data.
+
+        Args:
+            path (Path): The path of the dataset
+
+        Returns:
+            List[str]: The files with traffic light data
+        """
+        return self._dataset(path, 'traffic_lights')
+        
+    def weather(self, path: Path) -> List[str]:
+        """List of files with weather data.
+
+        Args:
+            path (Path): The path of the dataset
+
+        Returns:
+            List[str]: The files with weather data
+        """
+        return self._dataset(path, 'weather')
+    
+    def air_quality(self, path: Path) -> List[str]:
+        """List of files with air quality data.
+
+        Args:
+            path (Path): The path of the dataset
+
+        Returns:
+            List[str]: The files with air quality data
+        """
+        return self._dataset(path, 'air_quality')
+    
+    def road_condition(self, path: Path) -> List[str]:
+        """List of files with road condition information.
+
+        Args:
+            path (Path): The path of the dataset
+
+        Returns:
+            List[str]: The files with road condition data
+        """
+        return self._dataset(path, 'road_condition')
+    
 class ObjectClass(IntEnum):
     """
     The supported object classes

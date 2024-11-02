@@ -3,7 +3,7 @@
 DLRDatasetManager
 ========================
 
-.. currentmodule:: tasi.dlr
+.. currentmodule:: tasi.dlr.dataset
 
 A base class that enables downloading the DLR datasets.
 

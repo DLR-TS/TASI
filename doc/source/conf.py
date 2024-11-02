@@ -20,7 +20,6 @@ extensions = [
     'sphinx.ext.napoleon',
     "myst_parser",
     "nbsphinx",
-    "numpydoc",
     "sphinx_toggleprompt",
     "matplotlib.sphinxext.plot_directive",    
     'sphinxemoji.sphinxemoji',
@@ -185,25 +184,17 @@ nbsphinx_prolog = r"""
 
 # connect docs in other projects
 intersphinx_mapping = {
-    "folium": (
-        "https://python-visualization.github.io/folium/latest",
-        "https://python-visualization.github.io/folium/latest/objects.inv",
-    ),
     "matplotlib": (
         "https://matplotlib.org/stable/",
-        "https://matplotlib.org/stable/objects.inv",
+        "_static/invs/matplotlib.inv",
     ),
     "pandas": (
         "https://pandas.pydata.org/pandas-docs/stable/",
-        "https://pandas.pydata.org/pandas-docs/stable/objects.inv",
+        "_static/invs/pandas.inv",
     ),
     "python": (
         "https://docs.python.org/3",
-        "https://docs.python.org/3/objects.inv",
-    ),
-    "shapely": (
-        "https://shapely.readthedocs.io/en/stable/",
-        "https://shapely.readthedocs.io/en/stable/objects.inv",
+        "_static/invs/python.inv",
     ),
 }
 
