@@ -11,6 +11,7 @@ from tasi.dlr.dataset import DLRUTDatasetManager, DLRUTVersion
 from tasi.dlr import DLRUTTrajectoryDataset
 
 dataset = DLRUTDatasetManager(DLRUTVersion.v1_1_0)
+dataset.load("/tmp")
 
 ds = DLRUTTrajectoryDataset.from_csv(dataset.trajectory("/tmp")[50])
 

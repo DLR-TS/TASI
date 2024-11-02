@@ -41,7 +41,7 @@ stages:
         - apt-get update && apt-get install -y pandoc
         - poetry install --with=test
         - poetry run python update-version.py
-        - dlr-downloader --name urban --version 1.0.0 --path /tmp
+        - dlr-downloader --name urban --version 1.1.0 --path /tmp
 
 wheel:
     <<: *build_base
