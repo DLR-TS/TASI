@@ -1,0 +1,17 @@
+# virtual environments
+.venv
+
+# documentation
+doc/build
+
+# distribution
+dist
+
+# compiled
+__pycache__
+
+# data
+etc
+
+# IDE
+.vscode

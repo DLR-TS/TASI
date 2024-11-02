@@ -1,0 +1,110 @@
+/* colors */
+
+html[data-theme="light"] {
+    --pst-color-primary: rgb(0, 0, 0);
+    --pst-color-secondary: rgb(0, 101, 193);
+}
+
+html[data-theme="dark"] {
+    --pst-color-primary: rgb(255, 255, 255);
+    --pst-color-secondary: rgb(0, 101, 193);
+}
+
+.button>p>a {
+    box-shadow: 0px 4px 14px -7px #999999;
+    /* background-color: white; */
+    border: 1px solid #bbbbbb;
+    display: inline-block;
+    cursor: pointer;
+    padding: 1em 1em;
+    text-align: center;
+    text-decoration: none;
+    font-size: 140%;
+    margin: 2%;
+    width: 40%;
+}
+
+/* buttons */
+[data-theme='light'] .button>p>a {
+    color: #00658b;
+}
+
+[data-theme='light'] .button>p>a:hover {
+    border-color: rgb(0, 0, 0);
+    color: rgb(0, 101, 193);
+}
+
+
+/* buttons */
+[data-theme='dark'] .button>p>a {
+    color: #00658b;
+}
+
+[data-theme='dark'] .button>p>a:hover {
+    border-color: rgb(255, 255, 255);
+    color: rgb(0, 101, 193);
+}
+
+.button>p>a:active {
+    position: relative;
+    top: 1px;
+}
+
+.intro-card {
+    border-radius: 0;
+    padding: 30px 10px 10px 10px;
+    margin: 10px 0px;
+    box-shadow: 0px 4px 14px -7px #999999;
+    /* background-color: white; */
+    border: 1px solid #bbbbbb;
+}
+
+
+[data-theme='light'] .intro-card {
+    color: #00658b;
+}
+
+[data-theme='dark'] .intro-card {
+    color: #00658b;
+}
+
+/* buttons */
+[data-theme='light'] .intro-card>.card-body>.card-title>a {
+    color: #00658b;
+}
+
+[data-theme='light'] .intro-card>.card-body>.card-title>a:hover {
+    border-color: rgb(0, 0, 0);
+    color: rgb(0, 101, 193);
+}
+
+
+[data-theme='dark'] .intro-card>.card-body>.card-title>a {
+    color: #00658b;
+}
+
+[data-theme='dark'] .intro-card>.card-body>.card-title>a {
+    border-color: rgb(255, 255, 255);
+    color: rgb(0, 101, 193);
+}
+
+#user-guide .card-img-top {
+    background-color: unset;
+}
+
+#user-guide .card {
+    background-color:  unset;
+}
+
+#user-guide .card-icon {
+    height: 54px;
+}
+
+#user-guide .card-icon svg{
+    height: inherit;
+}
+.intro-card .card-text {
+    margin: 20px 0px;
+
+    /*min-height: 150px; */
+}

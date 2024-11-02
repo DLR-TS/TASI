@@ -1,0 +1,15 @@
+:html_theme.sidebar_secondary.remove:
+
+.. _faq:
+
+FAQ
+#####################
+
+.. note::
+
+    This will be a place to collect knowledge about the usage of ``tasi``. For now, this is just a place holder |:sunglasses:|
+
+.. toctree::
+   :maxdepth: 1
+
+{{ examples | indent(3, True) }}
