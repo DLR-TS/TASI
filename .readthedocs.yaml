@@ -13,4 +13,4 @@ build:
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry install --with docs
 
 sphinx:
-  configuration: docs/conf.py
+  configuration: doc/source/conf.py
