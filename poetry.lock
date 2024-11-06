@@ -2957,6 +2957,20 @@ files = [
 widechars = ["wcwidth"]
 
 [[package]]
+name = "tilemapbase"
+version = "0.4.7"
+description = "Use OpenStreetMap tiles as basemaps in python / matplotlib"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "tilemapbase-0.4.7.tar.gz", hash = "sha256:6db0f28f77c5fdb42557e17bb87914aafe08a90f602953d5cc07fb5a1caac7f6"},
+]
+
+[package.dependencies]
+pillow = "*"
+requests = "*"
+
+[[package]]
 name = "tinycss2"
 version = "1.4.0"
 description = "A tiny CSS parser"
@@ -3178,4 +3192,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12.0"
-content-hash = "d99f032cb657a368a7c8170174dc6762672043b1528d5ac53408528343e21df2"
+content-hash = "00a87b01400f4052366e2459cb68e57838a523ab630d39d97b8bc090c40ae68e"
