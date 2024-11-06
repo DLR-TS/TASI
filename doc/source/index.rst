@@ -37,13 +37,14 @@ Useful links
 
 `Binary Installers (PyPI) <https://pypi.org/project/tasi/>`_ | `Source Repository (GitHub) <https://github.com/dlr-ts/tasi>`_ | `Issues & Ideas <https://github.com/dlr-ts/tasi/issues>`_ | `Q&A Support <https://stackoverflow.com/questions/tagged/tasi>`_
 
-|pypi| |Developed by DLR-TS|
+|pypi| |Developed by DLR-TS| |zenodo|
 
 .. |pypi| image:: https://img.shields.io/pypi/v/tasi.svg
    :target: https://pypi.python.org/pypi/tasi/
 .. |Developed by DLR-TS| image:: https://img.shields.io/badge/developed%20by-DLR%20TS-orange.svg?style=flat&colorA=E1523D&colorB=007D8A
    :target: https://www.dlr.de/en/ts/about-us/the-institute-of-transportation-systems
-
+.. |zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.14034644.svg
+   :target: https://doi.org/10.5281/zenodo.14034644
 .. |DLR TS| image:: _static/logos/DLR_TS_Logo_EN_schwarz.svg
     :target: https://www.dlr.de/en/ts/about-us/the-institute-of-transportation-systems
 
