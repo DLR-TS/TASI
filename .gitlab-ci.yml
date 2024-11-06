@@ -41,7 +41,6 @@ stages:
         - apt-get update && apt-get install -y pandoc
         - poetry install --with=test
         - poetry run python update-version.py
-        - dlr-downloader --name urban --version 1.1.0 --path /tmp
 
 wheel:
     <<: *build_base
@@ -59,7 +58,9 @@ image_base:
             echo "FROM ${REGISTRY}/python:3.12
             RUN mkdir /deps
             COPY dist/*.whl /deps/
-            RUN pip install /deps/*.whl; rm -r /deps" > dockerfile
+            RUN pip install /deps/*.whl; rm -r /deps;
+            RUN dlr-downloader --name urban --version 1.1.0 --path /tmp;
+            RUN python -c 'import tilemapbase; tilemapbase.init(create=True)'" > dockerfile
 
         - |
             /kaniko/executor \
@@ -126,23 +127,6 @@ pages:
           artifacts: true
         - job: doc
           artifacts: true
-
-pypi:
-    stage: deploy
-
-    image: ${REGISTRY}/python:3.12
-
-    script:
-        - poetry config pypi-token.pypi ${PYPI_TOKEN}
-        - poetry publish
-
-    only:
-        - tags
-
-    needs:
-        - job: wheel
-          artifacts: true
-        - job: test
 
 docker:
     <<: *kaniko_base

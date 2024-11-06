@@ -32,6 +32,7 @@ numba = "0.60.0"
 typing-extensions = "4.12.2"
 coloredlogs = "^15.0.1"
 matplotlib = "3.9.2"
+tilemapbase = "^0.4.7"
 
 [tool.poetry.scripts]
 dlr-downloader = "tasi.dlr.dataset:download"
