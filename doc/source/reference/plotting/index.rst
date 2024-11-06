@@ -10,6 +10,7 @@ Everything around plotting static content using `matplotlib`.
 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    wms/index
+   trajectory/index

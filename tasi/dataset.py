@@ -63,7 +63,7 @@ class Dataset(pd.DataFrame):
         """
         try:
             return self.index.get_level_values(self.ID_COLUMN).unique()
-        except:
+        except BaseException:
             return self[self.ID_COLUMN].unique()
 
     @property
@@ -91,7 +91,7 @@ class Dataset(pd.DataFrame):
         """
         try:
             len(timestamps)
-        except:
+        except BaseException:
             timestamps = [timestamps]
 
         if attribute is None:
@@ -103,7 +103,7 @@ class Dataset(pd.DataFrame):
         """Select rows by the given id and optionally by attributes
 
         Args:
-            ids (Union[int, List[int], pd.Index]): A list of IDs 
+            ids (Union[int, List[int], pd.Index]): A list of IDs
             attributes (pd.Index, optional): A list of attribute names. Defaults to None.
 
         Returns:
@@ -111,7 +111,7 @@ class Dataset(pd.DataFrame):
         """
         try:
             len(ids)
-        except:
+        except BaseException:
             ids = [ids]
 
         if attributes is None:
@@ -290,5 +290,5 @@ class RoadConditionDataset(Dataset):
 
 
 class TrafficLightDataset(Dataset):
-    
+
     pass

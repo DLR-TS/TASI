@@ -1,10 +1,13 @@
 
 from typing import ClassVar, Tuple
 from matplotlib import pyplot as plt
+from matplotlib.axes import Axes
 import numpy as np
 from tilemapbase.mapping import Plotter
 
+from tasi.dataset import TrajectoryDataset
 from tasi.plotting.wms import BoundingboxTiles
+
 
 class BoundingboxPlotter(Plotter):
     """
@@ -27,13 +30,92 @@ class BoundingboxPlotter(Plotter):
 
         self._padding = padding
 
+    
+    def plot(self, ax: plt.Axes, center: Tuple[float, float] = None, zoom: float = 1, show_attribution: bool = True, attribution_kwargs=None, **kwargs):
+        """
+        Draw the tile for the center location given by ``center`` within the current extend and and zoom into the tile according to `zoom`.
+
+        Args:
+            ax (plt.Axes): The axes to plot onto.
+            center (Tuple[float, float]): The plotting center
+            zoom (float): The zoom value
+            show_attribution (bool): To thow the attribution information. Defaults to True.
+
+        Raises:
+            ValueError: If the zoom value is not within (0,1).
+
+        """
+
+        if zoom == 0 or zoom > 1:
+            raise ValueError('The zoom value needs to be within (0,1).')
+
+        # get the tile for the current extend
+        tile = self._tile_provider.get_tile(self.xtilemin, self.ytilemin, self.xtilemax, self.ytilemax)
+
+        # get the size of the extend
+        dx = self.xtilemax - self.xtilemin
+        dy = self.ytilemax - self.ytilemin
+
+        # draw the tile on the axes and specify the extend in the given coordinate system
+        ax.imshow(
+            tile,
+            interpolation="lanczos",
+            extent=[int(self.xtilemin), int(self.xtilemax), int(self.ytilemin), int(self.ytilemax)],
+            **kwargs
+        )
+        if center is None:
+            center = [self.xtilemin + (dx / 2), self.ytilemin + (dy / 2)]
+
+        # set the limit of the axes according to the given extend and zoom value
+        ax.set(
+            xlim=[center[0] - (dx / 2) * zoom, center[0] + (dx / 2) * zoom],
+            ylim=[center[1] - (dy / 2) * zoom, center[1] + (dy / 2) * zoom]
+        )
+
+        if show_attribution:
+
+            default_config = {
+                'fontsize': 5,
+                'transform': ax.transAxes,
+                's': self._tile_provider.ATTRIBUTION
+            }
+
+            attribution_kwargs = attribution_kwargs if attribution_kwargs is not None else {}
+
+            if dx > dy:
+
+                default_config.update({
+                    'x': 1,
+                    'y': 1.01,
+                    'ha': 'right',
+                    'va': 'bottom'
+                })
+
+                default_config.update(attribution_kwargs)
+
+                ax.text(**default_config)
+
+            else:
+
+                default_config.update({
+                    'x': 1.02,
+                    'y': 0.01,
+                    'rotation': 90,
+                    'ha': 'left',
+                    'va': 'bottom'
+                })
+
+                default_config.update(attribution_kwargs)
+
+                ax.text(**default_config)
+                
     @property
     def extent(self):
         """
         The region in 2-point definition
 
         Returns:
-            np.ndarray: A 2*2 matrix 
+            np.ndarray: A 2*2 matrix
         """
         return self._original_extent
 
@@ -77,80 +159,47 @@ class BoundingboxPlotter(Plotter):
         """
         return int(np.max(self._extent[:, 1])) + self._padding
 
-    def plot(self, ax: plt.Axes, center: Tuple[float, float] = None, zoom: float = 1, show_attribution: bool = True, attribution_kwargs = None, **kwargs):
+
+
+class TrajectoryPlotter():
+    """
+    Plot trajectories using ``matplotlib``
+    """
+
+    def __init__(self):
+        pass
+
+    def plot(self, dataset: TrajectoryDataset, color='blue', ax: Axes = None, trajectory_kwargs=None, **kwargs):
         """
-        Draw the tile for the center location given by `center` within the current extend and and zoom into the tile according to `zoom`.
+        Plot trajectories using `matplotlib`
 
         Args:
-            ax (plt.Axes): The axes to plot onto.
-            center (Tuple[float, float]): The plotting center
-            zoom (float): The zoom value
-            show_attribution (bool): To thow the attribution information. Defaults to True.
-
-        Raises:
-            ValueError: If the zoom value is not within (0,1).
-
+            dataset (TrajectoryDataset): The dataset of trajectories to visualize.
+            color (str, optional): The color of the trajectories. Defaults to 'blue'.
+            ax (Axes, optional): The matplotlib axes. Defaults to None.
+            trajectory_kwargs (Dict, optional): A mapping of traffic participant id to trajectory-specific plotting attributes. Defaults to None.
         """
+        if ax is None:
+            ax = plt.gca()
 
-        if zoom == 0 or zoom > 1:
-            raise ValueError('The zoom value needs to be within (0,1).')
+        trajectory_kwargs = trajectory_kwargs if trajectory_kwargs is not None else {}
 
-        # get the tile for the current extend
-        tile = self._tile_provider.get_tile(self.xtilemin, self.ytilemin, self.xtilemax, self.ytilemax)
+        # get the classes for each trajectory
+        tj_classes = dataset.most_likely_class()
 
-        # get the size of the extend
-        dx = self.xtilemax - self.xtilemin
-        dy = self.ytilemax - self.ytilemin
+        for tj_id in dataset.ids:
 
-        # draw the tile on the axes and specify the extend in the given coordinate system
-        ax.imshow(
-            tile,
-            interpolation="lanczos",
-            extent=[int(self.xtilemin), int(self.xtilemax), int(self.ytilemin), int(self.ytilemax)],
-            **kwargs
-        )
-        if center is None:
-            center = [self.xtilemin + (dx / 2), self.ytilemin + (dy / 2)]
+            # get the trajectory of the id
+            tj = dataset.trajectory(tj_id)
 
-        # set the limit of the axes according to the given extend and zoom value
-        ax.set(
-            xlim=[center[0] - (dx / 2) * zoom, center[0] + (dx / 2) * zoom],
-            ylim=[center[1] - (dy / 2) * zoom, center[1] + (dy / 2) * zoom]
-        )
+            # get additional plotting arguments of this trajectory
+            tj_kwargs = trajectory_kwargs.get(tj_id, {})
 
-        if show_attribution:
-            
-            default_config = {
-                'fontsize' : 5,
-                'transform' : ax.transAxes,
-                's' : self._tile_provider.ATTRIBUTION
-            }
+            if 'c' not in tj_kwargs:
+                tj_kwargs['c'] = color
 
-            attribution_kwargs = attribution_kwargs if attribution_kwargs is not None else {}
+            if 'label' not in tj_kwargs:
+                tj_kwargs['label'] = tj_classes.loc[tj_id]
 
-            if dx > dy:
-                
-                default_config.update({
-                    'x' :  1,
-                    'y' : 1.01,
-                    'ha' : 'right',
-                    'va' : 'bottom'
-                })
-
-                default_config.update(attribution_kwargs)
-
-                ax.text(**default_config)
-
-            else:
-
-                default_config.update({
-                    'x' :  1.02,
-                    'y' : 0.01,
-                    'rotation'  :90,
-                    'ha' : 'left',
-                    'va' : 'bottom'
-                })
-
-                default_config.update(attribution_kwargs)
-
-                ax.text(**default_config)
+            # use the center position for plotting
+            ax.plot(tj.center.easting, tj.center.northing, **tj_kwargs, **kwargs)
