@@ -31,8 +31,8 @@ class DLRDatasetManager():
     BASE_URI: str = 'https://zenodo.org/records'
     """str: The base URI of all DLR datasets
     """
-    
-    @property 
+
+    @property
     def archivename(self):
         """The base name of the archive"""
         return self.ARCHIVE[self.version]
@@ -108,7 +108,6 @@ class DLRUTVersion(Enum):
     v1_0_0 = "v1.0.0"
     """The initial version of the dataset
     """
-    
     v1_0_1 = "v1.0.1"
     """Contains only minor modifications in the documentation
     """
@@ -122,17 +121,17 @@ class DLRUTDatasetManager(DLRDatasetManager):
     """
 
     VERSION = {
-        DLRUTVersion.v1_0_0.value : 11396372,
-        DLRUTVersion.v1_0_1.value : 13907201,
-        DLRUTVersion.v1_1_0.value : 14025010
+        DLRUTVersion.v1_0_0.value: 11396372,
+        DLRUTVersion.v1_0_1.value: 13907201,
+        DLRUTVersion.v1_1_0.value: 14025010
     }
     """Dict[str, int]: An internal mapping between version and the zenodo id
     """
-        
+
     ARCHIVE = {
-        DLRUTVersion.v1_0_0.value : "DLR-UT",
-        DLRUTVersion.v1_0_1.value : "DLR-Urban-Traffic-dataset",
-        DLRUTVersion.v1_1_0.value : "DLR-Urban-Traffic-dataset",
+        DLRUTVersion.v1_0_0.value: "DLR-UT",
+        DLRUTVersion.v1_0_1.value: "DLR-Urban-Traffic-dataset",
+        DLRUTVersion.v1_1_0.value: "DLR-Urban-Traffic-dataset",
     }
 
     @classmethod
@@ -164,7 +163,6 @@ class DLRUTDatasetManager(DLRDatasetManager):
         path = path.joinpath(self.name).joinpath(variant)
 
         return [os.path.join(path, p) for p in sorted(os.listdir(path))]
-    
     def trajectory(self, path: Path) -> List[str]:
         """List of files with trajectory data.
 
@@ -175,7 +173,6 @@ class DLRUTDatasetManager(DLRDatasetManager):
             List[str]: The files with trajectory data
         """
         return self._dataset(path, 'trajectories')
-    
     def traffic_lights(self, path: Path) -> List[str]:
         """List of files with traffic light data.
 
@@ -186,7 +183,6 @@ class DLRUTDatasetManager(DLRDatasetManager):
             List[str]: The files with traffic light data
         """
         return self._dataset(path, 'traffic_lights')
-        
     def weather(self, path: Path) -> List[str]:
         """List of files with weather data.
 
@@ -197,7 +193,6 @@ class DLRUTDatasetManager(DLRDatasetManager):
             List[str]: The files with weather data
         """
         return self._dataset(path, 'weather')
-    
     def air_quality(self, path: Path) -> List[str]:
         """List of files with air quality data.
 
@@ -208,7 +203,6 @@ class DLRUTDatasetManager(DLRDatasetManager):
             List[str]: The files with air quality data
         """
         return self._dataset(path, 'air_quality')
-    
     def road_condition(self, path: Path) -> List[str]:
         """List of files with road condition information.
 
@@ -219,7 +213,8 @@ class DLRUTDatasetManager(DLRDatasetManager):
             List[str]: The files with road condition data
         """
         return self._dataset(path, 'road_condition')
-    
+
+
 class ObjectClass(IntEnum):
     """
     The supported object classes
@@ -335,8 +330,9 @@ class DLRUTTrajectoryDataset(TrajectoryDataset):
         """
         return self.get_by_object_class([ObjectClass.pedestrian, ObjectClass.bicycle])
 
+
 class DLRUTTrafficLightDataset(TrafficLightDataset):
-    
+
     def signal(self, signal_id: int):
         """
         Filter the dataset by a signal id.
@@ -363,7 +359,6 @@ class DLRUTTrafficLightDataset(TrafficLightDataset):
 
 
 def download():
-    
     from tasi.logging import init_logger
 
     init_logger()
