@@ -98,7 +98,6 @@ class BoundingboxTiles(Tiles):
 
     def get_tile(self, x1, y1, x2, y2):
         tile = self._get_cache().fetch(self._request_string(x1, y1, x2, y2))
-
         if tile is None:
             return None
         try:
