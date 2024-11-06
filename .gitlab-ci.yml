@@ -127,23 +127,6 @@ pages:
         - job: doc
           artifacts: true
 
-pypi:
-    stage: deploy
-
-    image: ${REGISTRY}/python:3.12
-
-    script:
-        - poetry config http-basic.pypi __token__ ${PYPI_TOKEN}
-        - poetry publish
-
-    only:
-        - tags
-
-    needs:
-        - job: wheel
-          artifacts: true
-        - job: test
-
 docker:
     <<: *kaniko_base
 
