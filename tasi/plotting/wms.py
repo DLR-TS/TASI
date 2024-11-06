@@ -10,7 +10,7 @@ from tilemapbase.tiles import Tiles
 class BoundingboxTiles(Tiles):
     """
     A base class to provide tiles from an URL given a region as a boundingbox
-    """ 
+    """
 
     DEFAULT_PARAMS = dict(
         width=512,
@@ -24,16 +24,14 @@ class BoundingboxTiles(Tiles):
     )
     """Dict: The default parameter to query a WMS server (GET parameters)"""
 
-
     WMS = None
     """str: The WMS URL to query"""
 
-    SOURCE_NAME = None 
+    SOURCE_NAME = None
     """str: The source name"""
 
     ATTRIBUTION = ""
     """str: Attribution to the WMS layer"""
-
 
     def __init__(self, width: float = None, height: float = None, *args, **kwargs):
 
@@ -90,13 +88,13 @@ class BoundingboxTiles(Tiles):
 
     def get_tile(self, x1, y1, x2, y2):
         tile = self._get_cache().fetch(self._request_string(x1, y1, x2, y2))
-        
+
         if tile is None:
             return None
         try:
             fp = _io.BytesIO(tile)
             return _Image.open(fp)
-        except:
+        except BaseException:
             raise RuntimeError("Failed to decode data for {} - @ {} extent".format(self.name, [x1, y1, x2, y2]))
 
 
@@ -107,10 +105,10 @@ class LowerSaxonyOrthophotoTile(BoundingboxTiles):
 
     DEFAULT_PARAMS = dict(
 
-        width=512, 
+        width=512,
         height=512, service="WMS", crs="EPSG:25832", format="image/png", request="GetMap", layers="ni_dop20", styles="", version="1.3.0"
     )
 
-    SOURCE_NAME="LGLN"
+    SOURCE_NAME = "LGLN"
 
-    ATTRIBUTION = "(C) GeoBasis-DE/LGLN 2024 CC-BY/4.0"
+    ATTRIBUTION = "(C) GeoBasis-DE/LGLN 2024 CC-BY 4.0"

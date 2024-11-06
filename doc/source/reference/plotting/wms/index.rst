@@ -1,4 +1,4 @@
-.. _api.plotting.wms
+.. _api.plotting.wms:
 
 WMS Interface
 ##############
@@ -10,9 +10,8 @@ This package contains other package, classes and tools around traffic data visua
 
 The available classes to access WMS server for plotting layers using `matplotlib` and `tilemapbase <https://github.com/MatthewDaws/TileMapBase>`_
 
-.. autosummary::
-   :recursive:
-   :toctree: api/
-
-   wms.LowerSaxonyOrthophotoTile
-   plot.BoundingboxPlotter
+.. toctree::
+   :maxdepth: 1
+   
+   LowerSaxonyOrthophotoTile
+   BoundingboxPlotter
