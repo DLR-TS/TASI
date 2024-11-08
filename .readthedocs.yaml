@@ -7,8 +7,8 @@ build:
   jobs:
     post_create_environment:
       - python -m pip install poetry
-      - python -c 'import tilemapbase; tilemapbase.init(create=True)'
-      
+      - python -c "import tilemapbase; tilemapbase.init(create=True)"
+
     post_install:
       # Install dependencies with 'docs' dependency group
       # https://python-poetry.org/docs/managing-dependencies/#dependency-groups
