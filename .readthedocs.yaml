@@ -7,12 +7,12 @@ build:
   jobs:
     post_create_environment:
       - python -m pip install poetry
-      - python -c 'import tilemapbase; tilemapbase.init(create=True)'
-      
+
     post_install:
       # Install dependencies with 'docs' dependency group
       # https://python-poetry.org/docs/managing-dependencies/#dependency-groups
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry install --with docs
+      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry run python -c "import tilemapbase; tilemapbase.init(create=True)"
 
 sphinx:
   configuration: doc/source/conf.py
