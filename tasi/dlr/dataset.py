@@ -226,14 +226,12 @@ class ObjectClass(IntEnum):
     """
     The supported object classes
     """
-    unknown = 0
-    background = 1
-    pedestrian = 2
-    bicycle = 3
-    narrow_vehicle = 4
-    car = 5
-    van = 6
-    truck = 7
+    pedestrian = 0
+    bicycle = 1
+    motorbike = 2
+    car = 3
+    van = 4
+    truck = 5
 
 
 class DLRUTTrajectoryDataset(TrajectoryDataset):
@@ -259,7 +257,7 @@ class DLRUTTrajectoryDataset(TrajectoryDataset):
         return self.get_by_object_class(ObjectClass.bicycle)
 
     @property
-    def narrow_vehicle(self):
+    def motorbikes(self):
         """
         Return the motorbikes of the dataset.
 
@@ -297,26 +295,6 @@ class DLRUTTrajectoryDataset(TrajectoryDataset):
             DLRUTTrajectoryDataset: Dataset of all trucks.
         """
         return self.get_by_object_class(ObjectClass.truck)
-
-    @property
-    def unknown(self):
-        """
-        Return the unknown objects of the dataset.
-
-        Returns:
-            DLRUTTrajectoryDataset: Dataset of all unknown objects.
-        """
-        return self.get_by_object_class(ObjectClass.unknown)
-
-    @property
-    def background(self):
-        """
-        Return the background objects of the dataset.
-
-        Returns:
-            DLRUTTrajectoryDataset: Dataset of all background objects.
-        """
-        return self.get_by_object_class(ObjectClass.background)
 
     @property
     def mru(self):
