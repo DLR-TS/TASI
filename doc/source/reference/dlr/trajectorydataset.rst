@@ -25,12 +25,10 @@ Filtering
     
     DLRUTTrajectoryDataset.pedestrians
     DLRUTTrajectoryDataset.bicycles
-    DLRUTTrajectoryDataset.narrow_vehicle
+    DLRUTTrajectoryDataset.motorbikes
     DLRUTTrajectoryDataset.cars
     DLRUTTrajectoryDataset.vans
     DLRUTTrajectoryDataset.trucks
-    DLRUTTrajectoryDataset.unknown
-    DLRUTTrajectoryDataset.background
     DLRUTTrajectoryDataset.mru
     DLRUTTrajectoryDataset.vru
 
