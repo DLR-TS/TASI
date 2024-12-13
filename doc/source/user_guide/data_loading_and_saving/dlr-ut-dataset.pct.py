@@ -27,13 +27,13 @@ folders
 #%% [markdown]
 # ## Load trajectory data
 #
-# We can now utilize the `tasi.dlr.dataset.DLRUTTrajectoryDataset` class to load
+# We can now utilize the `tasi.dlr.dataset.DLRTrajectoryDataset` class to load
 # the trajectory data from the directory. For demonstration purpose, let's load
 # the first batch of the dataset.
 #%% 
-from tasi.dlr import DLRUTTrajectoryDataset
+from tasi.dlr import DLRTrajectoryDataset
 
-ds = DLRUTTrajectoryDataset.from_csv(dataset.trajectory("/tmp")[0])
+ds = DLRTrajectoryDataset.from_csv(dataset.trajectory("/tmp")[0])
 ds
 #%% [markdown]
 # Note that the `Dataset` is represented as a `pandas.DataFrame` since it
@@ -46,7 +46,7 @@ ds
 # ## Load traffic light data
 #
 # The DLR UT dataset also contains information of the traffic lights. We utilize
-# the `tasi.dlr.dataset.DLRUTTrajectoryDataset` class to load the information.
+# the `tasi.dlr.dataset.DLRTrajectoryDataset` class to load the information.
 # For demonstration purpose, let's load the first batch of the dataset.
 #%%
 from tasi.dlr import DLRUTTrafficLightDataset

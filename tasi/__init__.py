@@ -1,7 +1,7 @@
 from . import _version
-from .dataset import Dataset, TrajectoryDataset, TrafficLightDataset, AirQualityDataset, RoadConditionDataset, WeatherDataset
+from .dataset import *
 
-__version__ = _version.get_versions()['version']
+__version__ = _version.get_versions()["version"]
 
 from .logging import init_logger
 

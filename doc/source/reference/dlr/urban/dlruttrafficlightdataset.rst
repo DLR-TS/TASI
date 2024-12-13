@@ -1,4 +1,4 @@
-.. _api.dlr.trafficlightdataset
+.. _api.dlr.dlruttrafficlightdataset:
 
 DLRUTTrafficLightDataset
 ========================
@@ -25,4 +25,4 @@ Filtering
    DLRUTTrafficLightDataset.signal
    DLRUTTrafficLightDataset.signal_state
 
-All ``pandas`` ``DataFrame`` and `<api.dataset>` methods are also available.
+All ``pandas`` ``DataFrame`` methods are also available.

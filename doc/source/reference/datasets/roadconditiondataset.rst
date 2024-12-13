@@ -1,4 +1,4 @@
-.. _api.roadconditiondataset
+.. _api.datasets.roadconditiondataset:
 
 RoadConditionDataset
 ====================
@@ -16,4 +16,4 @@ Constructor
 
    RoadConditionDataset
 
-All ``pandas`` ``DataFrame`` and `<api.dataset>` methods are also available.
+All ``pandas`` ``DataFrame`` methods are also available.

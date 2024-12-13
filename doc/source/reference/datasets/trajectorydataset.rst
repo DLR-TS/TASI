@@ -1,4 +1,4 @@
-.. _api.trajectorydataset
+.. _api.datasets.trajectorydataset:
 
 TrajectoryDataset
 ========================
@@ -42,4 +42,4 @@ Filtering
    TrajectoryDataset.most_likely_class
    TrajectoryDataset.get_by_object_class
 
-All ``pandas`` ``DataFrame`` and `<api.dataset>` methods are also available.
+All ``pandas`` ``DataFrame`` methods are also available.

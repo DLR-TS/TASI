@@ -1,19 +1,21 @@
-"""
-Module to setup printing logging messages in a multiprocessing environment
-"""
-
 import logging
 import sys
 from logging.handlers import RotatingFileHandler
 
 import coloredlogs
 
-MSG_TEMPLATE = "[%(asctime)s | %(filename)s:%(funcName)s:%(lineno)d] > %(levelname)s:  %(message)s"
+MSG_TEMPLATE = (
+    "[%(asctime)s | %(filename)s:%(funcName)s:%(lineno)d] > %(levelname)s:  %(message)s"
+)
 
 LOGGER = "tasi"
 
 
-def init_logger(console_level: int = logging.INFO, file_level: int = logging.DEBUG, filename: str = None):
+def init_logger(
+    console_level: int = logging.INFO,
+    file_level: int = logging.DEBUG,
+    filename: str = None,
+):
 
     # get the current root logger
     logger = logging.getLogger()

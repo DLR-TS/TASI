@@ -1,4 +1,4 @@
-.. _api.dlr.dlrutversion
+.. _api.dlr.dlrutversion:
 
 DLRUTVersion
 ========================
