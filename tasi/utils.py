@@ -4,7 +4,7 @@ import pandas as pd
 from copy import copy
 
 
-def to_pandas_multiindex(values: List[str], separator='_') -> pd.MultiIndex:
+def to_pandas_multiindex(values: List[str], separator="_") -> pd.MultiIndex:
     """
     Convert a list of nested names to a `pandas.MultiIndex`.
 
@@ -47,7 +47,7 @@ def to_pandas_multiindex(values: List[str], separator='_') -> pd.MultiIndex:
 
         # append the missing names
         if missing_names > 0:
-            values.extend([''] * missing_names)
+            values.extend([""] * missing_names)
 
         names.append(values)
 

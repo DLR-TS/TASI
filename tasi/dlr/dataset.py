@@ -362,8 +362,21 @@ class DLRUTDatasetManager(DLRDatasetManager):
         if not isinstance(path, Path):
             path = Path(path)
 
-        path = path.joinpath(self.name).joinpath(variant)
+        # join dataset path and name
+        path = path.joinpath(self.name)
 
+        # add type of data
+        if self.version not in [
+            DLRUTVersion.v1_0_0.value,
+            DLRUTVersion.v1_0_1.value,
+            DLRUTVersion.v1_1_0.value,
+        ]:
+            path = path.joinpath(self.DATA_TYPES[variant])
+
+        # add variant of data
+        path = path.joinpath(variant)
+
+        # return file pathes of variant
         return [os.path.join(path, p) for p in sorted(os.listdir(path))]
 
     def trajectory(self, path: Path) -> List[str]:

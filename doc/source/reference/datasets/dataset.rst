@@ -1,4 +1,4 @@
-.. _api.dataset
+.. _api.datasets.dataset:
 
 Dataset
 ========

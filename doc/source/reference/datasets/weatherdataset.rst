@@ -1,4 +1,4 @@
-.. _api.weatherdataset
+.. _api.datasets.weatherdataset:
 
 WeatherDataset
 ===============
@@ -16,4 +16,4 @@ Constructor
 
    WeatherDataset
 
-All ``pandas`` ``DataFrame`` and `<api.dataset>` methods are also available.
+All ``pandas`` ``DataFrame`` methods are also available.
