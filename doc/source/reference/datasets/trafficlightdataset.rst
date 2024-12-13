@@ -1,11 +1,11 @@
-.. _api.airqualitydataset
+.. _api.datasets.trafficlightdataset:
 
-AirQualityDataset
+TrafficLightDataset
 ========================
 
 .. currentmodule:: tasi 
 
-A ``AirQualityDataset`` specialized for air quality data.
+A ``Dataset`` specialized for traffic light data.
 
 
 Constructor
@@ -14,6 +14,6 @@ Constructor
 .. autosummary::
    :toctree: api/
 
-   AirQualityDataset
+   TrafficLightDataset
 
 All ``pandas`` ``DataFrame`` methods are also available.

@@ -1,11 +1,11 @@
-.. _api.dlr.trajectorydataset
+.. _api.dlr.trajectorydataset:
 
-DLRUTTrajectoryDataset
+DLRTrajectoryDataset
 ========================
 
 .. currentmodule:: tasi.dlr
 
-A ``TrajectoryDataset`` specialized for trajectory data for the DLR-UT dataset.
+A ``DLRTrajectoryDataset`` specialized for trajectory data for the DLR datasets.
 
 
 Constructor
@@ -14,7 +14,7 @@ Constructor
 .. autosummary::
    :toctree: api/
 
-   DLRUTTrajectoryDataset
+   DLRTrajectoryDataset
 
 
 Filtering
@@ -23,13 +23,13 @@ Filtering
 .. autosummary::
    :toctree: api/
     
-    DLRUTTrajectoryDataset.pedestrians
-    DLRUTTrajectoryDataset.bicycles
-    DLRUTTrajectoryDataset.motorbikes
-    DLRUTTrajectoryDataset.cars
-    DLRUTTrajectoryDataset.vans
-    DLRUTTrajectoryDataset.trucks
-    DLRUTTrajectoryDataset.mru
-    DLRUTTrajectoryDataset.vru
+    DLRTrajectoryDataset.pedestrians
+    DLRTrajectoryDataset.bicycles
+    DLRTrajectoryDataset.motorbikes
+    DLRTrajectoryDataset.cars
+    DLRTrajectoryDataset.vans
+    DLRTrajectoryDataset.trucks
+    DLRTrajectoryDataset.mru
+    DLRTrajectoryDataset.vru
 
-All ``pandas`` ``DataFrame`` and `<api.dataset>` methods are also available.
+All ``pandas`` ``DataFrame`` methods are also available.

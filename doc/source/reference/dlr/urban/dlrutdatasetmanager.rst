@@ -1,4 +1,4 @@
-.. _api.dlr.dlrutdatasetmanager
+.. _api.dlr.dlrutdatasetmanager:
 
 DLRUTDatasetManager
 ========================
@@ -25,8 +25,8 @@ The following methods yield the files to the different data variants within the 
 .. autosummary::
    :toctree: api/
 
-    DLRUTDatasetManager.trajectory
-    DLRUTDatasetManager.traffic_lights
-    DLRUTDatasetManager.weather
-    DLRUTDatasetManager.air_quality
-    DLRUTDatasetManager.road_condition
+   DLRUTDatasetManager.trajectory
+   DLRUTDatasetManager.traffic_lights
+   DLRUTDatasetManager.weather
+   DLRUTDatasetManager.air_quality
+   DLRUTDatasetManager.road_condition

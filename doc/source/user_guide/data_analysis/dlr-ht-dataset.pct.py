@@ -1,16 +1,16 @@
 #%% [markdown]
-# # Using the DLRUTDataset
+# # Using the DLRHTDataset
 #
 # This example shall give an overview of the methods and attributes that are
-# available in the `DLRUTDataset` class.
+# available in the `DLRHTDataset` class.
 #
 # ## Load trajectory data
 # At first, we need to load the trajectory data of the dataset. 
 # %%
-from tasi.dlr.dataset import DLRUTDatasetManager, DLRUTVersion
+from tasi.dlr.dataset import DLRHTDatasetManager, DLRHTVersion
 from tasi.dlr import DLRTrajectoryDataset
 
-dataset = DLRUTDatasetManager(DLRUTVersion.v1_1_0)
+dataset = DLRHTDatasetManager(DLRHTVersion.v1_0_0)
 dataset.load("/tmp")
 
 ds = DLRTrajectoryDataset.from_csv(dataset.trajectory("/tmp")[50])

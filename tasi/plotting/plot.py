@@ -1,7 +1,7 @@
-
 from typing import ClassVar, Tuple
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
+from matplotlib.colors import ListedColormap
 import numpy as np
 from tilemapbase.mapping import Plotter
 
@@ -14,7 +14,9 @@ class BoundingboxPlotter(Plotter):
     A specialization of the `tilemapbase.Plotter` to show tiles given a region as a boundingbox in UTM coordinates.
     """
 
-    def __init__(self, extent: np.ndarray, tile_provider: BoundingboxTiles, padding: int = 0):
+    def __init__(
+        self, extent: np.ndarray, tile_provider: BoundingboxTiles, padding: int = 0
+    ):
         """
         Create a plotter for the given `extend` and using the provided `tile_provider`
 
@@ -30,8 +32,15 @@ class BoundingboxPlotter(Plotter):
 
         self._padding = padding
 
-    
-    def plot(self, ax: plt.Axes, center: Tuple[float, float] = None, zoom: float = 1, show_attribution: bool = True, attribution_kwargs=None, **kwargs):
+    def plot(
+        self,
+        ax: plt.Axes,
+        center: Tuple[float, float] = None,
+        zoom: float = 1,
+        show_attribution: bool = True,
+        attribution_kwargs=None,
+        **kwargs
+    ):
         """
         Draw the tile for the center location given by ``center`` within the current extend and and zoom into the tile according to `zoom`.
 
@@ -47,10 +56,12 @@ class BoundingboxPlotter(Plotter):
         """
 
         if zoom == 0 or zoom > 1:
-            raise ValueError('The zoom value needs to be within (0,1).')
+            raise ValueError("The zoom value needs to be within (0,1).")
 
         # get the tile for the current extend
-        tile = self._tile_provider.get_tile(self.xtilemin, self.ytilemin, self.xtilemax, self.ytilemax)
+        tile = self._tile_provider.get_tile(
+            self.xtilemin, self.ytilemin, self.xtilemax, self.ytilemax
+        )
 
         # get the size of the extend
         dx = self.xtilemax - self.xtilemin
@@ -60,8 +71,13 @@ class BoundingboxPlotter(Plotter):
         ax.imshow(
             tile,
             interpolation="lanczos",
-            extent=[int(self.xtilemin), int(self.xtilemax), int(self.ytilemin), int(self.ytilemax)],
-            **kwargs
+            extent=[
+                int(self.xtilemin),
+                int(self.xtilemax),
+                int(self.ytilemin),
+                int(self.ytilemax),
+            ],
+            **kwargs,
         )
         if center is None:
             center = [self.xtilemin + (dx / 2), self.ytilemin + (dy / 2)]
@@ -69,27 +85,26 @@ class BoundingboxPlotter(Plotter):
         # set the limit of the axes according to the given extend and zoom value
         ax.set(
             xlim=[center[0] - (dx / 2) * zoom, center[0] + (dx / 2) * zoom],
-            ylim=[center[1] - (dy / 2) * zoom, center[1] + (dy / 2) * zoom]
+            ylim=[center[1] - (dy / 2) * zoom, center[1] + (dy / 2) * zoom],
         )
 
         if show_attribution:
 
             default_config = {
-                'fontsize': 5,
-                'transform': ax.transAxes,
-                's': self._tile_provider.ATTRIBUTION
+                "fontsize": 5,
+                "transform": ax.transAxes,
+                "s": self._tile_provider.ATTRIBUTION,
             }
 
-            attribution_kwargs = attribution_kwargs if attribution_kwargs is not None else {}
+            attribution_kwargs = (
+                attribution_kwargs if attribution_kwargs is not None else {}
+            )
 
             if dx > dy:
 
-                default_config.update({
-                    'x': 1,
-                    'y': 1.01,
-                    'ha': 'right',
-                    'va': 'bottom'
-                })
+                default_config.update(
+                    {"x": 1, "y": 1.01, "ha": "right", "va": "bottom"}
+                )
 
                 default_config.update(attribution_kwargs)
 
@@ -97,18 +112,14 @@ class BoundingboxPlotter(Plotter):
 
             else:
 
-                default_config.update({
-                    'x': 1.02,
-                    'y': 0.01,
-                    'rotation': 90,
-                    'ha': 'left',
-                    'va': 'bottom'
-                })
+                default_config.update(
+                    {"x": 1.02, "y": 0.01, "rotation": 90, "ha": "left", "va": "bottom"}
+                )
 
                 default_config.update(attribution_kwargs)
 
                 ax.text(**default_config)
-                
+
     @property
     def extent(self):
         """
@@ -160,22 +171,36 @@ class BoundingboxPlotter(Plotter):
         return int(np.max(self._extent[:, 1])) + self._padding
 
 
-
-class TrajectoryPlotter():
+class TrajectoryPlotter:
     """
     Plot trajectories using ``matplotlib``
     """
 
-    def __init__(self):
-        pass
+    OBJECT_CLASS_COLORS = None
 
-    def plot(self, dataset: TrajectoryDataset, color='blue', ax: Axes = None, trajectory_kwargs=None, **kwargs):
+    def __init__(self, color_palette: str = "tab10"):
+
+        self.palette = plt.cm.get_cmap(color_palette)
+
+        if not isinstance(self.palette, ListedColormap):
+            raise TypeError(
+                "Argument 'color_palette' is not of type 'matplotlib.colors.ListedColormap'"
+            )
+
+    def plot(
+        self,
+        dataset: TrajectoryDataset,
+        color: str = None,
+        ax: Axes = None,
+        trajectory_kwargs=None,
+        **kwargs
+    ):
         """
         Plot trajectories using `matplotlib`
 
         Args:
             dataset (TrajectoryDataset): The dataset of trajectories to visualize.
-            color (str, optional): The color of the trajectories. Defaults to 'blue'.
+            color (str, optional): The color of the trajectories. Defaults to None.
             ax (Axes, optional): The matplotlib axes. Defaults to None.
             trajectory_kwargs (Dict, optional): A mapping of traffic participant id to trajectory-specific plotting attributes. Defaults to None.
         """
@@ -187,7 +212,13 @@ class TrajectoryPlotter():
         # get the classes for each trajectory
         tj_classes = dataset.most_likely_class()
 
-        for tj_id in dataset.ids:
+        # get mapping of classes to colors
+        if self.OBJECT_CLASS_COLORS is None:
+            object_class_colors = {c: i for i, c in enumerate(tj_classes.unique())}
+        else:
+            object_class_colors = self.OBJECT_CLASS_COLORS
+
+        for tj_class, tj_id in zip(tj_classes, dataset.ids):
 
             # get the trajectory of the id
             tj = dataset.trajectory(tj_id)
@@ -195,11 +226,33 @@ class TrajectoryPlotter():
             # get additional plotting arguments of this trajectory
             tj_kwargs = trajectory_kwargs.get(tj_id, {})
 
-            if 'c' not in tj_kwargs:
-                tj_kwargs['c'] = color
+            if "c" not in tj_kwargs and "color" not in tj_kwargs:
 
-            if 'label' not in tj_kwargs:
-                tj_kwargs['label'] = tj_classes.loc[tj_id]
+                # color for this trajectory is not defined
+                if color is None:
+
+                    # set default color
+                    tj_kwargs["color"] = self.palette(object_class_colors[tj_class])
+
+                else:
+
+                    # use color of all trajectories
+                    tj_kwargs["color"] = color
+
+            if "label" not in tj_kwargs:
+                tj_kwargs["label"] = tj_class
 
             # use the center position for plotting
-            ax.plot(tj.center.easting, tj.center.northing, **tj_kwargs, **kwargs)
+            ax.plot(
+                tj.center.easting,
+                tj.center.northing,
+                **tj_kwargs,
+                **kwargs,
+            )
+
+        if len(trajectory_kwargs) == 0:
+
+            # all object classes have the same color -> show legend of unique labels
+            handles, labels = plt.gca().get_legend_handles_labels()
+            by_label = dict(zip(labels, handles))
+            plt.legend(by_label.values(), by_label.keys())

@@ -1,4 +1,3 @@
-
 import io as _io
 import urllib
 from copy import copy
@@ -18,9 +17,9 @@ class BoundingboxTiles(Tiles):
         crs="EPSG:25833",
         format="image/png",
         request="GetMap",
-        layers='',
+        layers="",
         version="",
-        styles=""
+        styles="",
     )
     """Dict: The default parameter to query a WMS server (GET parameters)"""
 
@@ -40,19 +39,19 @@ class BoundingboxTiles(Tiles):
         for key, value in kwargs.items():
             self.params[key] = value
 
-        self._width = self.params.get('width', None) if width is None else width
-        self._height = self.params.get('height', None) if height is None else height
+        self._width = self.params.get("width", None) if width is None else width
+        self._height = self.params.get("height", None) if height is None else height
 
-        for attr in ['width', 'height']:
+        for attr in ["width", "height"]:
             if attr in self.params:
                 del self.params[attr]
 
         if self.width is None and self.height is None:
-            raise ValueError('Either specify a tile width or height')
+            raise ValueError("Either specify a tile width or height")
 
         # This is a mandatory argument to the `Tiles` class, though we don't use it.
-        kwargs['request_string'] = ""
-        kwargs['source_name'] = self.SOURCE_NAME
+        kwargs["request_string"] = ""
+        kwargs["source_name"] = self.SOURCE_NAME
 
         super().__init__(*args, **kwargs)
 
@@ -95,18 +94,28 @@ class BoundingboxTiles(Tiles):
             fp = _io.BytesIO(tile)
             return _Image.open(fp)
         except BaseException:
-            raise RuntimeError("Failed to decode data for {} - @ {} extent".format(self.name, [x1, y1, x2, y2]))
+            raise RuntimeError(
+                "Failed to decode data for {} - @ {} extent".format(
+                    self.name, [x1, y1, x2, y2]
+                )
+            )
 
 
 class LowerSaxonyOrthophotoTile(BoundingboxTiles):
-    """Tile that provides access to the WMS server of the LGLN.
-    """
-    WMS = 'https://opendata.lgln.niedersachsen.de/doorman/noauth/dop_wms?bbox={XMIN},{YMIN},{XMAX},{YMAX}'
+    """Tile that provides access to the WMS server of the LGLN."""
+
+    WMS = "https://opendata.lgln.niedersachsen.de/doorman/noauth/dop_wms?bbox={XMIN},{YMIN},{XMAX},{YMAX}"
 
     DEFAULT_PARAMS = dict(
-
         width=512,
-        height=512, service="WMS", crs="EPSG:25832", format="image/png", request="GetMap", layers="ni_dop20", styles="", version="1.3.0"
+        height=512,
+        service="WMS",
+        crs="EPSG:25832",
+        format="image/png",
+        request="GetMap",
+        layers="ni_dop20",
+        styles="",
+        version="1.3.0",
     )
 
     SOURCE_NAME = "LGLN"
