@@ -20,10 +20,13 @@ authors:
     email: clemens.schicktanz@dlr.de
     affiliation: Deutsches Zentrum für Luft- und Raumfahrt eV
     orcid: 'https://orcid.org/0000-0002-3234-2086'
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.14047020
+    description: Initial version on zenodo
 repository-code: 'https://github.com/DLR-TS/TASI'
 url: 'https://tasi.readthedocs.io/en/latest/'
 repository-artifact: 'https://pypi.org/project/tasi/'
-doi: 10.5281/zenodo.14047020
 abstract: >-
   TASI is a python library for traffic data analysis and
   situation interpretation.

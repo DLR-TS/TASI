@@ -1,4 +1,4 @@
-.. _api.plotting
+.. _api.plotting:
 
 Plotting
 ##############

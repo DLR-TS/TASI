@@ -1,4 +1,4 @@
-.. _api.dlr.dlrdatasetmanager
+.. _api.dlr.dlrdatasetmanager:
 
 DLRDatasetManager
 ========================

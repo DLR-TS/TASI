@@ -1,19 +1,3 @@
-"""
-Functions and classes to load and manage datasets.
-
-Classes
---------
-
-.. autosummary::
-    Dataset
-    TrajectoryDataset
-    WeatherDataset
-    TrafficLightDataset
-
-
-Module content
------------------
-"""
 from datetime import datetime
 from typing import Iterable, List, Union
 
@@ -24,12 +8,13 @@ from typing_extensions import Self
 from tasi.utils import to_pandas_multiindex
 
 __all__ = [
-    'Dataset',
-    'TrajectoryDataset',
-    'WeatherDataset',
-    'AirQualityDataset',
-    'RoadConditionDataset'
-    'TrafficLightDataset',
+    "Dataset",
+    "TrajectoryDataset",
+    "WeatherDataset",
+    "AirQualityDataset",
+    "RoadConditionDataset",
+    "TrafficLightDataset",
+    "TrafficVolumeDataset",
 ]
 
 ObjectClass = Union[str, int]
@@ -37,8 +22,8 @@ ObjectClass = Union[str, int]
 
 class Dataset(pd.DataFrame):
 
-    TIMESTAMP_COLUMN = 'timestamp'
-    ID_COLUMN = 'id'
+    TIMESTAMP_COLUMN = "timestamp"
+    ID_COLUMN = "id"
     INDEX_COLUMNS = [TIMESTAMP_COLUMN, ID_COLUMN]
 
     @property
@@ -78,7 +63,7 @@ class Dataset(pd.DataFrame):
     def att(
         self,
         timestamps: Union[pd.Timestamp, List[pd.Timestamp], pd.Index],
-        attribute: Union[List[str], pd.Index] = None
+        attribute: Union[List[str], pd.Index] = None,
     ) -> Union[Self, pd.Series]:
         """Select the rows at the specified times and optionally the specified attributes.
 
@@ -99,7 +84,9 @@ class Dataset(pd.DataFrame):
         else:
             return self.loc[pd.IndexSlice[timestamps, :], attribute]
 
-    def atid(self, ids: Union[int, List[int], pd.Index], attributes: pd.Index = None) -> Self:
+    def atid(
+        self, ids: Union[int, List[int], pd.Index], attributes: pd.Index = None
+    ) -> Self:
         """Select rows by the given id and optionally by attributes
 
         Args:
@@ -164,14 +151,14 @@ class Dataset(pd.DataFrame):
             indices (Union[List, str]): The name of the columns to use as index
 
         """
-        if indices and not hasattr(kwargs, 'index_col'):
-            kwargs['index_col'] = indices
+        if indices and not hasattr(kwargs, "index_col"):
+            kwargs["index_col"] = indices
 
         # read csv data
         df = pd.read_csv(file, **kwargs)
 
         # parse dates
-        df['timestamp'] = pd.to_datetime(df['timestamp'], format='ISO8601')
+        df["timestamp"] = pd.to_datetime(df["timestamp"], format="ISO8601")
 
         # try to set index
         try:
@@ -211,7 +198,9 @@ class TrajectoryDataset(Dataset):
 
         return self.atid(index)
 
-    def most_likely_class(self, by: str = 'trajectory', broadcast: bool = False) -> pd.Series:
+    def most_likely_class(
+        self, by: str = "trajectory", broadcast: bool = False
+    ) -> pd.Series:
         """
         Get the name of the most probable object class for each pose or trajectory of the dataset
 
@@ -230,11 +219,13 @@ class TrajectoryDataset(Dataset):
         Raises:
             ValueError: If the value of "by" is neither 'pose' nor 'trajectory'.
         """
-        if by == 'pose':
+        if by == "pose":
             return self.classifications.idxmax(axis=1)
 
-        elif by == 'trajectory':
-            trajectory_class = self.classifications.groupby('id').apply(lambda tj_classes: tj_classes.mean().idxmax())
+        elif by == "trajectory":
+            trajectory_class = self.classifications.groupby("id").apply(
+                lambda tj_classes: tj_classes.mean().idxmax()
+            )
 
             if broadcast:
                 return self.apply(lambda ser: trajectory_class[ser.name[1]], axis=1)
@@ -261,7 +252,9 @@ class TrajectoryDataset(Dataset):
         if not isinstance(object_class, list):
             object_class = [object_class]
 
-        return self[self.most_likely_class(by='trajectory', broadcast=True).isin(object_class)]
+        return self[
+            self.most_likely_class(by="trajectory", broadcast=True).isin(object_class)
+        ]
 
     @classmethod
     def from_csv(cls, *args, **kwargs) -> Self:
@@ -290,4 +283,38 @@ class RoadConditionDataset(Dataset):
 
 
 class TrafficLightDataset(Dataset):
+
     pass
+
+
+class TrafficVolumeDataset(Dataset):
+
+    @classmethod
+    def from_csv(cls, *args, **kwargs) -> Self:
+
+        df = super().from_csv(*args, **kwargs)
+
+        # transform data to Dataset format
+        df = df.stack().to_frame("volume")
+
+        # ensure index names are correnct
+        df.index.names = cls.INDEX_COLUMNS
+
+        return cls(df)
+
+    @property
+    def lanes(self) -> pd.Index:
+        """Returns the unique lanes of the dataset
+
+        Returns:
+            pd.Index: The unique lanes as Index
+        """
+        return self.ids
+
+    def lane(self, lane: str) -> pd.Series:
+        """Returns the traffic volume from a specific lane
+
+        Returns:
+            pd.Series: A pd.Series of traffic volume data
+        """
+        return self.atid(lane).volume
