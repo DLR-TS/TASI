@@ -3,6 +3,9 @@
 
 # documentation
 doc/build
+doc/source/user_guide/faq/index.rst
+doc/source/user_guide/data_visualization/index.rst
+*api
 
 # distribution
 dist

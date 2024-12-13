@@ -12,14 +12,9 @@ Basic models
 Traffic data is represented with different ``Dataset`` variants that are available via ``tasi.*`` or ``tasi.dataset.*``. 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    
-   dataset
-   trajectorydataset
-   airqualitydataset
-   roadconditiondataset
-   trafficlightdataset
-   weatherdataset
+   datasets/index
 
 
 DLR specific models 
@@ -42,10 +37,3 @@ Visualization
    :maxdepth: 2
 
    plotting/index
-
-
-.. Plotting
-.. =========
-
-.. To visualize static content, `matplotlib` is the go-to library in `Python`. The following overview shows all public classes available via the ``tasi.plotting.*``package.
-
