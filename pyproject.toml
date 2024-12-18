@@ -33,6 +33,7 @@ typing-extensions = "4.12.2"
 coloredlogs = "^15.0.1"
 matplotlib = "3.9.2"
 tilemapbase = "^0.4.7"
+tqdm = "^4.67.1"
 
 [tool.poetry.scripts]
 dlr-downloader = "tasi.dlr.dataset:download"
