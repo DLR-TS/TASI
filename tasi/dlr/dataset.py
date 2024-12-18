@@ -1,12 +1,13 @@
 import logging
 import os
 import tempfile
-from typing import List
 import zipfile
 from enum import Enum, IntEnum
 from pathlib import Path
+from typing import List
 
 import requests
+from tqdm import tqdm
 
 from tasi.dataset import TrafficLightDataset, TrajectoryDataset
 
@@ -73,9 +74,11 @@ class DLRDatasetManager:
 
         return f"{self.archivename}_{self.version.replace('.', '-')}"
 
-    def __init__(self, version: str, **kwargs):
+    def __init__(self, version: str, download_chunk_size: int = 1024,  **kwargs):
 
         self._version = version.value if isinstance(version, Enum) else version
+
+        self._chunk_size = download_chunk_size
 
         super().__init__(**kwargs)
 
@@ -102,17 +105,27 @@ class DLRDatasetManager:
 
             logging.info(f"Downloading dataset from {self.url}")
 
+            response = requests.get(self.url, stream=True)
+            total_size = int(response.headers.get('content-length', 0))
+        
             with tempfile.NamedTemporaryFile("w+b") as f:
 
-                # download the zip file
-                f.write(requests.get(self.url).content)
+                with tqdm(total=total_size, unit='B', unit_scale=True, desc=f'Downloading {self.name}') as pbar:
+                    for chunk in response.iter_content(chunk_size=self._chunk_size):
+                        if chunk:
+                            f.write(chunk)
+                            pbar.update(len(chunk))
 
+                logging.info("Extract files from archive")
                 # extract the zip file
                 with zipfile.ZipFile(f) as tempzip:
-                    tempzip.extractall(path.absolute())
+                    file_list = tempzip.namelist()
+                    total_files = len(file_list)
 
-            logging.info(f"Downloaded dataset to {export_path}")
-
+                    with tqdm(total=total_files, unit='file', desc='Extracting') as pbar:
+                        for file_info in tempzip.infolist():
+                            pbar.update(1)
+                            tempzip.extract(file_info, path=path.absolute())
         else:
             logging.info(f"Dataset already available at {export_path}")
 
