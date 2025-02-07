@@ -1,8 +1,8 @@
 #%% [markdown]
 # # DLR Urban Traffic Dataset (DLR UT)
 #
-# This example should give a short overview on how to load the [Urban Traffic
-# Dataset](https://zenodo.org/records/11396372) which is hosted on Zenodo. 
+# This example should give a short overview on how to load the [DLR Urban Traffic
+# Dataset](https://doi.org/10.5281/zenodo.11396371) which is hosted on Zenodo.
 #
 # ## Download dataset
 #
@@ -10,15 +10,15 @@
 # are available in `tasi` that we will utilize in the following. In particular,
 # since we want to download the DLR UT dataset, we use the. The class contains a
 # `tasi.dlr.dataset.DLRUTVersion` enumerator that may be used to
-# specify the version of the dataset to download. 
+# specify the version of the dataset to download.
 # %%
 import os
 from tasi.dlr.dataset import DLRUTDatasetManager, DLRUTVersion
 
-dataset = DLRUTDatasetManager(DLRUTVersion.v1_1_0)
+dataset = DLRUTDatasetManager(DLRUTVersion.v1_2_0)
 path = dataset.load(path='/tmp')
 path
-#%% [markdown] 
+#%% [markdown]
 # The dataset is now available in the `/tmp` directory. Let's have
 # a look into the dataset and list the available traffic information
 #%%
@@ -30,7 +30,7 @@ folders
 # We can now utilize the `tasi.dlr.dataset.DLRTrajectoryDataset` class to load
 # the trajectory data from the directory. For demonstration purpose, let's load
 # the first batch of the dataset.
-#%% 
+#%%
 from tasi.dlr import DLRTrajectoryDataset
 
 ds = DLRTrajectoryDataset.from_csv(dataset.trajectory("/tmp")[0])
@@ -38,11 +38,11 @@ ds
 #%% [markdown]
 # Note that the `Dataset` is represented as a `pandas.DataFrame` since it
 # inherits from it. The index of the `Dataset` contains the `timestamp` of a
-# traffic participant's state and its `id` as a unique identifier. 
+# traffic participant's state and its `id` as a unique identifier.
 #
 # The traffic participant's state include various information, including the
-# center position, the velocity, dimension and classification type.  
-#  
+# center position, the velocity, dimension and classification type.
+#
 # ## Load traffic light data
 #
 # The DLR UT dataset also contains information of the traffic lights. We utilize
@@ -58,7 +58,7 @@ traffic_lights
 #
 # The DLR Research Intersection is equipped with a weather station stat collects
 # various information. We can utilize the `tasi.dataset.WeatherDataset` to load
-# some of this information. 
+# some of this information.
 #%%
 from tasi.dataset import WeatherDataset
 
@@ -83,5 +83,24 @@ from tasi.dataset import RoadConditionDataset
 
 road_conditions = RoadConditionDataset.from_csv(dataset.road_condition("/tmp")[0])
 road_conditions
+# %% [markdown]
+# ## Load traffic volume data
+#
+# The DLR UT dataset contains meta information like traffic volume data that were extracted from the raw trajectory data.
+# %%
+from tasi.dataset import TrafficVolumeDataset
+
+traffic_volume = TrafficVolumeDataset.from_csv(dataset.traffic_volume("/tmp")[0])
+traffic_volume
+# %% [markdown]
+# ## Load OpenSCENARIO files
+#
+# The DLR UT dataset contains the trajectory data in OpenSCENARIO format.
+# %%
+from tasi.dataset import TrafficVolumeDataset
+
+openscenario_files = dataset.openscenario("/tmp")
+openscenario_files
+
 #%% [markdown]
 # That's it for now. We hope this page helps you get started 😎
