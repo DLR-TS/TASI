@@ -6,6 +6,7 @@ from enum import Enum, IntEnum
 from pathlib import Path
 from typing import List
 
+import numpy as np
 import requests
 from tqdm import tqdm
 
@@ -98,9 +99,7 @@ class DLRDatasetManager:
         # define final path
         export_path = path.joinpath(self.name)
 
-        logging.info(
-            "Checking if dataset already downloaded %s", export_path.absolute()
-        )
+        logging.info("Checking if dataset already downloaded %s", export_path.absolute())
         if not export_path.exists():
 
             logging.info(f"Downloading dataset from {self.url}")
@@ -176,6 +175,17 @@ class DLRDatasetManager:
         """
         return self._dataset(path, "road_condition")
 
+    def traffic_volume(self, path: Path) -> List[str]:
+        """List of files with traffic volume data.
+
+        Args:
+            path (Path): The path of the dataset
+
+        Returns:
+            List[str]: The files with traffic volume data
+        """
+        return self._dataset(path, "traffic_volume")
+
 
 class DLRUTVersion(Enum):
     """The available version of the DLR UT dataset"""
@@ -191,6 +201,10 @@ class DLRUTVersion(Enum):
     """The road condition information was moved into a new sub dataset from the weather data.
     """
 
+    v1_2_0 = "v1.2.0"
+    """New folder structure to split raw and metadata. Add new metadata "traffic_volume" and "openscenario". Improve classification of pedestrians and bicycles.
+    """
+
 
 class DLRUTDatasetManager(DLRDatasetManager):
     """A manager to load the DLR UT dataset from zenodo"""
@@ -199,15 +213,18 @@ class DLRUTDatasetManager(DLRDatasetManager):
         DLRUTVersion.v1_0_0.value: 11396372,
         DLRUTVersion.v1_0_1.value: 13907201,
         DLRUTVersion.v1_1_0.value: 14025010,
+        DLRUTVersion.v1_2_0.value: 14773161,
     }
     """Dict[str, int]: An internal mapping between version and the zenodo id
     """
 
-    ARCHIVE = {
-        DLRUTVersion.v1_0_0.value: "DLR-UT",
-        DLRUTVersion.v1_0_1.value: "DLR-Urban-Traffic-dataset",
-        DLRUTVersion.v1_1_0.value: "DLR-Urban-Traffic-dataset",
-    }
+    ARCHIVE = dict({
+        DLRUTVersion.v1_0_0.value: "DLR-UT"
+    },
+                   **{
+                       v: "DLR-Urban-Traffic-dataset"
+                       for v in list(VERSION.keys())[1:]
+                   })
 
     @classmethod
     def area(cls):
@@ -264,6 +281,17 @@ class DLRUTDatasetManager(DLRDatasetManager):
             List[str]: The files with air quality data
         """
         return self._dataset(path, "air_quality")
+
+    def openscenario(self, path: Path) -> List[str]:
+        """List of files with OpenSCENARIO data.
+
+        Args:
+            path (Path): The path of the dataset
+
+        Returns:
+            List[str]: The files with OpenSCENARIO data
+        """
+        return self._dataset(path, "openscenario")
 
 
 class ObjectClass(IntEnum):
@@ -349,9 +377,7 @@ class DLRTrajectoryDataset(TrajectoryDataset):
         Returns:
             DLRTrajectoryDataset: Dataset of all motorized objects.
         """
-        return self.get_by_object_class(
-            [ObjectClass.motorbike, ObjectClass.car, ObjectClass.van, ObjectClass.truck]
-        )
+        return self.get_by_object_class([ObjectClass.motorbike, ObjectClass.car, ObjectClass.van, ObjectClass.truck])
 
     @property
     def vru(self):
@@ -362,6 +388,21 @@ class DLRTrajectoryDataset(TrajectoryDataset):
             DLRTrajectoryDataset: Dataset of all motorized objects.
         """
         return self.get_by_object_class([ObjectClass.pedestrian, ObjectClass.bicycle])
+
+    @property
+    def roi(self):
+        """
+        Return the region of interest of the dataset.
+
+        Returns:
+            np.ndarray: The region of interest.
+        """
+        return np.array([
+            self.center.easting.min(),
+            self.center.northing.min(),
+            self.center.easting.max(),
+            self.center.northing.max(),
+        ]).reshape(-1, 2)
 
 
 class DLRUTTrafficLightDataset(TrafficLightDataset):
@@ -431,25 +472,10 @@ class DLRHTDatasetManager(DLRDatasetManager):
             path = Path(path)
 
         # join dataset path and name, type and variant
-        path = (
-            path.joinpath(self.name)
-            .joinpath(self.DATA_TYPES[variant])
-            .joinpath(variant)
-        )
+        path = (path.joinpath(self.name).joinpath(self.DATA_TYPES[variant]).joinpath(variant))
 
         # return file pathes of variant
         return [os.path.join(path, p) for p in sorted(os.listdir(path))]
-
-    def traffic_volume(self, path: Path) -> List[str]:
-        """List of files with air quality data.
-
-        Args:
-            path (Path): The path of the dataset
-
-        Returns:
-            List[str]: The files with air quality data
-        """
-        return self._dataset(path, "traffic_volume")
 
 
 def download():
