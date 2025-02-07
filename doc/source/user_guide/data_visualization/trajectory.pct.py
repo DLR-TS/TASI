@@ -2,8 +2,7 @@
 # # Visualization of trajectories
 # If we work with trajectory data, we often want to visualize them from a
 # so called `birds eye view`. The following example demonstrates how to achieve
-# this with `tasi` using the [Urban Traffic
-# Dataset](https://zenodo.org/records/11396372).
+# this with `tasi` using the [DLR Urban Traffic Dataset](https://doi.org/10.5281/zenodo.11396371).
 #
 # ## Load trajectories
 # At first, let's load trajectories from the DLR dataset.
@@ -11,8 +10,10 @@
 from tasi.dlr.dataset import DLRUTDatasetManager, DLRUTVersion
 from tasi.dlr import DLRTrajectoryDataset
 
-dataset = DLRUTDatasetManager(DLRUTVersion.v1_1_0)
-ds = DLRTrajectoryDataset.from_csv(dataset.trajectory("/tmp")[0])
+dataset = DLRUTDatasetManager(DLRUTVersion.v1_2_0)
+# select a trajectory file from the middle of the dataset to include data from all object classes
+ut = DLRTrajectoryDataset.from_csv(dataset.trajectory("/tmp")[48])
+ut
 # %% [markdown]
 # ## Plot trajectories
 # We now utilize the `TrajectoryPlotter` to visualize the trajectories of the
@@ -24,28 +25,31 @@ import matplotlib.pyplot as plt
 f, ax = plt.subplots()
 
 plotter = TrajectoryPlotter()
-plotter.plot(ds, ax=ax)
+plotter.plot(ut, ax=ax)
 # %% [markdown]
 # ### Change trajectory color
 # Note that the trajectories are colorized with the default color which we can
 # change so any arbitrary color, such as `lightgray`.
 # %%
 f, ax = plt.subplots()
-plotter.plot(ds, ax=ax, color="lightgray")
+plotter.plot(ut, ax=ax, color="lightgray")
 # %% [markdown]
 # ### Change color of a specific trajectory
 # You can also define the color of a specific trajectory.
 # %%
 f, ax = plt.subplots()
-plotter.plot(ds, ax=ax, color="black", trajectory_kwargs={ds.ids[-1]: {"color": "red"}})
+plotter.plot(ut, ax=ax, color="black", trajectory_kwargs={
+    ut.ids[-20]: {
+        "color": "red"
+    }
+})
 # %% [markdown]
 # ### Change trajectory opacity
 # or even change the opacity of each trajectory to quickly get an overview of
-# the traffic density. Let's change the opacity to 10% via the `alpha` argument
-# and set the color to `black`.
+# the traffic density. Let's change the opacity to 20% via the `alpha` argument.
 # %%
 f, ax = plt.subplots()
-plotter.plot(ds, ax=ax, color="black", alpha=0.1)
+plotter.plot(ut, ax=ax, alpha=0.2)
 # %% [markdown]
 # The plot already indicates the various traffic volumes on the different routes
 # at the intersection.
@@ -60,14 +64,12 @@ from tasi.plotting import BoundingboxPlotter, LowerSaxonyOrthophotoTile
 f, ax = plt.subplots()
 
 # plot the orthophoto first
-roi = np.array([604675, 5792680, 604875, 5792870]).reshape(-1, 2)
-
-bbox_plotter = BoundingboxPlotter(roi, LowerSaxonyOrthophotoTile())
+bbox_plotter = BoundingboxPlotter(ut.roi, LowerSaxonyOrthophotoTile())
 bbox_plotter.plot(ax)
 
 # and the trajectories on top
 tj_plotter = TrajectoryPlotter()
-tj_plotter.plot(ds, ax=ax)
+tj_plotter.plot(ut, ax=ax)
 
 # hide the axis
 _ = ax.axis("off")
@@ -79,7 +81,7 @@ _ = ax.axis("off")
 f, ax = plt.subplots()
 
 bbox_plotter.plot(ax, alpha=0.5)
-tj_plotter.plot(ds, ax=ax, alpha=0.25)
+tj_plotter.plot(ut, ax=ax, alpha=0.25)
 
 _ = ax.axis("off")
 
@@ -96,28 +98,18 @@ from tasi.dlr.plotting import DLRTrajectoryPlotter
 # load dataset
 dataset = DLRHTDatasetManager(DLRHTVersion.v1_0_0)
 path = dataset.load(path="/tmp")
-ds = DLRTrajectoryDataset.from_csv(
-    dataset.trajectory("/tmp")[3]
-)  # use 3 as it contains objects from all object classes
+# use 3 as it contains objects from all object classes
+ht = DLRTrajectoryDataset.from_csv(dataset.trajectory("/tmp")[3])
 
 f, ax = plt.subplots()
 
 # plot the orthophoto first
-roi = np.array(
-    [
-        ds.center.easting.min(),
-        ds.center.northing.min(),
-        ds.center.easting.max(),
-        ds.center.northing.max(),
-    ]
-).reshape(-1, 2)
-
-bbox_plotter = BoundingboxPlotter(roi, LowerSaxonyOrthophotoTile())
+bbox_plotter = BoundingboxPlotter(ht.roi, LowerSaxonyOrthophotoTile())
 bbox_plotter.plot(ax)
 
 # and the trajectories on top
 tj_plotter = DLRTrajectoryPlotter()
-tj_plotter.plot(ds, ax=ax)
+tj_plotter.plot(ht, ax=ax)
 
 # hide the axis
 _ = ax.axis("off")
