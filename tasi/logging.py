@@ -19,6 +19,7 @@ def init_logger(
 
     # get the current root logger
     logger = logging.getLogger()
+    list(map(logger.removeHandler,  logger.handlers))
 
     # create a format for the logging. For file logging as well as for logging to console
     log_format = logging.Formatter(MSG_TEMPLATE.format(start="", end=""))
