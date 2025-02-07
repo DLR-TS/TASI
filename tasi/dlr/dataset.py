@@ -264,6 +264,10 @@ class DLRDatasetManager:
         """
         return self._dataset("openscenario", path)
 
+    v1_2_0 = "v1.2.0"
+    """New folder structure to split raw and metadata. Add new metadata "traffic_volume" and "openscenario". Improve classification of pedestrians and bicycles.
+    """
+
 
 class DLRUTDatasetManager(DLRDatasetManager):
     """A manager to load the DLR UT dataset from zenodo"""
@@ -556,6 +560,23 @@ class DLRTrajectoryDataset(TrajectoryDataset):
             .from_csv(file, indices, seperator="_", **kwargs)
             .rename(columns={"center": "position"})
         )
+
+    @property
+    def roi(self):
+        """
+        Return the region of interest of the dataset.
+
+        Returns:
+            np.ndarray: The region of interest.
+        """
+        return np.array(
+            [
+                self.center.easting.min(),
+                self.center.northing.min(),
+                self.center.easting.max(),
+                self.center.northing.max(),
+            ]
+        ).reshape(-1, 2)
 
 
 class DLRUTTrafficLightDataset(TrafficLightDataset):
