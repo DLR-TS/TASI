@@ -14,6 +14,7 @@ build:
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry install --with docs
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry run python -c "import tilemapbase; tilemapbase.init(create=True)"
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry run dlr-downloader --name urban --path /tmp --version v1.1.0
+      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry run dlr-downloader --name urban --path /tmp --version v1.2.0
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry run dlr-downloader --name highway --path /tmp --version v1.0.0
 
 sphinx:
