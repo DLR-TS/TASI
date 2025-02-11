@@ -10,7 +10,7 @@
 from tasi.dlr.dataset import DLRHTDatasetManager, DLRHTVersion
 from tasi.dlr import DLRTrajectoryDataset
 
-dataset = DLRHTDatasetManager(DLRHTVersion.v1_0_0)
+dataset = DLRHTDatasetManager(DLRHTVersion.latest)
 dataset.load("/tmp")
 
 ds = DLRTrajectoryDataset.from_csv(dataset.trajectory("/tmp")[50])
