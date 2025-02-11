@@ -2,7 +2,7 @@
 # # DLR Highway Traffic Dataset (DLR HT)
 #
 # This example should give a short overview on how to load the [DLR Highway Traffic
-# Dataset](https://zenodo.org/records/14012006) which is hosted on Zenodo.
+# Dataset](https://doi.org/10.5281/zenodo.14012005) which is hosted on Zenodo.
 #
 # ## Download dataset
 #
@@ -10,12 +10,12 @@
 # are available in `tasi` that we will utilize in the following. In particular,
 # since we want to download the DLR HT dataset, we use the. The class contains a
 # `tasi.dlr.dataset.DLRHTVersion` enumerator that may be used to
-# specify the version of the dataset to download.
+# specify the version of the dataset to download or to get the latest version.
 # %%
 import os
 from tasi.dlr.dataset import DLRHTDatasetManager, DLRHTVersion
 
-dataset = DLRHTDatasetManager(DLRHTVersion.v1_0_0)
+dataset = DLRHTDatasetManager(DLRHTVersion.latest)
 path = dataset.load(path="/tmp")
 path
 # %% [markdown]

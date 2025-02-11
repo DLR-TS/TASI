@@ -10,12 +10,12 @@
 # are available in `tasi` that we will utilize in the following. In particular,
 # since we want to download the DLR UT dataset, we use the. The class contains a
 # `tasi.dlr.dataset.DLRUTVersion` enumerator that may be used to
-# specify the version of the dataset to download.
+# specify the version of the dataset to download or to get the latest version.
 # %%
 import os
 from tasi.dlr.dataset import DLRUTDatasetManager, DLRUTVersion
 
-dataset = DLRUTDatasetManager(DLRUTVersion.v1_2_0)
+dataset = DLRUTDatasetManager(DLRUTVersion.latest)
 path = dataset.load(path='/tmp')
 path
 #%% [markdown]
@@ -101,6 +101,5 @@ from tasi.dataset import TrafficVolumeDataset
 
 openscenario_files = dataset.openscenario("/tmp")
 openscenario_files
-
 #%% [markdown]
 # That's it for now. We hope this page helps you get started 😎
