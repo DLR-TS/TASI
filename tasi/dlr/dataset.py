@@ -267,6 +267,9 @@ class DLRDatasetManager:
     v1_2_0 = "v1.2.0"
     """New folder structure to split raw and metadata. Add new metadata "traffic_volume" and "openscenario". Improve classification of pedestrians and bicycles.
     """
+    latest = "v1.2.0"
+    """The latest version of the dataset
+    """
 
 
 class DLRUTDatasetManager(DLRDatasetManager):
