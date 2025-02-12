@@ -366,6 +366,9 @@ class DLRUTDatasetManager(DLRDatasetManager):
         Returns:
             List[str]: The files found in the dataset for the specified dataset information
         """
+        if path is None:
+            path = self._path
+
         if not isinstance(path, Path):
             path = Path(path)
 
@@ -406,7 +409,7 @@ class DLRUTDatasetManager(DLRDatasetManager):
         Returns:
             List[str]: The files with traffic light data
         """
-        return self._dataset(path, "traffic_lights")
+        return self._dataset("traffic_lights", path)
 
     def weather(self, path: Path) -> List[str]:
         """List of files with weather data.
@@ -428,7 +431,7 @@ class DLRUTDatasetManager(DLRDatasetManager):
         Returns:
             List[str]: The files with air quality data
         """
-        return self._dataset(path, "air_quality")
+        return self._dataset("air_quality", path)
 
     def road_condition(self, path: Path) -> List[str]:
         """List of files with road condition information.
