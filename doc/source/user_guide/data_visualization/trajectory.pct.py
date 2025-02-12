@@ -12,7 +12,7 @@ from tasi.dlr import DLRTrajectoryDataset
 
 dataset = DLRUTDatasetManager(DLRUTVersion.latest)
 # select a trajectory file from the middle of the dataset to include data from all object classes
-ut = DLRTrajectoryDataset.from_csv(dataset.trajectory("/tmp")[48])
+ut = DLRTrajectoryDataset.from_csv(dataset.trajectory()[48])
 ut
 # %% [markdown]
 # ## Plot trajectories
@@ -97,9 +97,9 @@ from tasi.dlr.plotting import DLRTrajectoryPlotter
 
 # load dataset
 dataset = DLRHTDatasetManager(DLRHTVersion.latest)
-path = dataset.load(path="/tmp")
+path = dataset.load()
 # use 3 as it contains objects from all object classes
-ht = DLRTrajectoryDataset.from_csv(dataset.trajectory("/tmp")[3])
+ht = DLRTrajectoryDataset.from_csv(dataset.trajectory()[3])
 
 f, ax = plt.subplots()
 
