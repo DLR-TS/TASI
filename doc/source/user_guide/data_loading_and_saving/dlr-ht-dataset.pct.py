@@ -2,7 +2,7 @@
 # # DLR Highway Traffic Dataset (DLR HT)
 #
 # This example should give a short overview on how to load the [DLR Highway Traffic
-# Dataset](https://zenodo.org/records/14012006) which is hosted on Zenodo.
+# Dataset](https://doi.org/10.5281/zenodo.14012005) which is hosted on Zenodo.
 #
 # ## Download dataset
 #
@@ -10,13 +10,13 @@
 # are available in `tasi` that we will utilize in the following. In particular,
 # since we want to download the DLR HT dataset, we use the. The class contains a
 # `tasi.dlr.dataset.DLRHTVersion` enumerator that may be used to
-# specify the version of the dataset to download.
+# specify the version of the dataset to download or to get the latest version.
 # %%
 import os
 from tasi.dlr.dataset import DLRHTDatasetManager, DLRHTVersion
 
-dataset = DLRHTDatasetManager(DLRHTVersion.v1_0_0)
-path = dataset.load(path="/tmp")
+dataset = DLRHTDatasetManager(DLRHTVersion.latest)
+path = dataset.load()
 path
 # %% [markdown]
 # The dataset is now available in the `/tmp` directory. Let's have
@@ -38,7 +38,7 @@ meta_data
 # %%
 from tasi.dlr import DLRTrajectoryDataset
 
-ds = DLRTrajectoryDataset.from_csv(dataset.trajectory("/tmp")[0])
+ds = DLRTrajectoryDataset.from_csv(dataset.trajectory()[0])
 ds
 # %% [markdown]
 # Note that the `Dataset` is represented as a `pandas.DataFrame` since it
@@ -56,7 +56,7 @@ ds
 # %%
 from tasi.dataset import WeatherDataset
 
-weather = WeatherDataset.from_csv(dataset.weather("/tmp")[0])
+weather = WeatherDataset.from_csv(dataset.weather()[0])
 weather
 # %% [markdown]
 # ## Load road quality information
@@ -65,7 +65,7 @@ weather
 # %%
 from tasi.dataset import RoadConditionDataset
 
-road_conditions = RoadConditionDataset.from_csv(dataset.road_condition("/tmp")[0])
+road_conditions = RoadConditionDataset.from_csv(dataset.road_condition()[0])
 road_conditions
 # %% [markdown]
 # ## Load traffic volume data
@@ -74,7 +74,7 @@ road_conditions
 # %%
 from tasi.dataset import TrafficVolumeDataset
 
-traffic_volume = TrafficVolumeDataset.from_csv(dataset.traffic_volume("/tmp")[0])
+traffic_volume = TrafficVolumeDataset.from_csv(dataset.traffic_volume()[0])
 traffic_volume
 # %% [markdown]
 # That's it for now. We hope this page helps you get started 😎

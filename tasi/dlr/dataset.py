@@ -45,6 +45,7 @@ class DLRDatasetManager:
         "traffic_volume": "meta_data",
         "openscenario": "meta_data",
     }
+    VERSION_ENUM = None
 
     @property
     def archivename(self):
@@ -75,25 +76,34 @@ class DLRDatasetManager:
 
         return f"{self.archivename}_{self.version.replace('.', '-')}"
 
-    def __init__(self, version: str, download_chunk_size: int = 1024,  **kwargs):
+    def __init__(self, version: str, path: str = '/tmp', download_chunk_size: int = 1024, **kwargs):
+
+        if version == 'latest':
+            version = self.VERSION_ENUM.latest
 
         self._version = version.value if isinstance(version, Enum) else version
+
+        self._path = path
 
         self._chunk_size = download_chunk_size
 
         super().__init__(**kwargs)
 
-    def load(self, path: Path) -> str:
+    def load(self, path: Path = None) -> str:
         """
         Download a specified DLR dataset.
 
         Args:
-            path (Path): The destination path where the dataset will be saved.
+            path (Path, optional): The destination path where the dataset will be saved.
 
         Returns:
             str: The path of the exported dataset.
         """
 
+        if path is None:
+            path = self._path
+
+        # ensure format of path
         path = path if isinstance(path, Path) else Path(path)
 
         # define final path
@@ -106,7 +116,6 @@ class DLRDatasetManager:
 
             response = requests.get(self.url, stream=True)
             total_size = int(response.headers.get('content-length', 0))
-        
             with tempfile.NamedTemporaryFile("w+b") as f:
 
                 with tqdm(total=total_size, unit='B', unit_scale=True, desc=f'Downloading {self.name}') as pbar:
@@ -130,7 +139,7 @@ class DLRDatasetManager:
 
         return export_path
 
-    def _dataset(self, path: Path, variant: str) -> List[str]:
+    def _dataset(self, variant: str, path: Path = None) -> List[str]:
         """Searches for files in the dataset specified at ``path`` for dataset information ``variant``
 
         Args:
@@ -142,7 +151,7 @@ class DLRDatasetManager:
         """
         raise NotImplementedError("This method is implemented in child classes.")
 
-    def trajectory(self, path: Path) -> List[str]:
+    def trajectory(self, path: Path = None) -> List[str]:
         """List of files with trajectory data.
 
         Args:
@@ -151,9 +160,9 @@ class DLRDatasetManager:
         Returns:
             List[str]: The files with trajectory data
         """
-        return self._dataset(path, "trajectories")
+        return self._dataset("trajectories", path)
 
-    def weather(self, path: Path) -> List[str]:
+    def weather(self, path: Path = None) -> List[str]:
         """List of files with weather data.
 
         Args:
@@ -162,9 +171,9 @@ class DLRDatasetManager:
         Returns:
             List[str]: The files with weather data
         """
-        return self._dataset(path, "weather")
+        return self._dataset("weather", path)
 
-    def road_condition(self, path: Path) -> List[str]:
+    def road_condition(self, path: Path = None) -> List[str]:
         """List of files with road condition information.
 
         Args:
@@ -173,9 +182,9 @@ class DLRDatasetManager:
         Returns:
             List[str]: The files with road condition data
         """
-        return self._dataset(path, "road_condition")
+        return self._dataset("road_condition", path)
 
-    def traffic_volume(self, path: Path) -> List[str]:
+    def traffic_volume(self, path: Path = None) -> List[str]:
         """List of files with traffic volume data.
 
         Args:
@@ -184,7 +193,18 @@ class DLRDatasetManager:
         Returns:
             List[str]: The files with traffic volume data
         """
-        return self._dataset(path, "traffic_volume")
+        return self._dataset("traffic_volume", path)
+
+    def openscenario(self, path: Path = None) -> List[str]:
+        """List of files with OpenSCENARIO data.
+
+        Args:
+            path (Path): The path of the dataset
+
+        Returns:
+            List[str]: The files with OpenSCENARIO data
+        """
+        return self._dataset("openscenario", path)
 
 
 class DLRUTVersion(Enum):
@@ -196,24 +216,27 @@ class DLRUTVersion(Enum):
     v1_0_1 = "v1.0.1"
     """Contains only minor modifications in the documentation
     """
-
     v1_1_0 = "v1.1.0"
     """The road condition information was moved into a new sub dataset from the weather data.
     """
-
     v1_2_0 = "v1.2.0"
     """New folder structure to split raw and metadata. Add new metadata "traffic_volume" and "openscenario". Improve classification of pedestrians and bicycles.
+    """
+    latest = "v1.2.0"
+    """The latest version of the dataset
     """
 
 
 class DLRUTDatasetManager(DLRDatasetManager):
     """A manager to load the DLR UT dataset from zenodo"""
 
+    VERSION_ENUM = DLRUTVersion
     VERSION = {
         DLRUTVersion.v1_0_0.value: 11396372,
         DLRUTVersion.v1_0_1.value: 13907201,
         DLRUTVersion.v1_1_0.value: 14025010,
         DLRUTVersion.v1_2_0.value: 14773161,
+        "latest": 14773161,
     }
     """Dict[str, int]: An internal mapping between version and the zenodo id
     """
@@ -230,7 +253,7 @@ class DLRUTDatasetManager(DLRDatasetManager):
     def area(cls):
         return "urban"
 
-    def _dataset(self, path: Path, variant: str) -> List[str]:
+    def _dataset(self, variant: str, path: Path = None) -> List[str]:
         """Searches for files in the dataset specified at ``path`` for dataset information ``variant``
 
         Args:
@@ -240,6 +263,9 @@ class DLRUTDatasetManager(DLRDatasetManager):
         Returns:
             List[str]: The files found in the dataset for the specified dataset information
         """
+        if path is None:
+            path = self._path
+
         if not isinstance(path, Path):
             path = Path(path)
 
@@ -260,7 +286,7 @@ class DLRUTDatasetManager(DLRDatasetManager):
         # return file pathes of variant
         return [os.path.join(path, p) for p in sorted(os.listdir(path))]
 
-    def traffic_lights(self, path: Path) -> List[str]:
+    def traffic_lights(self, path: Path = None) -> List[str]:
         """List of files with traffic light data.
 
         Args:
@@ -269,9 +295,9 @@ class DLRUTDatasetManager(DLRDatasetManager):
         Returns:
             List[str]: The files with traffic light data
         """
-        return self._dataset(path, "traffic_lights")
+        return self._dataset("traffic_lights", path)
 
-    def air_quality(self, path: Path) -> List[str]:
+    def air_quality(self, path: Path = None) -> List[str]:
         """List of files with air quality data.
 
         Args:
@@ -280,18 +306,7 @@ class DLRUTDatasetManager(DLRDatasetManager):
         Returns:
             List[str]: The files with air quality data
         """
-        return self._dataset(path, "air_quality")
-
-    def openscenario(self, path: Path) -> List[str]:
-        """List of files with OpenSCENARIO data.
-
-        Args:
-            path (Path): The path of the dataset
-
-        Returns:
-            List[str]: The files with OpenSCENARIO data
-        """
-        return self._dataset(path, "openscenario")
+        return self._dataset("air_quality", path)
 
 
 class ObjectClass(IntEnum):
@@ -438,13 +453,22 @@ class DLRHTVersion(Enum):
     v1_0_0 = "v1.0.0"
     """The initial version of the dataset
     """
+    v1_1_0 = "v1.1.0"
+    """Add new metadata "openscenario" and improve object classification.
+    """
+    latest = "v1.1.0"
+    """The latest version of the dataset
+    """
 
 
 class DLRHTDatasetManager(DLRDatasetManager):
     """A manager to load the DLR HT dataset from zenodo"""
 
+    VERSION_ENUM = DLRHTVersion
     VERSION = {
         DLRHTVersion.v1_0_0.value: 14012006,
+        DLRHTVersion.v1_1_0.value: 14811064,
+        "latest": 14811064,
     }
     """Dict[str, int]: An internal mapping between version and the zenodo id
     """
@@ -458,7 +482,7 @@ class DLRHTDatasetManager(DLRDatasetManager):
         """The base name of the archive"""
         return "DLR-Highway-Traffic-dataset"
 
-    def _dataset(self, path: Path, variant: str) -> List[str]:
+    def _dataset(self, variant: str, path: Path = None) -> List[str]:
         """Searches for files in the dataset specified at ``path`` for dataset information ``variant``
 
         Args:
@@ -468,6 +492,9 @@ class DLRHTDatasetManager(DLRDatasetManager):
         Returns:
             List[str]: The files found in the dataset for the specified dataset information
         """
+        if path is None:
+            path = self._path
+
         if not isinstance(path, Path):
             path = Path(path)
 
@@ -501,7 +528,7 @@ def download():
 
     # ensure valid format of version
     version = arguments.version.replace("-", ".").replace("_", ".")
-    if not version.startswith("v"):
+    if not version.startswith("v") and version != "latest":
         version = "v" + version
 
     dataset = dataset_cls(version=version)
