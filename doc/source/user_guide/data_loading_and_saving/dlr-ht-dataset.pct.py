@@ -16,7 +16,7 @@ import os
 from tasi.dlr.dataset import DLRHTDatasetManager, DLRHTVersion
 
 dataset = DLRHTDatasetManager(DLRHTVersion.latest)
-path = dataset.load(path="/tmp")
+path = dataset.load()
 path
 # %% [markdown]
 # The dataset is now available in the `/tmp` directory. Let's have
@@ -38,7 +38,7 @@ meta_data
 # %%
 from tasi.dlr import DLRTrajectoryDataset
 
-ds = DLRTrajectoryDataset.from_csv(dataset.trajectory("/tmp")[0])
+ds = DLRTrajectoryDataset.from_csv(dataset.trajectory()[0])
 ds
 # %% [markdown]
 # Note that the `Dataset` is represented as a `pandas.DataFrame` since it
@@ -56,7 +56,7 @@ ds
 # %%
 from tasi.dataset import WeatherDataset
 
-weather = WeatherDataset.from_csv(dataset.weather("/tmp")[0])
+weather = WeatherDataset.from_csv(dataset.weather()[0])
 weather
 # %% [markdown]
 # ## Load road quality information
@@ -65,7 +65,7 @@ weather
 # %%
 from tasi.dataset import RoadConditionDataset
 
-road_conditions = RoadConditionDataset.from_csv(dataset.road_condition("/tmp")[0])
+road_conditions = RoadConditionDataset.from_csv(dataset.road_condition()[0])
 road_conditions
 # %% [markdown]
 # ## Load traffic volume data
@@ -74,7 +74,7 @@ road_conditions
 # %%
 from tasi.dataset import TrafficVolumeDataset
 
-traffic_volume = TrafficVolumeDataset.from_csv(dataset.traffic_volume("/tmp")[0])
+traffic_volume = TrafficVolumeDataset.from_csv(dataset.traffic_volume()[0])
 traffic_volume
 # %% [markdown]
 # That's it for now. We hope this page helps you get started 😎
