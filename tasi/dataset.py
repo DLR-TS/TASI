@@ -250,7 +250,7 @@ class TrajectoryDataset(Dataset):
         """
 
         if not isinstance(object_class, list):
-            object_class = [object_class]
+            object_class = [object_class.name]
 
         return self[
             self.most_likely_class(by="trajectory", broadcast=True).isin(object_class)

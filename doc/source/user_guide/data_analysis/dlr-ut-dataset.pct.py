@@ -7,8 +7,8 @@
 # ## Load trajectory data
 # At first, we need to load the trajectory data of the dataset.
 # %%
-from tasi.dlr.dataset import DLRUTDatasetManager, DLRUTVersion
 from tasi.dlr import DLRTrajectoryDataset
+from tasi.dlr.dataset import DLRUTDatasetManager, DLRUTVersion
 
 dataset = DLRUTDatasetManager(DLRUTVersion.latest)
 dataset.load()
@@ -86,3 +86,11 @@ ds.most_likely_class(by='trajectory')
 classification = ds.most_likely_class(by='trajectory')
 
 ds.trajectory(classification[classification == 'car'].index)
+#%% [markdown]
+# You can achieve the same result by directly calling 
+#%%
+ds.cars
+#%% [markdown]
+# This works similarly for all object classes.
+#%%
+ds.trucks
