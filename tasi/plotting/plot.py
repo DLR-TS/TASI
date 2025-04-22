@@ -120,7 +120,6 @@ class BoundingboxPlotter(Plotter):
                 default_config.update(attribution_kwargs)
 
                 ax.text(**default_config)
-
     @property
     def extent(self):
         """

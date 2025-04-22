@@ -6,6 +6,7 @@ from enum import Enum, IntEnum
 from pathlib import Path
 from typing import List, Union, Tuple
 
+import numpy as np
 import requests
 from tqdm import tqdm
 from tasi.base import PandasBase

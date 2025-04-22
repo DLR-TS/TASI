@@ -13,13 +13,22 @@ authors:
   - given-names: Lars
     family-names: Klitzke
     email: lars.klitzke@dlr.de
-    affiliation: Deutsches Zentrum für Luft- und Raumfahrt eV
+    affiliation: Deutsches Zentrum für Luft- und Raumfahrt e. V. (DLR)
     orcid: 'https://orcid.org/0000-0001-9362-707X'
   - given-names: Clemens
     family-names: Schicktanz
     email: clemens.schicktanz@dlr.de
-    affiliation: Deutsches Zentrum für Luft- und Raumfahrt eV
+    affiliation: Deutsches Zentrum für Luft- und Raumfahrt e. V. (DLR)
     orcid: 'https://orcid.org/0000-0002-3234-2086'
+  - given-names: Gimm
+    family-names: Kay
+    email: kay.gimm@dlr.de
+    affiliation: Deutsches Zentrum für Luft- und Raumfahrt e. V. (DLR)
+    orcid: 'https://orcid.org/0000-0002-5136-685X'
+  - given-names: Mosebach
+    family-names: Henning
+    email: henning.mosebach@dlr.de
+    affiliation: Deutsches Zentrum für Luft- und Raumfahrt e. V. (DLR)
 identifiers:
   - type: doi
     value: 10.5281/zenodo.14047020

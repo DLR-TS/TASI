@@ -15,7 +15,6 @@ Traffic data is represented with different :py:class:`Dataset` variants that are
 
 .. toctree::
    :maxdepth: 2
-
    datasets/index
 
 

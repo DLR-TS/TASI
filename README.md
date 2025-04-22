@@ -9,3 +9,36 @@ traffic situation analysis and interpretation applications.
 > **TASI** is backed by those wonderful libraries [`Numpy`](https://numpy.org/), [`Pandas`](https://pandas.pydata.org/),
 > and [`Numba`](http://numba.pydata.org/)
 
+## Getting started
+
+Install `tasi` from the PyPi registry.
+```bash
+pip install tasi
+```
+
+Download the latest DLR-UT version for demonstration purpose.
+```python
+from tasi.dlr import DLRUTDatasetManager, DLRUTVersion, 
+
+dataset = DLRUTDatasetManager(DLRUTVersion.latest)
+dataset.load()
+```
+
+and visualize the trajectories within the dataset using `matplotlib`.
+
+```python
+from tasi.dlr import DLRTrajectoryDataset
+from tasi.plotting import TrajectoryPlotter
+
+import matplotlib.pyplot as plt
+
+# load the first file of the dataset
+ds_ut = DLRTrajectoryDataset.from_csv(dataset.trajectory()[0])
+
+# plot the trajectories
+f, ax = plt.subplots()
+
+plotter = TrajectoryPlotter()
+plotter.plot(ut, ax=ax)
+```
+
