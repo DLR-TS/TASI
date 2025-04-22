@@ -9,14 +9,17 @@ stages:
     stage: deploy
 
     image:
-        name: ${REGISTRY}/ci/kaniko:latest
+        name: ${DLR_REGISTRY}/ci/kaniko-executor:debug
         entrypoint: [""]
         pull_policy: always
+
+    before_script:
+        - echo $DOCKER_AUTH_CONFIG > /kaniko/.docker/config.json
 
 .build_base: &build_base
     stage: build
 
-    image: ${REGISTRY}/python:3.12
+    image: ${DLR_REGISTRY}/python:v3.11.12
 
     before_script:
         - poetry install --with=build
@@ -35,7 +38,7 @@ stages:
 
     stage: test
 
-    image: ${REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}
+    image: ${DLR_REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}
 
     before_script:
         - apt-get update && apt-get install -y pandoc
@@ -55,7 +58,7 @@ image_base:
 
     script:
         - |
-            echo "FROM ${REGISTRY}/python:3.12
+            echo "FROM ${DLR_REGISTRY}/python:v3.11.12
             RUN mkdir /deps
             COPY dist/*.whl /deps/
             RUN pip install /deps/*.whl; rm -r /deps;
@@ -66,7 +69,7 @@ image_base:
             /kaniko/executor \
             --context dir://$CI_PROJECT_DIR \
             --dockerfile dockerfile \
-            --destination "${REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}"
+            --destination "${DLR_REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}"
 
     needs:
         - job: wheel
@@ -135,10 +138,10 @@ docker:
         # set tag of docker image based on current tag
         - |
             if [[ "$CI_COMMIT_REF_NAME" = "master"]] || [[ "$CI_COMMIT_REF_NAME" = "main" ]]; \
-            then DESTINATION="${REGISTRY_TS_URL}/scenimini/tasi:latest"; \
-            else DESTINATION="${REGISTRY_TS_URL}/scenimini/tasi:${CI_COMMIT_REF_NAME}"; \
+            then DESTINATION="${DLR_REGISTRY}/tasi:latest"; \
+            else DESTINATION="${DLR_REGISTRY}/tasi:${CI_COMMIT_REF_NAME}"; \
             fi
-        - echo "FROM ${REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}" > dockerfile
+        - echo "FROM ${DLR_REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}" > dockerfile
         - |
             /kaniko/executor \
             --context dir://$CI_PROJECT_DIR \

@@ -4,13 +4,22 @@ import tempfile
 import zipfile
 from enum import Enum, IntEnum
 from pathlib import Path
-from typing import List
+from typing import List, Union, Tuple
 
 import numpy as np
 import requests
 from tqdm import tqdm
+from tasi.base import PandasBase
+from tasi.dataset import (
+    TrafficLightDataset,
+    TrajectoryDataset,
+    WeatherDataset,
+    AirQualityDataset,
+    RoadConditionDataset,
+    TrafficVolumeDataset,
+)
 
-from tasi.dataset import TrafficLightDataset, TrajectoryDataset
+import pandas as pd
 
 __all__ = [
     "DLRDatasetManager",
@@ -21,6 +30,9 @@ __all__ = [
     "DLRUTTrafficLightDataset",
     "DLRHTVersion",
     "DLRHTDatasetManager",
+    "DLRWeatherDataset",
+    "DLRAirQualityDataset",
+    "DLRRoadConditionDataset",
     "download",
 ]
 
@@ -76,9 +88,15 @@ class DLRDatasetManager:
 
         return f"{self.archivename}_{self.version.replace('.', '-')}"
 
-    def __init__(self, version: str, path: str = '/tmp', download_chunk_size: int = 1024, **kwargs):
+    def __init__(
+        self,
+        version: str,
+        path: str = "/tmp",
+        download_chunk_size: int = 1024,
+        **kwargs,
+    ):
 
-        if version == 'latest':
+        if version == "latest":
             version = self.VERSION_ENUM.latest
 
         self._version = version.value if isinstance(version, Enum) else version
@@ -109,16 +127,24 @@ class DLRDatasetManager:
         # define final path
         export_path = path.joinpath(self.name)
 
-        logging.info("Checking if dataset already downloaded %s", export_path.absolute())
+        logging.info(
+            "Checking if dataset already downloaded %s", export_path.absolute()
+        )
         if not export_path.exists():
 
             logging.info(f"Downloading dataset from {self.url}")
 
             response = requests.get(self.url, stream=True)
-            total_size = int(response.headers.get('content-length', 0))
+            total_size = int(response.headers.get("content-length", 0))
+
             with tempfile.NamedTemporaryFile("w+b") as f:
 
-                with tqdm(total=total_size, unit='B', unit_scale=True, desc=f'Downloading {self.name}') as pbar:
+                with tqdm(
+                    total=total_size,
+                    unit="B",
+                    unit_scale=True,
+                    desc=f"Downloading {self.name}",
+                ) as pbar:
                     for chunk in response.iter_content(chunk_size=self._chunk_size):
                         if chunk:
                             f.write(chunk)
@@ -130,7 +156,9 @@ class DLRDatasetManager:
                     file_list = tempzip.namelist()
                     total_files = len(file_list)
 
-                    with tqdm(total=total_files, unit='file', desc='Extracting') as pbar:
+                    with tqdm(
+                        total=total_files, unit="file", desc="Extracting"
+                    ) as pbar:
                         for file_info in tempzip.infolist():
                             pbar.update(1)
                             tempzip.extract(file_info, path=path.absolute())
@@ -241,13 +269,10 @@ class DLRUTDatasetManager(DLRDatasetManager):
     """Dict[str, int]: An internal mapping between version and the zenodo id
     """
 
-    ARCHIVE = dict({
-        DLRUTVersion.v1_0_0.value: "DLR-UT"
-    },
-                   **{
-                       v: "DLR-Urban-Traffic-dataset"
-                       for v in list(VERSION.keys())[1:]
-                   })
+    ARCHIVE = dict(
+        {DLRUTVersion.v1_0_0.value: "DLR-UT"},
+        **{v: "DLR-Urban-Traffic-dataset" for v in list(VERSION.keys())[1:]},
+    )
 
     @classmethod
     def area(cls):
@@ -332,7 +357,7 @@ class DLRTrajectoryDataset(TrajectoryDataset):
         Returns:
             DLRTrajectoryDataset: Dataset of all pedestrians.
         """
-        return self.get_by_object_class(ObjectClass.pedestrian)
+        return self.get_by_object_class(ObjectClass.pedestrian.name)
 
     @property
     def bicycles(self):
@@ -342,7 +367,7 @@ class DLRTrajectoryDataset(TrajectoryDataset):
         Returns:
             DLRTrajectoryDataset: Dataset of all bicycles.
         """
-        return self.get_by_object_class(ObjectClass.bicycle)
+        return self.get_by_object_class(ObjectClass.bicycle.name)
 
     @property
     def motorbikes(self):
@@ -352,7 +377,7 @@ class DLRTrajectoryDataset(TrajectoryDataset):
         Returns:
             DLRTrajectoryDataset: Dataset of all motorbikes.
         """
-        return self.get_by_object_class(ObjectClass.motorbike)
+        return self.get_by_object_class(ObjectClass.motorbike.name)
 
     @property
     def cars(self):
@@ -362,7 +387,7 @@ class DLRTrajectoryDataset(TrajectoryDataset):
         Returns:
             DLRTrajectoryDataset: Dataset of all cars.
         """
-        return self.get_by_object_class(ObjectClass.car)
+        return self.get_by_object_class(ObjectClass.car.name)
 
     @property
     def vans(self):
@@ -372,7 +397,7 @@ class DLRTrajectoryDataset(TrajectoryDataset):
         Returns:
             DLRTrajectoryDataset: Dataset of all vans.
         """
-        return self.get_by_object_class(ObjectClass.van)
+        return self.get_by_object_class(ObjectClass.van.name)
 
     @property
     def trucks(self):
@@ -382,7 +407,7 @@ class DLRTrajectoryDataset(TrajectoryDataset):
         Returns:
             DLRTrajectoryDataset: Dataset of all trucks.
         """
-        return self.get_by_object_class(ObjectClass.truck)
+        return self.get_by_object_class(ObjectClass.truck.name)
 
     @property
     def mru(self):
@@ -392,7 +417,14 @@ class DLRTrajectoryDataset(TrajectoryDataset):
         Returns:
             DLRTrajectoryDataset: Dataset of all motorized objects.
         """
-        return self.get_by_object_class([ObjectClass.motorbike, ObjectClass.car, ObjectClass.van, ObjectClass.truck])
+        return self.get_by_object_class(
+            [
+                ObjectClass.motorbike.name,
+                ObjectClass.car.name,
+                ObjectClass.van.name,
+                ObjectClass.truck.name,
+            ]
+        )
 
     @property
     def vru(self):
@@ -402,7 +434,23 @@ class DLRTrajectoryDataset(TrajectoryDataset):
         Returns:
             DLRTrajectoryDataset: Dataset of all motorized objects.
         """
-        return self.get_by_object_class([ObjectClass.pedestrian, ObjectClass.bicycle])
+        return self.get_by_object_class(
+            [ObjectClass.pedestrian.name, ObjectClass.bicycle.name]
+        )
+
+    def to_tasi(self) -> TrajectoryDataset:
+        return super().from_attributes(
+            location=self.center,
+            velocity=self.velocity,
+            acceleration=self.acceleration,
+            heading=self.yaw,
+            classifications=self.classifications,
+            dimension=self.dimension,
+        )
+
+    @classmethod
+    def from_csv(cls, file, indices: Tuple = (), **kwargs):
+        return super().from_csv(file, indices, seperator="_", **kwargs)
 
     @property
     def roi(self):
@@ -499,10 +547,45 @@ class DLRHTDatasetManager(DLRDatasetManager):
             path = Path(path)
 
         # join dataset path and name, type and variant
-        path = (path.joinpath(self.name).joinpath(self.DATA_TYPES[variant]).joinpath(variant))
+        path = (
+            path.joinpath(self.name)
+            .joinpath(self.DATA_TYPES[variant])
+            .joinpath(variant)
+        )
 
         # return file pathes of variant
         return [os.path.join(path, p) for p in sorted(os.listdir(path))]
+
+
+class AddIndexFromCSVMixin:
+
+    @classmethod
+    def from_csv(cls, file: str, indices: Union[List, str] = (), **kwargs):
+
+        # hack to add an index to match TASI format
+        df = pd.DataFrame(PandasBase.from_csv(file, indices, **kwargs))
+
+        df[cls.ID_COLUMN] = "DLR"
+        df.set_index(cls.ID_COLUMN, append=True, inplace=True)
+
+        return cls(df)
+
+
+class DLRWeatherDataset(AddIndexFromCSVMixin, WeatherDataset):
+
+    pass
+
+
+class DLRAirQualityDataset(AddIndexFromCSVMixin, AirQualityDataset):
+    pass
+
+
+class DLRRoadConditionDataset(AddIndexFromCSVMixin, RoadConditionDataset):
+    pass
+
+
+class DLRTrafficVolumeDataset(AddIndexFromCSVMixin, TrafficVolumeDataset):
+    pass
 
 
 def download():

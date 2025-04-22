@@ -54,27 +54,27 @@ ds
 # various information. We can utilize the `tasi.dataset.WeatherDataset` to load
 # some of this information.
 # %%
-from tasi.dataset import WeatherDataset
+from tasi.dlr.dataset import DLRWeatherDataset
 
-weather = WeatherDataset.from_csv(dataset.weather()[0])
+weather = DLRWeatherDataset.from_csv(dataset.weather()[0])
 weather
 # %% [markdown]
 # ## Load road quality information
 #
 # The same weather measurement station also collects information about the road condition.
 # %%
-from tasi.dataset import RoadConditionDataset
+from tasi.dlr.dataset import DLRRoadConditionDataset
 
-road_conditions = RoadConditionDataset.from_csv(dataset.road_condition()[0])
+road_conditions = DLRRoadConditionDataset.from_csv(dataset.road_condition()[0])
 road_conditions
 # %% [markdown]
 # ## Load traffic volume data
 #
 # The DLR HT dataset contains meta information like traffic volume data that were extracted from the raw data.
 # %%
-from tasi.dataset import TrafficVolumeDataset
+from tasi.dlr.dataset import DLRTrafficVolumeDataset
 
-traffic_volume = TrafficVolumeDataset.from_csv(dataset.traffic_volume()[0])
+traffic_volume = DLRTrafficVolumeDataset.from_csv(dataset.traffic_volume()[0])
 traffic_volume
 # %% [markdown]
 # That's it for now. We hope this page helps you get started 😎
