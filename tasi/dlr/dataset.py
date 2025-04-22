@@ -11,6 +11,15 @@ import numpy as np
 import pandas as pd
 import requests
 from tqdm import tqdm
+from tasi.base import PandasBase
+from tasi.dataset import (
+    TrafficLightDataset,
+    TrajectoryDataset,
+    WeatherDataset,
+    AirQualityDataset,
+    RoadConditionDataset,
+    TrafficVolumeDataset,
+)
 
 from tasi.base import PandasBase
 from tasi.dataset.base import (
@@ -567,10 +576,15 @@ class DLRTrajectoryDataset(TrajectoryDataset):
             .rename(columns={"center": "position"})
         )
 
-    @property
-    def roi(self):
-        """
-        Return the region of interest of the dataset.
+    def to_tasi(self) -> TrajectoryDataset:
+        return super().from_attributes(
+            location=self.center,
+            velocity=self.velocity,
+            acceleration=self.acceleration,
+            heading=self.yaw,
+            classifications=self.classifications,
+            dimension=self.dimension,
+        )
 
         Returns:
             np.ndarray: The region of interest.

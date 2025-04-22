@@ -7,6 +7,9 @@ stages:
   - full-test
   - deploy
 
+    before_script:
+        - echo $DOCKER_AUTH_CONFIG > /kaniko/.docker/config.json
+
 .build_base: &build_base
     stage: build
 

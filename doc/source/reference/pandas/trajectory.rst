@@ -30,7 +30,6 @@ Indexing
 
    Trajectory.att
 
-
 Filtering
 ***********
 
