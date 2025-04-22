@@ -7,8 +7,7 @@
 # ## Load trajectories
 # At first, let's load trajectories from the DLR dataset.
 # %%
-from tasi.dlr.dataset import DLRUTDatasetManager, DLRUTVersion
-from tasi.dlr import DLRTrajectoryDataset
+from tasi.dlr import DLRUTDatasetManager, DLRUTVersion, DLRTrajectoryDataset
 
 dataset = DLRUTDatasetManager(DLRUTVersion.latest)
 # select a trajectory file from the middle of the dataset to include data from all object classes
@@ -56,7 +55,6 @@ plotter.plot(ut, ax=ax, alpha=0.2)
 # We can also combine the `TrajectoryPlotter` with the `BoundingboxPlotter` to
 # visualize trajectories on an orthophoto.
 # %%
-import numpy as np
 from tasi.plotting import BoundingboxPlotter, LowerSaxonyOrthophotoTile
 
 f, ax = plt.subplots()
