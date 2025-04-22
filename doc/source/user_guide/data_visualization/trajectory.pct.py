@@ -55,6 +55,7 @@ plotter.plot(ut, ax=ax, alpha=0.2)
 # We can also combine the `TrajectoryPlotter` with the `BoundingboxPlotter` to
 # visualize trajectories on an orthophoto.
 # %%
+import numpy as np
 from tasi.plotting import BoundingboxPlotter, LowerSaxonyOrthophotoTile
 
 f, ax = plt.subplots()
