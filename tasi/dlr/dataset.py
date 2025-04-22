@@ -452,21 +452,6 @@ class DLRTrajectoryDataset(TrajectoryDataset):
     def from_csv(cls, file, indices: Tuple = (), **kwargs):
         return super().from_csv(file, indices, seperator="_", **kwargs)
 
-    @property
-    def roi(self):
-        """
-        Return the region of interest of the dataset.
-
-        Returns:
-            np.ndarray: The region of interest.
-        """
-        return np.array([
-            self.center.easting.min(),
-            self.center.northing.min(),
-            self.center.easting.max(),
-            self.center.northing.max(),
-        ]).reshape(-1, 2)
-
 
 class DLRUTTrafficLightDataset(TrafficLightDataset):
 
