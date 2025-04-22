@@ -38,11 +38,9 @@ plotter.plot(ut, ax=ax, color="lightgray")
 # You can also define the color of a specific trajectory.
 # %%
 f, ax = plt.subplots()
-plotter.plot(ut, ax=ax, color="black", trajectory_kwargs={
-    ut.ids[-20]: {
-        "color": "red"
-    }
-})
+plotter.plot(
+    ut, ax=ax, color="black", trajectory_kwargs={ut.ids[-20]: {"color": "red"}}
+)
 # %% [markdown]
 # ### Change trajectory opacity
 # or even change the opacity of each trajectory to quickly get an overview of
@@ -113,3 +111,33 @@ tj_plotter.plot(ht, ax=ax)
 
 # hide the axis
 _ = ax.axis("off")
+# %% [markdown]
+# ## Visualizing geospatial trajectories
+# The `tasi` model for representing trajectory data using geospatial objects opens the world to utilize tools that
+# support `geopandas`. For instance, if you want an interactive view on trajectory data, we can utilize
+# [folium](https://python-visualization.github.io/folium/latest/) via `geopandas`. For this purpose, we need two
+# conversion steps.
+#
+# At first, we need to convert the dataset to a native `tasi` representation.
+# %%
+ds = ut.to_tasi()
+ds.head()
+# %% [markdown]
+# Note that the `boundingbox` attribute was added in this step. Since  `ds` is a `tasi.TrajectoryDataset` it
+# also uses `pandas`. Hence, we will now convert to use `geopandas` while the `position` attribute should be encoded as
+# a `GeoObject`.
+# %%
+gds = ds.as_geopandas("position")
+# %% [markdown]
+# We need to set the position attribute as the
+# [*active*](https://geopandas.org/en/stable/docs/user_guide/data_structures.html#geodataframe) geometry.
+# %%
+gds.set_geometry("position", inplace=True)
+# %% [markdown]
+# Now, we are ready to visualize the trajectories in a dynamic window, while we use the "CartoDB positron" background
+# layer for reference.
+# %%
+gds.explore(crs="EPSG:32632", tiles="CartoDB positron")
+# %% [markdown]
+# Note that for each traffic participant (or trajectory), additional information is available when hovering over its
+# representation in the map. You can customize the representaton of the trajectories and add or remove attributes to you liking.

@@ -210,7 +210,7 @@ class TrajectoryPlotter:
         trajectory_kwargs = trajectory_kwargs if trajectory_kwargs is not None else {}
 
         # get the classes for each trajectory
-        tj_classes = dataset.most_likely_class()
+        tj_classes = dataset.most_likely_class().sort_index()
 
         # get mapping of classes to colors
         if self.OBJECT_CLASS_COLORS is None:
@@ -219,7 +219,7 @@ class TrajectoryPlotter:
         else:
             object_class_colors = self.OBJECT_CLASS_COLORS
 
-        for tj_class, tj_id in zip(tj_classes, dataset.ids):
+        for tj_class, tj_id in zip(tj_classes, dataset.ids.sort_values()):
 
             # get the trajectory of the id
             tj = dataset.trajectory(tj_id)

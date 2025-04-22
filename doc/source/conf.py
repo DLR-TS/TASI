@@ -17,12 +17,12 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.autodoc",
     "sphinx.ext.linkcode",
-    'sphinx.ext.napoleon',
+    "sphinx.ext.napoleon",
     "myst_parser",
     "nbsphinx",
     "sphinx_toggleprompt",
-    "matplotlib.sphinxext.plot_directive",    
-    'sphinxemoji.sphinxemoji',
+    "matplotlib.sphinxext.plot_directive",
+    "sphinxemoji.sphinxemoji",
 ]
 
 
@@ -42,7 +42,7 @@ numpydoc_show_class_members = False
 autodoc_typehints = "none"
 
 # Add any paths that contain templates here, relative to this directory.
-
+numfig = True
 templates_path = ["_templates"]
 
 autosummary_generate = True
@@ -121,11 +121,10 @@ html_theme_options = {
             "name": "DLR",
             "url": "https://dlr.de/ts/en/",
             "icon": "fa-custom fa-dlr",
-            "type": "fontawesome"
+            "type": "fontawesome",
         },
     ]
 }
-
 
 
 html_context = {
@@ -134,11 +133,7 @@ html_context = {
 
 html_title = project
 
-html_sidebars = {
-    'about': [],
-    'development/index' : [],
-    'getting_started/index' :[]
-}
+html_sidebars = {"about": [], "development/index": [], "getting_started/index": []}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -200,7 +195,7 @@ intersphinx_mapping = {
 
 
 def setup(app):
-    app.add_css_file("custom.css")    # may also be an URL
+    app.add_css_file("custom.css")  # may also be an URL
 
 
 # based on pandas implementation with added support of properties
@@ -233,7 +228,7 @@ def linkcode_resolve(domain, info):
     try:
         fn = inspect.getsourcefile(inspect.unwrap(obj))
     except TypeError:
-        try:    # property
+        try:  # property
             fn = inspect.getsourcefile(inspect.unwrap(obj.fget))
         except AttributeError:
             fn = None
@@ -243,7 +238,7 @@ def linkcode_resolve(domain, info):
     try:
         source, lineno = inspect.getsourcelines(obj)
     except TypeError:
-        try:    # property
+        try:  # property
             source, lineno = inspect.getsourcelines(obj.fget)
         except AttributeError:
             lineno = None
@@ -258,10 +253,12 @@ def linkcode_resolve(domain, info):
     fn = os.path.relpath(fn, start=os.path.dirname(tasi.__file__))
 
     if "+" in tasi.__version__:
-        return (f"https://github.com/dlr-ts/tasi/blob/main/tasi/{fn}{linespec}")
+        return f"https://github.com/dlr-ts/tasi/blob/main/tasi/{fn}{linespec}"
     else:
-        return (f"https://github.com/dlr-ts/tasi/blob/"
-                f"v{tasi.__version__}/tasi/{fn}{linespec}")
+        return (
+            f"https://github.com/dlr-ts/tasi/blob/"
+            f"v{tasi.__version__}/tasi/{fn}{linespec}"
+        )
 
 
 # -- Options for nbsphinx ------------------------------------------------
@@ -277,33 +274,40 @@ html_use_modindex = True
 SOURCE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 nbsphinx_custom_formats = {
-    '.pct.py': ['jupytext.reads', {
-        'fmt': 'py:percent'
-    }],
+    ".pct.py": ["jupytext.reads", {"fmt": "py:percent"}],
 }
+
+# allow raw HTML in your documentation
+myst_allow_raw_html = True
+html_js_files = ["https://cdn.jsdelivr.net/npm/folium@latest/dist/folium.min.js"]
 
 # render the index templates in the user-guide
 
-for section in ['user_guide', 'getting_started']:
+for section in ["user_guide", "getting_started"]:
 
-    section_path = os.path.join(SOURCE_PATH, 'user_guide')
+    section_path = os.path.join(SOURCE_PATH, "user_guide")
 
     if os.path.exists(section_path):
 
-        for section in [d for d in os.listdir(section_path) if os.path.isdir(os.path.join(section_path, d))]:
+        for section in [
+            d
+            for d in os.listdir(section_path)
+            if os.path.isdir(os.path.join(section_path, d))
+        ]:
 
             # the target directory for the jupyter notebooks
             notebook_path = os.path.join(section_path, section)
 
             # list up all notebooks
             NOTEBOOKS = [
-                f for f in os.listdir(notebook_path)
-                if f.endswith('.pct.py') or (f.endswith('.rst') and 'index' not in f)
+                f
+                for f in os.listdir(notebook_path)
+                if f.endswith(".pct.py") or (f.endswith(".rst") and "index" not in f)
             ]
 
             # taken from https://github.com/pandas-dev/pandas/blob/c45e92c3956fd2638980ac46e6e93ec3b6cc7c52/doc/source/conf.py#L87
-            with open(os.path.join(notebook_path, 'index.rst.template')) as f:
+            with open(os.path.join(notebook_path, "index.rst.template")) as f:
                 t = jinja2.Template(f.read())
 
-            with open(os.path.join(notebook_path, 'index.rst'), 'w') as f:
-                f.write(t.render(examples='\n'.join(sorted(NOTEBOOKS))))
+            with open(os.path.join(notebook_path, "index.rst"), "w") as f:
+                f.write(t.render(examples="\n".join(sorted(NOTEBOOKS))))
