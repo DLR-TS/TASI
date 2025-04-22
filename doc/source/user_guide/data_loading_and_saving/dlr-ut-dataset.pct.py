@@ -1,4 +1,4 @@
-#%% [markdown]
+# %% [markdown]
 # # DLR Urban Traffic Dataset (DLR UT)
 #
 # This example should give a short overview on how to load the [DLR Urban Traffic
@@ -18,24 +18,25 @@ from tasi.dlr.dataset import DLRUTDatasetManager, DLRUTVersion
 dataset = DLRUTDatasetManager(DLRUTVersion.latest)
 path = dataset.load()
 path
-#%% [markdown]
+# %% [markdown]
 # The dataset is now available in the `/tmp` directory. Let's have
 # a look into the dataset and list the available traffic information
-#%%
+# %%
 folders = os.listdir(path)
 folders
-#%% [markdown]
+# %% [markdown]
 # ## Load trajectory data
 #
 # We can now utilize the `tasi.dlr.dataset.DLRTrajectoryDataset` class to load
 # the trajectory data from the directory. For demonstration purpose, let's load
 # the first batch of the dataset.
-#%%
+# %%
 from tasi.dlr import DLRTrajectoryDataset
 
 ds = DLRTrajectoryDataset.from_csv(dataset.trajectory()[0])
 ds
-#%% [markdown]
+
+# %% [markdown]
 # Note that the `Dataset` is represented as a `pandas.DataFrame` since it
 # inherits from it. The index of the `Dataset` contains the `timestamp` of a
 # traffic participant's state and its `id` as a unique identifier.
@@ -48,58 +49,56 @@ ds
 # The DLR UT dataset also contains information of the traffic lights. We utilize
 # the `tasi.dlr.dataset.DLRTrajectoryDataset` class to load the information.
 # For demonstration purpose, let's load the first batch of the dataset.
-#%%
+# %%
 from tasi.dlr import DLRUTTrafficLightDataset
 
 traffic_lights = DLRUTTrafficLightDataset.from_csv(dataset.traffic_lights()[0])
 traffic_lights
-#%% [markdown]
+# %% [markdown]
 # ### Load weather data
 #
 # The DLR Research Intersection is equipped with a weather station stat collects
 # various information. We can utilize the `tasi.dataset.WeatherDataset` to load
 # some of this information.
-#%%
-from tasi.dataset import WeatherDataset
+# %%
+from tasi.dlr.dataset import DLRWeatherDataset
 
-weather = WeatherDataset.from_csv(dataset.weather()[0])
+weather = DLRWeatherDataset.from_csv(dataset.weather()[0])
 weather
-#%% [markdown]
+# %% [markdown]
 # ## Load air quality data
 #
 # Although also collected by the same weather station, information about the
 # local air quality is available via another dataset.
-#%%
-from tasi.dataset import AirQualityDataset
+# %%
+from tasi.dlr.dataset import DLRAirQualityDataset
 
-air_quality = AirQualityDataset.from_csv(dataset.air_quality()[0])
+air_quality = DLRAirQualityDataset.from_csv(dataset.air_quality()[0])
 air_quality
-#%% [markdown]
+# %% [markdown]
 # ## Load road quality information
 #
 # The same weather measurement station also collects information about the road condition.
-#%%
-from tasi.dataset import RoadConditionDataset
+# %%
+from tasi.dlr.dataset import DLRRoadConditionDataset
 
-road_conditions = RoadConditionDataset.from_csv(dataset.road_condition()[0])
+road_conditions = DLRRoadConditionDataset.from_csv(dataset.road_condition()[0])
 road_conditions
 # %% [markdown]
 # ## Load traffic volume data
 #
 # The DLR UT dataset contains meta information like traffic volume data that were extracted from the raw trajectory data.
 # %%
-from tasi.dataset import TrafficVolumeDataset
+from tasi.dlr.dataset import DLRTrafficVolumeDataset
 
-traffic_volume = TrafficVolumeDataset.from_csv(dataset.traffic_volume()[0])
+traffic_volume = DLRTrafficVolumeDataset.from_csv(dataset.traffic_volume()[0])
 traffic_volume
 # %% [markdown]
 # ## Load OpenSCENARIO files
 #
 # The DLR UT dataset contains the trajectory data in OpenSCENARIO format.
 # %%
-from tasi.dataset import TrafficVolumeDataset
-
 openscenario_files = dataset.openscenario()
 openscenario_files
-#%% [markdown]
+# %% [markdown]
 # That's it for now. We hope this page helps you get started 😎

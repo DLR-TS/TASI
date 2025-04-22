@@ -1,15 +1,18 @@
-from datetime import datetime
 from typing import Iterable, List, Union
 
+import geopandas as gpd
 import numpy as np
 import pandas as pd
 from typing_extensions import Self
 
-from tasi.utils import to_pandas_multiindex
+from .base import CollectionBase, PoseCollectionBase, GeoPoseCollectionBase
+from .trajectory import Trajectory, GeoTrajectory
+from functools import wraps
 
 __all__ = [
     "Dataset",
     "TrajectoryDataset",
+    "GeoTrajectoryDataset",
     "WeatherDataset",
     "AirQualityDataset",
     "RoadConditionDataset",
@@ -20,159 +23,35 @@ __all__ = [
 ObjectClass = Union[str, int]
 
 
-class Dataset(pd.DataFrame):
+class Dataset(CollectionBase):
+    """Base type of datasets"""
 
-    TIMESTAMP_COLUMN = "timestamp"
-    ID_COLUMN = "id"
-    INDEX_COLUMNS = [TIMESTAMP_COLUMN, ID_COLUMN]
+    def _ensure_correct_type(self, df, key):
+        return df
 
     @property
     def _constructor(self):
-        return self.__class__
+        return type(self)
 
     @property
-    def timestamps(self) -> np.ndarray[np.datetime64]:
-        """The unique timestamps in the dataset
+    def _constructor_sliced(self):
+        return pd.Series
 
-        Returns:
-            np.ndarray[np.datetime64]: A list of timestamps
-        """
-        return self.index.get_level_values(self.TIMESTAMP_COLUMN).unique()
 
-    @property
-    def ids(self) -> np.ndarray[np.int64]:
-        """Returns the unique ids in the dataset
-
-        Returns:
-            np.ndarray: A List of ids
-        """
-        try:
-            return self.index.get_level_values(self.ID_COLUMN).unique()
-        except BaseException:
-            return self[self.ID_COLUMN].unique()
+class TrajectoryDataset(Dataset, PoseCollectionBase):
+    """A dataset of trajectories"""
 
     @property
-    def attributes(self) -> np.ndarray[str]:
-        """Returns the dataset attributes
+    def _trajectory_constructor(self):
+        from .trajectory import Trajectory
 
-        Returns:
-            np.ndarray: A list of attribute names
-        """
-        return self.columns.get_level_values(0).unique()
-
-    def att(
-        self,
-        timestamps: Union[pd.Timestamp, List[pd.Timestamp], pd.Index],
-        attribute: Union[List[str], pd.Index] = None,
-    ) -> Union[Self, pd.Series]:
-        """Select the rows at the specified times and optionally the specified attributes.
-
-        Args:
-            timestamps (Union[pd.Timestamp, List[pd.Timestamp], pd.Index]): The timestamps to select
-            attribute (pd.Index, optional): The attribute to select. Defaults to None.
-
-        Returns:
-            Union[Self, pd.Series]: The selected row(s) and column(s)
-        """
-        try:
-            len(timestamps)
-        except BaseException:
-            timestamps = [timestamps]
-
-        if attribute is None:
-            return self.loc[pd.IndexSlice[timestamps, :]]
-        else:
-            return self.loc[pd.IndexSlice[timestamps, :], attribute]
-
-    def atid(
-        self, ids: Union[int, List[int], pd.Index], attributes: pd.Index = None
-    ) -> Self:
-        """Select rows by the given id and optionally by attributes
-
-        Args:
-            ids (Union[int, List[int], pd.Index]): A list of IDs
-            attributes (pd.Index, optional): A list of attribute names. Defaults to None.
-
-        Returns:
-            Self: The selected rows and attributes
-        """
-        try:
-            len(ids)
-        except BaseException:
-            ids = [ids]
-
-        if attributes is None:
-            return self.loc[pd.IndexSlice[:, ids], :]
-        else:
-            return self.loc[pd.IndexSlice[:, ids], attributes]
+        return Trajectory
 
     @property
-    def interval(self) -> pd.Interval:
-        """Returns the time interval this dataset spans
+    def _pose_constructor(self):
+        from .pose import Pose
 
-        Returns:
-            pd.Interval: The interval of this
-        """
-        return pd.Interval(self.timestamps[0], self.timestamps[-1])
-
-    def during(self, since: datetime, until: datetime, include_until: bool = False):
-        """
-        Select rows within a specific time range (include "since", exclude "until").
-
-        Args:
-            since (datetime): The start datetime for the selection.
-            until (datetime): The end datetime for the selection.
-            include_until (bool, optional): Whether to include data with timestamp "until". Defaults to False.
-
-        Returns:
-            ObjectDataset: A subset of the dataset with rows between the specified datetimes.
-        """
-
-        # get all timestamps
-        timestamps = self.index.get_level_values(self.TIMESTAMP_COLUMN)
-
-        # create a mask selecting only the relevant point in times
-        valid_since = timestamps >= since
-        if include_until:
-            valid_until = timestamps <= until
-        else:
-            valid_until = timestamps < until
-
-        # select the entries
-        return self.loc[valid_since & valid_until]
-
-    @classmethod
-    def from_csv(cls, file: str, indices: Union[List, str] = (), **kwargs) -> Self:
-        """
-        Read a dictionary-alike object from a `.csv` file as a pandas DataFrame.
-
-        Args:
-            file (str): The path and name of the dataset `.csv` file
-            indices (Union[List, str]): The name of the columns to use as index
-
-        """
-        if indices and not hasattr(kwargs, "index_col"):
-            kwargs["index_col"] = indices
-
-        # read csv data
-        df = pd.read_csv(file, **kwargs)
-
-        # parse dates
-        df["timestamp"] = pd.to_datetime(df["timestamp"], format="ISO8601")
-
-        # try to set index
-        try:
-            df.set_index(cls.INDEX_COLUMNS, inplace=True)
-        except KeyError:
-            try:
-                df.set_index(cls.TIMESTAMP_COLUMN, inplace=True)
-            except KeyError:
-                pass
-
-        return cls(df)
-
-
-class TrajectoryDataset(Dataset):
+        return Pose
 
     def trajectory(self, index: Union[int, Iterable[int]], inverse: bool = False):
         """
@@ -190,7 +69,7 @@ class TrajectoryDataset(Dataset):
             TrajectoryDataset: A trajectory or multiple trajectories of the dataset.
         """
 
-        if isinstance(index, int):
+        if isinstance(index, (int, np.int_)):
             index = [index]
 
         if inverse:
@@ -226,9 +105,13 @@ class TrajectoryDataset(Dataset):
             trajectory_class = self.classifications.groupby("id").apply(
                 lambda tj_classes: tj_classes.mean().idxmax()
             )
+            trajectory_class.name = "classification"
 
             if broadcast:
-                return self.apply(lambda ser: trajectory_class[ser.name[1]], axis=1)
+
+                return self.apply(
+                    lambda pose: trajectory_class[pose.name[1]], by="pose", tasi=False
+                )
             else:
                 return trajectory_class
 
@@ -250,44 +133,212 @@ class TrajectoryDataset(Dataset):
         """
 
         if not isinstance(object_class, list):
-            object_class = [object_class.name]
+            object_class = [object_class]
 
         return self[
             self.most_likely_class(by="trajectory", broadcast=True).isin(object_class)
         ]
 
+    @property
+    def roi(self):
+        """
+        Return the region of interest of the dataset.
+
+        Returns:
+            np.ndarray: The region of interest.
+        """
+        return np.array(
+            [
+                self.center.easting.min(),
+                self.center.northing.min(),
+                self.center.easting.max(),
+                self.center.northing.max(),
+            ]
+        ).reshape(-1, 2)
+
     @classmethod
-    def from_csv(cls, *args, **kwargs) -> Self:
+    def from_attributes(
+        cls,
+        location: pd.DataFrame,
+        velocity: pd.DataFrame,
+        acceleration: pd.DataFrame,
+        heading: Union[pd.Series, pd.DataFrame],
+        classifications: pd.DataFrame,
+        yaw_rate: Union[pd.Series, pd.DataFrame] = None,
+        dimension: pd.DataFrame = None,
+        boundingbox: pd.DataFrame = None,
+    ):
 
-        df = super().from_csv(*args, **kwargs)
+        assert (
+            dimension is None or boundingbox is None
+        ), "either dimension or boundingbox needs to be specified"
 
-        # ensure the column is a pandas MultiIndex
-        df.columns = to_pandas_multiindex(df.columns.to_list())
+        if boundingbox is None or boundingbox.empty:
+            from tasi.calculus import boundingbox_from_dimension
+
+            boundingbox = boundingbox_from_dimension(
+                dimension, heading, relative_to=location
+            )
+
+        if velocity.empty:
+            from tasi.calculus import calc_velocity_from_origins
+
+            velocity = calc_velocity_from_origins(location)
+
+        if acceleration.empty:
+            from tasi.calculus import calc_acceleration_from_origins
+
+            acceleration = calc_acceleration_from_origins(location)
+
+        if yaw_rate is None or yaw_rate.empty:
+            from tasi.calculus import calc_yaw_rate_from_headings
+
+            yaw_rate = calc_yaw_rate_from_headings(heading)
+
+        from tasi.utils import add_attributes
+
+        df = add_attributes(
+            location,
+            velocity,
+            acceleration,
+            heading,
+            yaw_rate,
+            classifications,
+            dimension,
+            boundingbox,
+            keys=[
+                "position",
+                "velocity",
+                "acceleration",
+                "heading",
+                "yaw_rate",
+                "classifications",
+                "dimension",
+                "boundingbox",
+            ],
+        )
 
         return cls(df)
 
+    def as_geopandas(self, *args, **kwargs) -> "GeoTrajectoryDataset":
+        """Convert to a geospatial representation using `geopandas`.
+
+        Returns:
+            GeoTrajectoryDataset: The dataset represented with GeoObjects.
+        """
+
+        gtjs = [
+            self.trajectory(tjid).as_geopandas(*args, **kwargs) for tjid in self.ids
+        ]
+
+        return GeoTrajectoryDataset.from_trajectories(gtjs)
+
+    @classmethod
+    def from_trajectories(cls, tjs: List[Trajectory]) -> Self:
+        """Create a dataset based on trajectories
+
+        Args:
+            tjs (List[Trajectory]): The trajectories
+
+        Returns:
+            TrajectoryDataset: A dataset with the given trajectories
+        """
+        return cls(pd.concat(tjs, axis=0))
+
+    def apply(
+        self,
+        func: callable,
+        by: str = "trajectory",
+        tasi: bool = False,
+        *args,
+        **kwargs
+    ):
+
+        if by.lower() == "trajectory":
+
+            if tasi:
+
+                @wraps(func)
+                def f(tj):
+                    return func(self._trajectory_constructor(tj))
+
+            else:
+                f = func
+            return self.groupby(by=self.ID_COLUMN).apply(f)
+        elif by.lower() == "pose":
+            if tasi:
+
+                @wraps(func)
+                def f(pose):
+                    return func(self._as_pose(pose))
+
+            else:
+                f = func
+            return super().apply(f, axis=1)
+        else:
+            return super().apply(*args, **kwargs)
+
+    def _ensure_correct_type(self, *args, **kwargs):
+        return PoseCollectionBase._ensure_correct_type(self, *args, **kwargs)
+
+
+class GeoTrajectoryDataset(Dataset, GeoPoseCollectionBase):
+    """Representation of a dataset of trajectory information using ``GeoPandas``"""
+
+    @classmethod
+    def from_trajectories(cls, tjs: List[GeoTrajectory]) -> Self:
+        """Create a dataset based on trajectories
+
+        Args:
+            tjs (List[GeoTrajectory]): The trajectories
+
+        Returns:
+            GeoTrajectoryDataset: A dataset with the given trajectories
+        """
+        return cls(pd.concat(tjs, axis=0))
+
+    def explore(self, crs: str = "EPSG:32632", *args, **kwargs):
+
+        if self.crs is None:
+            self = self.set_crs(crs)
+
+        # a quick hack for now since we dont want to update the orignal columns
+        self = gpd.GeoDataFrame(self)
+
+        # we need to flatten index for visualization purpose
+        self.columns = [
+            "_".join(l) if l[1] else l[0] for l in self.columns.to_flat_index()
+        ]
+
+        return self.explore(*args, **kwargs)
+
 
 class WeatherDataset(Dataset):
+    """Dataset of weather information"""
 
     pass
 
 
 class AirQualityDataset(Dataset):
+    """Dataset of air quality information"""
 
     pass
 
 
 class RoadConditionDataset(Dataset):
+    """Dataset of road conditioning information"""
 
     pass
 
 
 class TrafficLightDataset(Dataset):
+    """Dataset of traffic light information"""
 
     pass
 
 
 class TrafficVolumeDataset(Dataset):
+    """Dataset of traffic volume information"""
 
     @classmethod
     def from_csv(cls, *args, **kwargs) -> Self:
