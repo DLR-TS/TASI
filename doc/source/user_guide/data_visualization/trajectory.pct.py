@@ -7,7 +7,8 @@
 # ## Load trajectories
 # At first, let's load trajectories from the DLR dataset.
 # %%
-from tasi.dlr import DLRUTDatasetManager, DLRUTVersion, DLRTrajectoryDataset
+from tasi.dlr.dataset import DLRUTDatasetManager, DLRUTVersion
+from tasi.dlr import DLRTrajectoryDataset
 
 dataset = DLRUTDatasetManager(DLRUTVersion.latest)
 # select a trajectory file from the middle of the dataset to include data from all object classes
