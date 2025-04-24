@@ -62,6 +62,7 @@ doc:
     <<: *test_base
 
     script:
+        - poetry run python -c "import tilemapbase; tilemapbase.init(create=True);"
         - SPHINXOPTS="-j 8" poetry run make -C doc html
         # move the HTML doc to the local directory
         - mv doc/build/html ./html
