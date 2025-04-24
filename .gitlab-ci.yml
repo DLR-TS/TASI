@@ -26,7 +26,7 @@ stages:
 
     stage: test
 
-    image: ${DLR_REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}
+    image: ${DLR_REGISTRY}/python:v3.11.12
 
     before_script:
         - apt-get update && apt-get install -y pandoc
@@ -54,8 +54,6 @@ test:
             # save the coverage results to create html results in the next stage
             - coverage
 
-    needs:
-        - job: image_base
 
 doc:
     <<: *test_base
