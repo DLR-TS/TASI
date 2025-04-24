@@ -4,18 +4,6 @@ stages:
     - test
     - deploy
 
-# Some templates
-.kaniko_base: &kaniko_base
-    stage: deploy
-
-    image:
-        name: ${DLR_REGISTRY}/ci/kaniko-executor:debug
-        entrypoint: [""]
-        pull_policy: always
-
-    before_script:
-        - echo $DOCKER_AUTH_CONFIG > /kaniko/.docker/config.json
-
 .build_base: &build_base
     stage: build
 
@@ -51,29 +39,6 @@ wheel:
 sdist:
     <<: *build_base
 
-image_base:
-    <<: *kaniko_base
-
-    stage: images
-
-    script:
-        - |
-            echo "FROM ${DLR_REGISTRY}/python:v3.11.12
-            RUN mkdir /deps
-            COPY dist/*.whl /deps/
-            RUN pip install /deps/*.whl; rm -r /deps;
-            RUN dlr-downloader --name urban --version latest --path /tmp;
-            RUN python -c 'import tilemapbase; tilemapbase.init(create=True)'" > dockerfile
-
-        - |
-            /kaniko/executor \
-            --context dir://$CI_PROJECT_DIR \
-            --dockerfile dockerfile \
-            --destination "${DLR_REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}"
-
-    needs:
-        - job: wheel
-          artifacts: true
 
 test:
     <<: *test_base
@@ -130,30 +95,3 @@ pages:
           artifacts: true
         - job: doc
           artifacts: true
-
-docker:
-    <<: *kaniko_base
-
-    script:
-        # set tag of docker image based on current tag
-        - |
-            if [[ "$CI_COMMIT_REF_NAME" = "master"]] || [[ "$CI_COMMIT_REF_NAME" = "main" ]]; \
-            then DESTINATION="${DLR_REGISTRY}/tasi:latest"; \
-            else DESTINATION="${DLR_REGISTRY}/tasi:${CI_COMMIT_REF_NAME}"; \
-            fi
-        - echo "FROM ${DLR_REGISTRY}/tasi/base:${CI_COMMIT_SHORT_SHA}" > dockerfile
-        - |
-            /kaniko/executor \
-            --context dir://$CI_PROJECT_DIR \
-            --dockerfile dockerfile \
-            --destination "${DESTINATION}"
-
-    only:
-        - master
-        - main
-        - tags
-
-    needs:
-        - job: wheel
-          artifacts: true
-        - job: test
