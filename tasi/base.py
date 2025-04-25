@@ -1,13 +1,12 @@
-import pandas as pd
-import numpy as np
-
-from typing import Union, List, Self, Tuple
 from datetime import datetime
+from typing import List, Self, Tuple, Union
 
-from .indexing import LocatableEntity, LocLocator, ILocator
-
-from .utils import to_pandas_multiindex, add_attributes, MULTI_INDEX_SEPERATOR
 import geopandas as gpd
+import numpy as np
+import pandas as pd
+
+from .indexing import ILocator, LocatableEntity, LocLocator
+from .utils import MULTI_INDEX_SEPERATOR, add_attributes, to_pandas_multiindex
 
 
 class TimestampMixin:

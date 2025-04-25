@@ -1,2 +1,2 @@
 from .plot import BoundingboxPlotter, TrajectoryPlotter
-from .wms import LowerSaxonyOrthophotoTile, BoundingboxTiles
+from .wms import BoundingboxTiles, LowerSaxonyOrthophotoTile

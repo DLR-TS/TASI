@@ -16,6 +16,7 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
     "sphinx.ext.autodoc",
+    "sphinx.ext.inheritance_diagram",
     "sphinx.ext.linkcode",
     "sphinx.ext.napoleon",
     "myst_parser",
@@ -50,6 +51,8 @@ autosummary_generate = True
 nbsphinx_execute = "always"
 nbsphinx_allow_errors = True
 nbsphinx_kernel_name = "python3"
+
+graphviz_output_format = "svg"
 
 # suppress matplotlib warning in examples
 warnings.filterwarnings(

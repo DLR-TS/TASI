@@ -1,11 +1,13 @@
-from .base import PoseCollectionBase
-import pandas as pd
-import numpy as np
+from functools import partial
 from typing import List, Tuple, Union
+
 import geopandas as gpd
+import numpy as np
+import pandas as pd
 
 from tasi.utils import add_attributes, position_to_linestring
-from functools import partial
+
+from .base import PoseCollectionBase
 
 __all__ = ["Trajectory", "GeoTrajectory"]
 

@@ -1,5 +1,5 @@
-from tasi.plotting.plot import TrajectoryPlotter
 from tasi.dlr.dataset import ObjectClass
+from tasi.plotting.plot import TrajectoryPlotter
 
 
 class DLRTrajectoryPlotter(TrajectoryPlotter):

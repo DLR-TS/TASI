@@ -1,3 +1,4 @@
+from functools import wraps
 from typing import Iterable, List, Union
 
 import geopandas as gpd
@@ -5,9 +6,8 @@ import numpy as np
 import pandas as pd
 from typing_extensions import Self
 
-from .base import CollectionBase, PoseCollectionBase, GeoPoseCollectionBase
-from .trajectory import Trajectory, GeoTrajectory
-from functools import wraps
+from .base import CollectionBase, GeoPoseCollectionBase, PoseCollectionBase
+from .trajectory import GeoTrajectory, Trajectory
 
 __all__ = [
     "Dataset",

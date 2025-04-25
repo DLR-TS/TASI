@@ -1,8 +1,9 @@
 from typing import ClassVar, Tuple
+
+import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.colors import ListedColormap
-import numpy as np
 from tilemapbase.mapping import Plotter
 
 from tasi.dataset import TrajectoryDataset
