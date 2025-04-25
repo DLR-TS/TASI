@@ -16,8 +16,5 @@ dist
 # compiled
 __pycache__
 
-# data
-etc
-
 # IDE
 .vscode

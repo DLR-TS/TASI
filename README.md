@@ -39,6 +39,7 @@ ds_ut = DLRTrajectoryDataset.from_csv(dataset.trajectory()[0])
 f, ax = plt.subplots()
 
 plotter = TrajectoryPlotter()
-plotter.plot(ut, ax=ax)
+plotter.plot(ds_ut, ax=ax)
 ```
 
+![trajectory-example](etc/example.jpg)
