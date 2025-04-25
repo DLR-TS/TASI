@@ -4,22 +4,17 @@ import tempfile
 import zipfile
 from enum import Enum, IntEnum
 from pathlib import Path
-from typing import List, Union, Tuple
+from typing import List, Tuple, Union
 
 import numpy as np
+import pandas as pd
 import requests
 from tqdm import tqdm
-from tasi.base import PandasBase
-from tasi.dataset import (
-    TrafficLightDataset,
-    TrajectoryDataset,
-    WeatherDataset,
-    AirQualityDataset,
-    RoadConditionDataset,
-    TrafficVolumeDataset,
-)
 
-import pandas as pd
+from tasi.base import PandasBase
+from tasi.dataset import (AirQualityDataset, RoadConditionDataset,
+                          TrafficLightDataset, TrafficVolumeDataset,
+                          TrajectoryDataset, WeatherDataset)
 
 __all__ = [
     "DLRDatasetManager",

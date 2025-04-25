@@ -1,10 +1,13 @@
-from .base import CollectionBase
-import pandas as pd
-import numpy as np
-import geopandas as gpd
-from typing import Union, Tuple, List
-from tasi.utils import position_to_point, add_attributes
 from functools import partial
+from typing import List, Tuple, Union
+
+import geopandas as gpd
+import numpy as np
+import pandas as pd
+
+from tasi.utils import add_attributes, position_to_point
+
+from .base import CollectionBase
 
 GeoPose = gpd.GeoDataFrame
 

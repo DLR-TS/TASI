@@ -1,4 +1,5 @@
 from abc import abstractmethod
+
 import numpy as np
 import pandas as pd
 from pandas.core.indexing import _AtIndexer, _iLocIndexer, _LocIndexer

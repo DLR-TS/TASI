@@ -1,10 +1,10 @@
 import logging
-from typing import List, Union
 from numbers import Number
+from typing import List, Union
+
 import numpy as np
 import pandas as pd
 from numba import float32, float64, jit, njit
-
 
 #: Type definition for a 8 bit floating point number
 Double = float64  # type: ignore

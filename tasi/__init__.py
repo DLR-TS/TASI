@@ -1,7 +1,7 @@
 from . import _version
 from .dataset import *
-from .pose import PoseBase, Pose, GeoPose
-from .trajectory import Trajectory, GeoTrajectory
+from .pose import GeoPose, Pose, PoseBase
+from .trajectory import GeoTrajectory, Trajectory
 
 __version__ = _version.get_versions()["version"]
 
