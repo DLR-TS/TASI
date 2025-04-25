@@ -12,8 +12,6 @@ on:
     push: 
         tags: 
             - "*"
-        branches:
-            - main
 
 permissions:
   contents: read
