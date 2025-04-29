@@ -1,4 +1,4 @@
-#%% [markdown]
+# %% [markdown]
 # # Using the DLRHTDataset
 #
 # This example shall give an overview of the methods and attributes that are
@@ -9,27 +9,28 @@
 # %%
 from tasi.dlr import DLRTrajectoryDataset
 from tasi.dlr.dataset import DLRHTDatasetManager, DLRHTVersion
+from tasi.tests import DATA_PATH
 
-dataset = DLRHTDatasetManager(DLRHTVersion.latest)
+dataset = DLRHTDatasetManager(DLRHTVersion.v1_1_0, path=DATA_PATH)
 dataset.load()
 
-ds = DLRTrajectoryDataset.from_csv(dataset.trajectory()[50])
+ds = DLRTrajectoryDataset.from_csv(dataset.trajectory()[0])
 
-#%% [markdown]
+# %% [markdown]
 # ## Attributes of the dataset
 # There are several attributes available to get information about a dataset. For
 # instance, we can get the interval of a dataset via the property
-#%%
+# %%
 ds.interval
-#%% [markdown]
+# %% [markdown]
 # or all unique timestamps of it via
-#%%
+# %%
 ds.timestamps
-#%% [markdown]
+# %% [markdown]
 # or the ids of all traffic participants in the dataset.
-#%%
+# %%
 ds.ids
-#%% [markdown]
+# %% [markdown]
 # ## Filtering
 # If you want to look into a short sequence of the overall dataset, you can
 # select specific rows of the overall dataset. The `DLRTrajectoryDataset`
@@ -41,7 +42,7 @@ ds.ids
 # interval, you can utilize the `during` method
 # %%
 ds.during(ds.timestamps[0], ds.timestamps[10])
-#%% [markdown]
+# %% [markdown]
 # that returns the rows within the given interval.
 #
 # Another variant to select specific rows of the datasets is by the `id` of a
@@ -49,48 +50,48 @@ ds.during(ds.timestamps[0], ds.timestamps[10])
 # into the behavior of specific traffic participants. For instance, to filter by
 # the second traffic participant in the dataset, we can combine the `ids`
 # attribute with the `trajectory` method.
-#%%
+# %%
 ds.trajectory(ds.ids[1])
 
-#%% [markdown]
+# %% [markdown]
 # ### Traffic participant properties
 #
 # There are also methods available that might help to find the relevant
 # information in the dataset. The most straight forward option is to use pandas'
 # capability to access specific attributes` of the datasets. The available attributes on the dataset, are available via the `attribute` property.
-#%%
+# %%
 ds.attributes
-#%% [markdown]
+# %% [markdown]
 # We can, for instance, access the traffic participants `center` position.
-#%%
+# %%
 ds.center
-#%% [markdown]
+# %% [markdown]
 # or the classification propabilities.
-#%%
+# %%
 ds.classifications
-#%% [markdown]
+# %% [markdown]
 # We extended these basic capabilities with additional methods, that, for instance, allow to get the most likely class by each traffic participant's pose
-#%%
-ds.most_likely_class(by='pose')
-#%% [markdown]
+# %%
+ds.most_likely_class(by="pose")
+# %% [markdown]
 # or by the overall trajectory (the default), i.e. all poses of a traffic participants.
-#%%
-ds.most_likely_class(by='trajectory')
-#%% [markdown]
+# %%
+ds.most_likely_class(by="trajectory")
+# %% [markdown]
 # This might help to filter the dataset to select only traffic participants that
 # are classified as a `car`. To archieve this, we first get the most likely
 # class per trajectory, select the rows having the value 'car' and pass their
 # index (the traffic particpant's `id`) into the `trajectory` method of the
 # `Dataset`.
-#%%
-classification = ds.most_likely_class(by='trajectory')
+# %%
+classification = ds.most_likely_class(by="trajectory")
 
-ds.trajectory(classification[classification == 'car'].index)
-#%% [markdown]
-# You can achieve the same result by directly calling 
-#%%
+ds.trajectory(classification[classification == "car"].index)
+# %% [markdown]
+# You can achieve the same result by directly calling
+# %%
 ds.cars
-#%% [markdown]
+# %% [markdown]
 # This works similarly for all object classes.
-#%%
+# %%
 ds.trucks

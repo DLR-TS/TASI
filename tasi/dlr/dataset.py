@@ -1,8 +1,10 @@
 import logging
 import os
+import tarfile
 import tempfile
 import zipfile
 from enum import Enum, IntEnum
+from io import TextIOWrapper
 from pathlib import Path
 from typing import List, Union, Tuple
 
@@ -20,6 +22,8 @@ from tasi.dataset import (
 )
 
 import pandas as pd
+from tasi.io.zenodo import ZenodoConnector
+from tasi.tests import DATA_PATH
 
 __all__ = [
     "DLRDatasetManager",
@@ -91,7 +95,7 @@ class DLRDatasetManager:
     def __init__(
         self,
         version: str,
-        path: str = "/tmp",
+        path: str = DATA_PATH,
         download_chunk_size: int = 1024,
         **kwargs,
     ):
@@ -106,6 +110,48 @@ class DLRDatasetManager:
         self._chunk_size = download_chunk_size
 
         super().__init__(**kwargs)
+
+    def download(self, file: TextIOWrapper) -> int:
+
+        logging.info(f"Downloading dataset from {self.url}")
+
+        response = requests.get(self.url, stream=True)
+        total_size = int(response.headers.get("content-length", 0))
+
+        with tqdm(
+            total=total_size, unit="B", unit_scale=True, desc=f"Downloading {self.name}"
+        ) as pbar:
+            for chunk in response.iter_content(chunk_size=self._chunk_size):
+                if chunk:
+                    file.write(chunk)
+                    pbar.update(len(chunk))
+        return total_size
+
+    def extract(self, file: Path, path: Path):
+
+        logging.info("Extract files from archive")
+
+        if file.name.endswith(".zip"):
+
+            with zipfile.ZipFile(file) as f:
+                file_list = f.namelist()
+                total_files = len(file_list)
+
+                with tqdm(total=total_files, unit="file", desc="Extracting") as pbar:
+                    for file_info in f.infolist():
+                        pbar.update(1)
+                        f.extract(file_info, path=path.absolute())
+
+        elif file.name.endswith(".tar.bz2"):
+
+            with tarfile.open(file) as f:
+                file_list = [m for m in f.getmembers() if m.isfile()]
+                total_files = len(file_list)
+
+                with tqdm(total=total_files, unit="file", desc="Extracting") as pbar:
+                    for member in file_list:
+                        f.extract(member, path)
+                        pbar.update(1)
 
     def load(self, path: Path = None) -> str:
         """
@@ -125,45 +171,24 @@ class DLRDatasetManager:
         path = path if isinstance(path, Path) else Path(path)
 
         # define final path
+        archive_path = path.joinpath(self.filename)
         export_path = path.joinpath(self.name)
 
+        # check if dataset exists
         logging.info(
             "Checking if dataset already downloaded %s", export_path.absolute()
         )
-        if not export_path.exists():
-
-            logging.info(f"Downloading dataset from {self.url}")
-
-            response = requests.get(self.url, stream=True)
-            total_size = int(response.headers.get("content-length", 0))
-
-            with tempfile.NamedTemporaryFile("w+b") as f:
-
-                with tqdm(
-                    total=total_size,
-                    unit="B",
-                    unit_scale=True,
-                    desc=f"Downloading {self.name}",
-                ) as pbar:
-                    for chunk in response.iter_content(chunk_size=self._chunk_size):
-                        if chunk:
-                            f.write(chunk)
-                            pbar.update(len(chunk))
-
-                logging.info("Extract files from archive")
-                # extract the zip file
-                with zipfile.ZipFile(f) as tempzip:
-                    file_list = tempzip.namelist()
-                    total_files = len(file_list)
-
-                    with tqdm(
-                        total=total_files, unit="file", desc="Extracting"
-                    ) as pbar:
-                        for file_info in tempzip.infolist():
-                            pbar.update(1)
-                            tempzip.extract(file_info, path=path.absolute())
-        else:
+        if export_path.exists():
             logging.info(f"Dataset already available at {export_path}")
+        else:
+            # check if compressed dataset exists
+            if not archive_path.exists():
+
+                # download it since it is not available
+                with open(archive_path, "wb") as f:
+                    _ = self.download(f)
+
+            self.extract(archive_path, path)
 
         return export_path
 
@@ -235,43 +260,24 @@ class DLRDatasetManager:
         return self._dataset("openscenario", path)
 
 
-class DLRUTVersion(Enum):
-    """The available version of the DLR UT dataset"""
-
-    v1_0_0 = "v1.0.0"
-    """The initial version of the dataset
-    """
-    v1_0_1 = "v1.0.1"
-    """Contains only minor modifications in the documentation
-    """
-    v1_1_0 = "v1.1.0"
-    """The road condition information was moved into a new sub dataset from the weather data.
-    """
-    v1_2_0 = "v1.2.0"
-    """New folder structure to split raw and metadata. Add new metadata "traffic_volume" and "openscenario". Improve classification of pedestrians and bicycles.
-    """
-    latest = "v1.2.0"
-    """The latest version of the dataset
-    """
+dlr_ut_records = ZenodoConnector("DLR Urban Traffic dataset", parent_id=11396371)
+DLRUTVersion = dlr_ut_records.get_version_enum()
 
 
 class DLRUTDatasetManager(DLRDatasetManager):
     """A manager to load the DLR UT dataset from zenodo"""
 
     VERSION_ENUM = DLRUTVersion
-    VERSION = {
-        DLRUTVersion.v1_0_0.value: 11396372,
-        DLRUTVersion.v1_0_1.value: 13907201,
-        DLRUTVersion.v1_1_0.value: 14025010,
-        DLRUTVersion.v1_2_0.value: 14773161,
-        "latest": 14773161,
-    }
+    VERSION = dlr_ut_records.get_dois()
     """Dict[str, int]: An internal mapping between version and the zenodo id
     """
 
     ARCHIVE = dict(
-        {DLRUTVersion.v1_0_0.value: "DLR-UT"},
-        **{v: "DLR-Urban-Traffic-dataset" for v in list(VERSION.keys())[1:]},
+        **{
+            v: "DLR-Urban-Traffic-dataset"
+            for v in [key for key in VERSION if key != DLRUTVersion.v1_0_0.value]
+        },
+        **{DLRUTVersion.v1_0_0.value: "DLR-UT"},
     )
 
     @classmethod
@@ -480,29 +486,15 @@ class DLRUTTrafficLightDataset(TrafficLightDataset):
         return self.loc[self["state"] == signal_state]
 
 
-class DLRHTVersion(Enum):
-    """The available version of the DLR HT dataset"""
-
-    v1_0_0 = "v1.0.0"
-    """The initial version of the dataset
-    """
-    v1_1_0 = "v1.1.0"
-    """Add new metadata "openscenario" and improve object classification.
-    """
-    latest = "v1.1.0"
-    """The latest version of the dataset
-    """
+dlr_ht_records = ZenodoConnector("DLR Highway Traffic dataset", parent_id=14012005)
+DLRHTVersion = dlr_ht_records.get_version_enum()
 
 
 class DLRHTDatasetManager(DLRDatasetManager):
     """A manager to load the DLR HT dataset from zenodo"""
 
     VERSION_ENUM = DLRHTVersion
-    VERSION = {
-        DLRHTVersion.v1_0_0.value: 14012006,
-        DLRHTVersion.v1_1_0.value: 14811064,
-        "latest": 14811064,
-    }
+    VERSION = dlr_ht_records.get_dois()
     """Dict[str, int]: An internal mapping between version and the zenodo id
     """
 
