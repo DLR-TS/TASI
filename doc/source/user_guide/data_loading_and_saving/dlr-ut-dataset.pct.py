@@ -6,16 +6,21 @@
 #
 # ## Download dataset
 #
-# At first, we need to download the dataset. For that purpose, helper classes
-# are available in `tasi` that we will utilize in the following. In particular,
-# since we want to download the DLR UT dataset, we use the. The class contains a
-# `tasi.dlr.dataset.DLRUTVersion` enumerator that may be used to
-# specify the version of the dataset to download or to get the latest version.
+# At first, we need to download the dataset. For that purpose, the class `DLRUTDatasetManager`
+# is available in `tasi` that we will utilize in the following. The class `DLRUTVersion` is an
+# enumerator that may be used to specify the version of the dataset to download or to get the latest version.
+#
+# <div class="alert alert-info">
+# The following example will not download the dataset, but will use a local sample that is available in <strong>DATA_PATH</strong>.
+# If you want to download the latest version, change to <strong>DLRHTVersion.latest</strong> and update the <strong>path</strong> attribute.
+# </div>
 # %%
 import os
-from tasi.dlr.dataset import DLRUTDatasetManager, DLRUTVersion
 
-dataset = DLRUTDatasetManager(DLRUTVersion.latest)
+from tasi.dlr.dataset import DLRUTDatasetManager, DLRUTVersion
+from tasi.tests import DATA_PATH
+
+dataset = DLRUTDatasetManager(DLRUTVersion.v1_2_0, path=DATA_PATH)
 path = dataset.load()
 path
 # %% [markdown]
