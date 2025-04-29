@@ -144,7 +144,6 @@ class ObjectDatasetIndexingTestCase(DatasetTestCase):
         p1 = self.ds.att(self.ds.timestamps[0])
 
         self.assertTrue(isinstance(p1, PoseCollectionBase))
-
         self.assertFalse(isinstance(p1, Trajectory))
         self.assertFalse(isinstance(p1, TrajectoryDataset))
         self.assertFalse(isinstance(p1, Pose))
