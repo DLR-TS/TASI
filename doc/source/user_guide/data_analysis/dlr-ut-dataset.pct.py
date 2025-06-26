@@ -58,9 +58,9 @@ ds.trajectory(ds.ids[1])
 # %%
 ds.attributes
 # %% [markdown]
-# We can, for instance, access the traffic participants `center` position.
+# We can, for instance, access the traffic participants `location`.
 # %%
-ds.center
+ds.location
 # %% [markdown]
 # or the classification propabilities.
 # %%
@@ -114,8 +114,8 @@ ax = counts.plot(kind="bar")
 # %%
 import numpy as np
 
-gds = ds.as_geopandas("center")
-gds.set_geometry("center", inplace=True)
+gds = ds.as_geopandas("location")
+gds.set_geometry("location", inplace=True)
 tj_length = gds.length
 
 # create bins of width 100 measurements and count traffic participants within bins

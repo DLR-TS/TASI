@@ -15,7 +15,10 @@ dataset = DLRHTDatasetManager(DLRHTVersion.v1_1_0, path=DATA_PATH)
 dataset.load()
 
 ds = DLRTrajectoryDataset.from_csv(dataset.trajectory()[0])
+ds
 
+# %%
+ds.attributes
 # %% [markdown]
 # ## Attributes of the dataset
 # There are several attributes available to get information about a dataset. For
@@ -62,9 +65,9 @@ ds.trajectory(ds.ids[1])
 # %%
 ds.attributes
 # %% [markdown]
-# We can, for instance, access the traffic participants `center` position.
+# We can, for instance, access the traffic participants `location`.
 # %%
-ds.center
+ds.location
 # %% [markdown]
 # or the classification propabilities.
 # %%

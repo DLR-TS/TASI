@@ -243,10 +243,10 @@ class TrajectoryPlotter:
             if "label" not in tj_kwargs:
                 tj_kwargs["label"] = tj_class
 
-            # use the center position for plotting
+            # use the location attribute since it is the default
             ax.plot(
-                tj.center.easting,
-                tj.center.northing,
+                tj.location.easting,
+                tj.location.northing,
                 **tj_kwargs,
                 **kwargs,
             )
