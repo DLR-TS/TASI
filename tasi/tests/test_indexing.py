@@ -107,7 +107,7 @@ class ObjectDatasetIndexingTestCase(DatasetTestCase):
 
         self.assertTrue(isinstance(p1, PandasBase))
 
-        self.assertTrue(isinstance(p1, Pose))
+        self.assertTrue(isinstance(p1, PoseCollectionBase))
         np.testing.assert_array_equal(p1.index[0], self.ds.index[0])
         self.assertEqual(1, len(p1.timestamps))
 
