@@ -62,7 +62,7 @@ class Trajectory(TrajectoryBase):
 
     def as_geopandas(
         self,
-        position: Union[str, List[str], Tuple[str]] = "position",
+        position: Union[str, List[str], Tuple[str]] = "location",
         aggregate: bool = True,
     ):
         """

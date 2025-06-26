@@ -213,7 +213,7 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
             dimension,
             boundingbox,
             keys=[
-                "position",
+                "location",
                 "velocity",
                 "acceleration",
                 "heading",

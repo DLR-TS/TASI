@@ -38,7 +38,7 @@ class DatasetTestCase(TestCase):
 
         self.assertIsInstance(obj, TD)
 
-        self.assertTrue("position" in obj.attributes)
+        self.assertTrue("location" in obj.attributes)
         self.assertTrue("velocity" in obj.attributes)
         self.assertTrue("acceleration" in obj.attributes)
         self.assertTrue("boundingbox" in obj.attributes)
