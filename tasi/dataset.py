@@ -98,11 +98,17 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
         Raises:
             ValueError: If the value of "by" is neither 'pose' nor 'trajectory'.
         """
+        classifications = self.classifications
+
+        if classifications.columns.nlevel > 2:
+            # remove the second level to ensure result is not a tuple
+            classifications = classifications.droplevel(axis=1, level=1)
+
         if by == "pose":
-            return self.classifications.idxmax(axis=1)
+            return classifications.idxmax(axis=1)
 
         elif by == "trajectory":
-            trajectory_class = self.classifications.groupby("id").apply(
+            trajectory_class = classifications.groupby("id").apply(
                 lambda tj_classes: tj_classes.mean().idxmax()
             )
             trajectory_class.name = "classification"
