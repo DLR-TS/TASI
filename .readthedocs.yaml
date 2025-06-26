@@ -13,8 +13,6 @@ build:
       # https://python-poetry.org/docs/managing-dependencies/#dependency-groups
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry install --with docs
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry run python -c "import tilemapbase; tilemapbase.init(create=True)"
-      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry run dlr-downloader --name urban --path /tmp --version latest
-      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry run dlr-downloader --name highway --path /tmp --version latest
 
 sphinx:
   configuration: doc/source/conf.py

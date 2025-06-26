@@ -16,5 +16,12 @@ dist
 # compiled
 __pycache__
 
+# data
+etc
+*.csv
+*.xosc
+
 # IDE
 .vscode
+
+*.py
