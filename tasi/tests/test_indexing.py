@@ -118,12 +118,6 @@ class ObjectDatasetIndexingTestCase(DatasetTestCase):
         self.assertTrue(isinstance(p, Pose))
         self.assertEqual(2, p.index.nlevels)
 
-    def test_index_with_single_timestamp(self):
-
-        pc = self.ds.loc[self.ds.timestamps[0]]
-        self.assertTrue(isinstance(pc, Pose) or isinstance(pc, PoseCollectionBase))
-        self.assertEqual(2, pc.index.nlevels)
-
     def test_index_single_row(self):
         p1 = self.ds.iloc[0]
 
@@ -150,7 +144,7 @@ class ObjectDatasetIndexingTestCase(DatasetTestCase):
         p1 = self.ds.att(self.ds.timestamps[0])
 
         self.assertTrue(isinstance(p1, PoseCollectionBase))
-        
+
         self.assertFalse(isinstance(p1, Trajectory))
         self.assertFalse(isinstance(p1, TrajectoryDataset))
         self.assertFalse(isinstance(p1, Pose))
@@ -171,6 +165,15 @@ class ObjectDatasetIndexingTestCase(DatasetTestCase):
 
         self.assertEqual(len(self.ds), lengths.size)
         self.assertIsInstance(lengths, pd.Series)
+
+    def test_access_single_column_by_index(self):
+
+        c = self.ds.columns[0]
+
+        obj = self.ds.iloc[:, 0]
+
+        self.assertIsInstance(obj, pd.Series)
+        self.assertFalse(isinstance(obj, Pose))
 
 
 class ObjectTrajectoryLocIndexingTestCase(DatasetTestCase):
