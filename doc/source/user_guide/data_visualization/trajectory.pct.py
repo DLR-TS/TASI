@@ -122,15 +122,15 @@ ds = ut.to_tasi()
 ds.head()
 # %% [markdown]
 # Note that the `boundingbox` attribute was added in this step. Since  `ds` is a `tasi.TrajectoryDataset` it
-# also uses `pandas`. Hence, we will now convert to use `geopandas` while the `position` attribute should be encoded as
+# also uses `pandas`. Hence, we will now convert to use `geopandas` while the `location` attribute should be encoded as
 # a `GeoObject`.
 # %%
-gds = ds.as_geopandas("position")
+gds = ds.as_geopandas("location")
 # %% [markdown]
-# We need to set the position attribute as the
+# We need to set the location attribute as the
 # [*active*](https://geopandas.org/en/stable/docs/user_guide/data_structures.html#geodataframe) geometry.
 # %%
-gds.set_geometry("position", inplace=True)
+gds.set_geometry("location", inplace=True)
 # %% [markdown]
 # Now, we are ready to visualize the trajectories in a dynamic window, while we use the "CartoDB positron" background
 # layer for reference.
