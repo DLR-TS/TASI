@@ -1,9 +1,9 @@
-from typing import List, Optional, Tuple, Union, Dict, Any
+from copy import copy
+from typing import Any, Dict, List, Optional, Tuple, Union
+
 import numpy as np
 import pandas as pd
-from copy import copy
-
-from shapely import MultiPoint, Point, MultiLineString, LineString
+from shapely import LineString, MultiLineString, MultiPoint, Point
 
 MULTI_INDEX_SEPERATOR = "|"
 
