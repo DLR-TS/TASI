@@ -100,7 +100,7 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
         """
         classifications: pd.DataFrame = self.classifications  # type: ignore
 
-        if classifications.columns.nlevels > 2:
+        if classifications.columns.nlevels >= 2:
             # remove the second level to ensure result is not a tuple
             classifications = classifications.droplevel(axis=1, level=1)
 
