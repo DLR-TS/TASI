@@ -6,13 +6,14 @@
 # ## Load trajectory data
 # At first, we need to load the trajectory data of the dataset.
 # %%
-from tasi.dlr import DLRTrajectoryDataset
-from tasi.dlr.dataset import DLRUTDatasetManager, DLRUTVersion
 
-dataset = DLRUTDatasetManager(DLRUTVersion.latest)
+from tasi.dlr.dataset import DLRTrajectoryDataset, DLRUTDatasetManager, DLRUTVersion
+from tasi.tests import DATA_PATH
+
+dataset = DLRUTDatasetManager(DLRUTVersion.v1_2_0, path=DATA_PATH)
 dataset.load()
 
-ds = DLRTrajectoryDataset.from_csv(dataset.trajectory()[50])
+ds = DLRTrajectoryDataset.from_csv(dataset.trajectory()[0])
 
 # %% [markdown]
 # ## Attributes of the dataset

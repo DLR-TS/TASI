@@ -18,6 +18,10 @@ __pycache__
 
 # data
 etc
+*.csv
+*.xosc
 
 # IDE
 .vscode
+
+*.py

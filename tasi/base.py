@@ -279,7 +279,9 @@ class PoseCollectionBase(CollectionBase):
                 obj = PoseCollectionBase(df)
                 if obj.ids.size == 1:
                     return self._trajectory_constructor(df)
-                return self._constructor(df)
+                elif obj.timestamps.size > 1:
+                    return self._constructor(df)
+                return obj
 
         else:
             if not isinstance(df, pd.Series):
