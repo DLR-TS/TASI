@@ -1,8 +1,8 @@
 import numpy as np
 
 from tasi.dataset import TrajectoryDataset
-from tasi.trajectory import Trajectory
 from tasi.pose import Pose
+from tasi.trajectory import Trajectory
 
 from . import DatasetTestCase
 

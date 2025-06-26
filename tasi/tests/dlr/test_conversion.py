@@ -1,7 +1,8 @@
 import logging
 from unittest import TestCase
 
-from tasi.dlr.dataset import DLRUTDatasetManager as Manager, DLRTrajectoryDataset
+from tasi.dlr.dataset import DLRTrajectoryDataset
+from tasi.dlr.dataset import DLRUTDatasetManager as Manager
 
 logging.getLogger().setLevel(logging.ERROR)
 

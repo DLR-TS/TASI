@@ -1,7 +1,8 @@
 import logging
 
+from tasi.dlr.dataset import DLRTrajectoryDataset, ObjectClass
+
 from .. import DatasetTestCase
-from tasi.dlr.dataset import ObjectClass, DLRTrajectoryDataset
 
 logging.getLogger().setLevel(logging.ERROR)
 

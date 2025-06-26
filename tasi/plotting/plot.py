@@ -1,8 +1,9 @@
-from typing import ClassVar, Tuple
+from typing import Tuple
+
+import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.colors import ListedColormap
-import numpy as np
 from tilemapbase.mapping import Plotter
 
 from tasi.dataset import TrajectoryDataset
@@ -113,13 +114,13 @@ class BoundingboxPlotter(Plotter):
             else:
 
                 default_config.update(
-                    {"x": 1.02, "y": 0.01, "rotation": 90,
-                        "ha": "left", "va": "bottom"}
+                    {"x": 1.02, "y": 0.01, "rotation": 90, "ha": "left", "va": "bottom"}
                 )
 
                 default_config.update(attribution_kwargs)
 
                 ax.text(**default_config)
+
     @property
     def extent(self):
         """
@@ -214,8 +215,7 @@ class TrajectoryPlotter:
 
         # get mapping of classes to colors
         if self.OBJECT_CLASS_COLORS is None:
-            object_class_colors = {c: i for i,
-                                   c in enumerate(tj_classes.unique())}
+            object_class_colors = {c: i for i, c in enumerate(tj_classes.unique())}
         else:
             object_class_colors = self.OBJECT_CLASS_COLORS
 
@@ -233,8 +233,7 @@ class TrajectoryPlotter:
                 if color is None:
 
                     # set default color
-                    tj_kwargs["color"] = self.palette(
-                        object_class_colors[tj_class])
+                    tj_kwargs["color"] = self.palette(object_class_colors[tj_class])
 
                 else:
 

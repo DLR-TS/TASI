@@ -1,13 +1,11 @@
 from unittest import TestCase
 
 
-
 class TestModuleImport(TestCase):
-
 
     def load_dataset(self):
         from tasi.dataset import Dataset
-        
+
     def load_traffic_light_dataset(self):
         from tasi.dataset import TrafficLightDataset
 

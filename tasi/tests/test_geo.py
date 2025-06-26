@@ -1,10 +1,10 @@
 from unittest import TestCase
 
-from . import DatasetTestCase
-
 import geopandas as gpd
 
 from tasi import GeoPose, GeoTrajectory, GeoTrajectoryDataset
+
+from . import DatasetTestCase
 
 
 class GeoConversionTestCase(DatasetTestCase):

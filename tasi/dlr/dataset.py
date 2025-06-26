@@ -1,27 +1,25 @@
 import logging
 import os
 import tarfile
-import tempfile
 import zipfile
 from enum import Enum, IntEnum
 from io import TextIOWrapper
 from pathlib import Path
-from typing import List, Union, Tuple
-
-import numpy as np
-import requests
-from tqdm import tqdm
-from tasi.base import PandasBase
-from tasi.dataset import (
-    TrafficLightDataset,
-    TrajectoryDataset,
-    WeatherDataset,
-    AirQualityDataset,
-    RoadConditionDataset,
-    TrafficVolumeDataset,
-)
+from typing import List, Tuple, Union
 
 import pandas as pd
+import requests
+from tqdm import tqdm
+
+from tasi.base import PandasBase
+from tasi.dataset import (
+    AirQualityDataset,
+    RoadConditionDataset,
+    TrafficLightDataset,
+    TrafficVolumeDataset,
+    TrajectoryDataset,
+    WeatherDataset,
+)
 from tasi.io.zenodo import ZenodoConnector
 from tasi.tests import DATA_PATH
 

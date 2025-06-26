@@ -1,8 +1,9 @@
 import os
+import shutil
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest import TestCase
 from unittest.mock import Mock
-from tempfile import TemporaryDirectory
 
 from tasi.dlr.dataset import (
     DLRHTDatasetManager,
@@ -11,8 +12,6 @@ from tasi.dlr.dataset import (
     DLRUTVersion,
 )
 from tasi.tests import DATA_PATH
-
-import shutil
 
 
 class DLRUTExtractTestCase(TestCase):
