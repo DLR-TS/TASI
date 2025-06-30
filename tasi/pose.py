@@ -104,13 +104,16 @@ class Pose(PoseBase):
         return cls(df)
 
     def as_geopandas(
-        self, position: Union[str, List[str], Tuple[str]] = "position"
+        self,
+        position: Union[str, List[str], Tuple[str]] = "position",
+        active="position",
     ) -> GeoPose:
         """Convert the pose to a geometric representation
 
 
         Args:
             position (Union[str, List[str], Tuple[str]], optional): The position information to encode. Defaults to "position".
+            active: (Optional[str]): The active geometry. Defaults to "position".
 
         Returns:
             GeoPose: Geospatial representation of the pose.
@@ -133,6 +136,8 @@ class Pose(PoseBase):
         positions.index = self.index
 
         pose = GeoPose(add_attributes(self.drop(columns=position), positions))
+        pose.set_geometry(active, inplace=True)
+
         return pose
 
 
