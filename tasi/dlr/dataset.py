@@ -444,7 +444,7 @@ class DLRTrajectoryDataset(TrajectoryDataset):
 
     def to_tasi(self) -> TrajectoryDataset:
         return super().from_attributes(
-            location=self.center,
+            position=self.center,
             velocity=self.velocity,
             acceleration=self.acceleration,
             heading=self.yaw,

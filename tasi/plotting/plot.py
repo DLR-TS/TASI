@@ -43,7 +43,7 @@ class BoundingboxPlotter(Plotter):
         **kwargs
     ):
         """
-        Draw the tile for the center location given by ``center`` within the current extend and and zoom into the tile according to `zoom`.
+        Draw the tile for the center position given by ``center`` within the current extend and and zoom into the tile according to `zoom`.
 
         Args:
             ax (plt.Axes): The axes to plot onto.
@@ -243,10 +243,10 @@ class TrajectoryPlotter:
             if "label" not in tj_kwargs:
                 tj_kwargs["label"] = tj_class
 
-            # use the center position for plotting
+            # use the position attribute since it is the default
             ax.plot(
-                tj.center.easting,
-                tj.center.northing,
+                tj.position.easting,
+                tj.position.northing,
                 **tj_kwargs,
                 **kwargs,
             )
