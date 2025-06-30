@@ -165,7 +165,7 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
     @classmethod
     def from_attributes(
         cls,
-        location: pd.DataFrame,
+        position: pd.DataFrame,
         velocity: pd.DataFrame,
         acceleration: pd.DataFrame,
         heading: Union[pd.Series, pd.DataFrame],
@@ -183,18 +183,18 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
             from tasi.calculus import boundingbox_from_dimension
 
             boundingbox = boundingbox_from_dimension(
-                dimension, heading, relative_to=location
+                dimension, heading, relative_to=position
             )
 
         if velocity.empty:
             from tasi.calculus import calc_velocity_from_origins
 
-            velocity = calc_velocity_from_origins(location)
+            velocity = calc_velocity_from_origins(position)
 
         if acceleration.empty:
             from tasi.calculus import calc_acceleration_from_origins
 
-            acceleration = calc_acceleration_from_origins(location)
+            acceleration = calc_acceleration_from_origins(position)
 
         if yaw_rate is None or yaw_rate.empty:
             from tasi.calculus import calc_yaw_rate_from_headings
@@ -204,7 +204,7 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
         from tasi.utils import add_attributes
 
         df = add_attributes(
-            location,
+            position,
             velocity,
             acceleration,
             heading,
@@ -213,7 +213,7 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
             dimension,
             boundingbox,
             keys=[
-                "location",
+                "position",
                 "velocity",
                 "acceleration",
                 "heading",

@@ -22,7 +22,7 @@ class DatasetTestCase(TestCase):
         import pandas as pd
 
         DLRTrajectoryDataset.from_attributes(
-            location=self.ds.center,
+            position=self.ds.center,
             velocity=pd.DataFrame(),
             acceleration=pd.DataFrame(),
             heading=self.ds.yaw,
@@ -38,7 +38,7 @@ class DatasetTestCase(TestCase):
 
         self.assertIsInstance(obj, TD)
 
-        self.assertTrue("location" in obj.attributes)
+        self.assertTrue("position" in obj.attributes)
         self.assertTrue("velocity" in obj.attributes)
         self.assertTrue("acceleration" in obj.attributes)
         self.assertTrue("boundingbox" in obj.attributes)

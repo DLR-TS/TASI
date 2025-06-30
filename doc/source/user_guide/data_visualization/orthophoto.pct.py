@@ -54,7 +54,7 @@ roi = np.array([604725, 5792760, 604810, 5792830]).reshape(-1, 2)
 plotter = BoundingboxPlotter(roi, LowerSaxonyOrthophotoTile())
 plotter.plot(ax)
 # %% [markdown]
-# The location of the attribution changes based on the shape of the region of
+# The position of the attribution changes based on the shape of the region of
 # interest, while the font size is fixed. You can change via the
 # `attribution_kwargs` argument.
 # %%

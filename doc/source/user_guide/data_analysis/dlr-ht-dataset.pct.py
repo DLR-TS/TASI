@@ -65,9 +65,9 @@ ds.trajectory(ds.ids[1])
 # %%
 ds.attributes
 # %% [markdown]
-# We can, for instance, access the traffic participants `location`.
+# We can, for instance, access the traffic participants `position`.
 # %%
-ds.location
+ds.position
 # %% [markdown]
 # or the classification propabilities.
 # %%
