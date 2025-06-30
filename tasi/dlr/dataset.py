@@ -444,7 +444,7 @@ class DLRTrajectoryDataset(TrajectoryDataset):
 
     def to_tasi(self) -> TrajectoryDataset:
         return super().from_attributes(
-            position=self.center,
+            position=self.position,
             velocity=self.velocity,
             acceleration=self.acceleration,
             heading=self.yaw,
@@ -454,7 +454,11 @@ class DLRTrajectoryDataset(TrajectoryDataset):
 
     @classmethod
     def from_csv(cls, file, indices: Tuple = (), **kwargs):
-        return super().from_csv(file, indices, seperator="_", **kwargs)
+        return (
+            super()
+            .from_csv(file, indices, seperator="_", **kwargs)
+            .rename(columns={"center": "position"})
+        )
 
 
 class DLRUTTrafficLightDataset(TrafficLightDataset):
