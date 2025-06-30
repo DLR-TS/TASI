@@ -226,7 +226,9 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
 
         return cls(df)
 
-    def as_geopandas(self, *args, **kwargs) -> "GeoTrajectoryDataset":
+    def as_geopandas(
+        self, *args, activate: Union[str, Tuple[str]] = "position", **kwargs
+    ) -> "GeoTrajectoryDataset":
         """Convert to a geospatial representation using `geopandas`.
 
         Returns:
@@ -237,7 +239,10 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
             self.trajectory(tjid).as_geopandas(*args, **kwargs) for tjid in self.ids
         ]
 
-        return GeoTrajectoryDataset.from_trajectories(gtjs)
+        gds = GeoTrajectoryDataset.from_trajectories(gtjs)
+        gds.set_geometry(activate, inplace=True)
+
+        return gds
 
     @classmethod
     def from_trajectories(cls, tjs: List[Trajectory]) -> Self:

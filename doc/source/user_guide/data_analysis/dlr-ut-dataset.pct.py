@@ -115,7 +115,6 @@ ax = counts.plot(kind="bar")
 import numpy as np
 
 gds = ds.as_geopandas("position")
-gds.set_geometry("position", inplace=True)
 tj_length = gds.length
 
 # create bins of width 100 measurements and count traffic participants within bins
