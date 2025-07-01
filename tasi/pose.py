@@ -154,7 +154,7 @@ class GeoPose(PoseBase, gpd.GeoDataFrame):
         return pd.Series
 
     @classmethod
-    def from_objectpose(
+    def from_pose(
         cls, pose: Pose, position: Union[str, List[str], Tuple[str]] = "position"
     ):
         return pose.as_geopandas(position=position)
