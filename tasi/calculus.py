@@ -328,7 +328,7 @@ def rotate_points(
     return _rotate_vectors_multiple_angles(points, np.ascontiguousarray(angle.ravel()))
 
 
-def calc_velocity_from_origins(origins: pd.DataFrame) -> pd.Series:
+def calc_velocity_from_origins(origins: pd.DataFrame) -> pd.DataFrame:
     """
     Estimate the velocities based on the given vehicle origins
 
@@ -356,7 +356,7 @@ def calc_velocity_from_origins(origins: pd.DataFrame) -> pd.Series:
     return velocity
 
 
-def calc_acceleration_from_origins(origins: pd.DataFrame) -> pd.Series:
+def calc_acceleration_from_origins(origins: pd.DataFrame) -> pd.DataFrame:
     """
     Estimate the acceleration based on the given vehicle origins
 

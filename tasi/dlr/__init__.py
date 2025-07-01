@@ -1,10 +1,10 @@
 from .dataset import (
-    ObjectClass,
     DLRDatasetManager,
-    DLRUTDatasetManager,
     DLRHTDatasetManager,
+    DLRHTVersion,
     DLRTrajectoryDataset,
+    DLRUTDatasetManager,
     DLRUTTrafficLightDataset,
     DLRUTVersion,
-    DLRHTVersion,
+    ObjectClass,
 )

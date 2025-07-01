@@ -64,13 +64,15 @@ class IndexMixin:
     ID_COLUMN = "id"
 
     @property
-    def ids(self) -> np.ndarray[np.int64]:
+    def ids(self) -> pd.Index:
         """Returns the unique ids in the dataset
 
         Returns:
             np.ndarray: A List of ids
         """
-        return self.index.get_level_values(self.ID_COLUMN).unique()
+        idx: pd.MultiIndex = self.index  # type: ignore
+
+        return idx.get_level_values(self.ID_COLUMN).unique()
 
 
 class TASIBase(LocatableEntity):

@@ -63,6 +63,7 @@ class TrajectoryDatasetAccess(DatasetTestCase):
         df_classes = self.ds.most_likely_class(by="pose")
 
         self.assertIsInstance(df_classes, pd.Series)
+        self.assertIsInstance(df_classes.iloc[0], str)
         self.assertEqual(len(df_classes), len(self.ds))
 
     def test_get_classifications_by_trajectory_broascast(self):

@@ -1,3 +1,4 @@
+from datetime import datetime
 from functools import partial
 from typing import List, Tuple, Union
 
@@ -49,14 +50,71 @@ class Pose(PoseBase):
     def _constructor_sliced(self):
         return pd.Series
 
+    @classmethod
+    def from_attributes(
+        cls,
+        index: int,
+        timestamp: datetime,
+        position: pd.DataFrame,
+        velocity: pd.DataFrame,
+        acceleration: pd.DataFrame,
+        heading: Union[pd.Series, pd.DataFrame],
+        classifications: pd.DataFrame,
+        yaw_rate: Union[pd.Series, pd.DataFrame] | None = None,
+        dimension: pd.DataFrame | None = None,
+        boundingbox: pd.DataFrame | None = None,
+    ):
+        attributes = {
+            "position": position,
+            "velocity": velocity,
+            "acceleration": acceleration,
+            "heading": heading,
+            "classifications": classifications,
+        }
+
+        assert not (
+            dimension is None and boundingbox is None
+        ), "either dimension or boundingbox needs to be specified"
+
+        if dimension is not None:
+            attributes["dimension"] = dimension
+
+        if (boundingbox is None or boundingbox.empty) and dimension is not None:
+            from tasi.calculus import boundingbox_from_dimension
+
+            boundingbox = boundingbox_from_dimension(
+                dimension, heading, relative_to=position
+            )
+
+        attributes["boundingbox"] = boundingbox
+
+        if yaw_rate is not None:
+            attributes["yaw_rate"] = yaw_rate
+
+        from tasi.utils import add_attributes
+
+        df = add_attributes(
+            *list(attributes.values()),
+            keys=list(attributes.keys()),
+        )
+        df.index = pd.MultiIndex.from_arrays(
+            [[timestamp], [index]],
+            names=cls.INDEX_COLUMNS,
+        )
+
+        return cls(df)
+
     def as_geopandas(
-        self, position: Union[str, List[str], Tuple[str]] = "position"
+        self,
+        position: Union[str, List[str], Tuple[str]] = "position",
+        active="position",
     ) -> GeoPose:
         """Convert the pose to a geometric representation
 
 
         Args:
             position (Union[str, List[str], Tuple[str]], optional): The position information to encode. Defaults to "position".
+            active: (Optional[str]): The active geometry. Defaults to "position".
 
         Returns:
             GeoPose: Geospatial representation of the pose.
@@ -79,6 +137,8 @@ class Pose(PoseBase):
         positions.index = self.index
 
         pose = GeoPose(add_attributes(self.drop(columns=position), positions))
+        pose.set_geometry(active, inplace=True)
+
         return pose
 
 
@@ -94,7 +154,7 @@ class GeoPose(PoseBase, gpd.GeoDataFrame):
         return pd.Series
 
     @classmethod
-    def from_objectpose(
+    def from_pose(
         cls, pose: Pose, position: Union[str, List[str], Tuple[str]] = "position"
     ):
         return pose.as_geopandas(position=position)

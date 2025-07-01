@@ -7,7 +7,7 @@
 # At first, we need to load the trajectory data of the dataset.
 # %%
 
-from tasi.dlr.dataset import DLRUTDatasetManager, DLRUTVersion, DLRTrajectoryDataset
+from tasi.dlr.dataset import DLRTrajectoryDataset, DLRUTDatasetManager, DLRUTVersion
 from tasi.tests import DATA_PATH
 
 dataset = DLRUTDatasetManager(DLRUTVersion.v1_2_0, path=DATA_PATH)
@@ -58,9 +58,9 @@ ds.trajectory(ds.ids[1])
 # %%
 ds.attributes
 # %% [markdown]
-# We can, for instance, access the traffic participants `center` position.
+# We can, for instance, access the traffic participants `position`.
 # %%
-ds.center
+ds.position
 # %% [markdown]
 # or the classification propabilities.
 # %%
@@ -114,8 +114,7 @@ ax = counts.plot(kind="bar")
 # %%
 import numpy as np
 
-gds = ds.as_geopandas("center")
-gds.set_geometry("center", inplace=True)
+gds = ds.as_geopandas("position")
 tj_length = gds.length
 
 # create bins of width 100 measurements and count traffic participants within bins

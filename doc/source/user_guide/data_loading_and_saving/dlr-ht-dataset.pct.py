@@ -17,6 +17,7 @@
 #
 # %%
 import os
+
 from tasi.dlr.dataset import DLRHTDatasetManager, DLRHTVersion
 from tasi.tests import DATA_PATH
 
@@ -51,7 +52,7 @@ ds
 # traffic participant's state and its `id` as a unique identifier.
 #
 # The traffic participant's state include various information, including the
-# center position, the velocity, dimension and classification type.
+# boundingbox positions, the velocity, dimension and classification type.
 #
 # ## Load weather data
 #

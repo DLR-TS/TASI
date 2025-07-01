@@ -1,100 +1,99 @@
 stages:
-    - build
-    - images
-    - test
-    - deploy
+  - build
+  - images
+  - test
+  - deploy
 
 .build_base: &build_base
-    stage: build
+  stage: build
 
-    image: ${DLR_REGISTRY}/python:v3.11.12
+  image: ${DLR_REGISTRY}/python:v3.11.12
 
-    before_script:
-        - poetry install --with=build
-        - poetry run python update-version.py
+  before_script:
+    - poetry install --with=build
+    - poetry run python update-version.py
 
-    script:
-        - poetry build --format=${CI_JOB_NAME}
+  script:
+    - poetry build --format=${CI_JOB_NAME}
 
-    artifacts:
-        paths:
-            - dist
-        expire_in: 1 week
+  artifacts:
+    paths:
+      - dist
+    expire_in: 1 week
 
 .test_base: &test_base
-    <<: *build_base
+  <<: *build_base
 
-    stage: test
+  stage: test
 
-    image: ${DLR_REGISTRY}/python:v3.11.12
+  image: ${DLR_REGISTRY}/python:v3.11.12
 
-    before_script:
-        - apt-get update && apt-get install -y pandoc
-        - poetry install --with=test
-        - poetry run python update-version.py
+  before_script:
+    - apt-get update && apt-get install -y pandoc
+    - poetry install --with=test
+    - poetry run python update-version.py
 
 wheel:
-    <<: *build_base
+  <<: *build_base
 
 sdist:
-    <<: *build_base
-
+  <<: *build_base
 
 test:
-    <<: *test_base
+  <<: *test_base
 
-    # regex to grep coverage
-    coverage: '/TOTAL.* (\d{1,3}%)/'
+  # regex to grep coverage
+  coverage: '/TOTAL.* (\d{1,3}%)/'
 
-    script:
-        - poetry run pytest tasi --cov=tasi --cov-report=html:coverage
+  script:
+    - poetry run pytest tasi --cov=tasi --cov-report=html:coverage
 
-    artifacts:
-        paths:
-            # save the coverage results to create html results in the next stage
-            - coverage
+  artifacts:
+    paths:
+      # save the coverage results to create html results in the next stage
+      - coverage
 
-    needs:
-        - job: wheel
-        - job: sdist
+  needs:
+    - job: wheel
+    - job: sdist
 
 doc:
-    <<: *test_base
+  <<: *test_base
 
-    script:
-        - poetry run python -c "import tilemapbase; tilemapbase.init(create=True);"
-        - SPHINXOPTS="-j 8" poetry run make -C doc html
-        # move the HTML doc to the local directory
-        - mv doc/build/html ./html
+  script:
+    - poetry run python -c "import tilemapbase; tilemapbase.init(create=True);"
+    - SPHINXOPTS="-j 8" poetry run make -C doc html
+    # move the HTML doc to the local directory
+    - mv doc/build/html ./html
 
-    artifacts:
-        paths:
-            - html
-        expire_in: 1 week
+  artifacts:
+    paths:
+      - html
+    expire_in: 1 week
 
-    needs:
-        - job: wheel
-        - job: sdist
+  needs:
+    - job: wheel
+    - job: sdist
 
 pages:
-    stage: deploy
+  stage: deploy
 
-    script:
-        # rename the documentation to public
-        - mv html public/
-        # move the html coverage results into the documentation page
-        - mv coverage public/coverage
+  script:
+    # rename the documentation to public
+    - mv html public/
+    # move the html coverage results into the documentation page
+    - mv coverage public/coverage
 
-    only:
-        - master
-        - tags
+  only:
+    - master
+    - tags
 
-    artifacts:
-        paths:
-            - public # All relevant content needs to be available here
+  artifacts:
+    paths:
+      - public # All relevant content needs to be available here
 
-    needs:
-        - job: test
-          artifacts: true
-        - job: doc
-          artifacts: true
+  needs:
+    - job: test
+      artifacts: true
+    - job: doc
+      artifacts: true

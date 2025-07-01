@@ -47,7 +47,7 @@ ds
 # traffic participant's state and its `id` as a unique identifier.
 #
 # The traffic participant's state include various information, including the
-# center position, the velocity, dimension and classification type.
+# boundingbox position, the velocity, dimension and classification type.
 #
 # ## Load traffic light data
 #
