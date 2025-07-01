@@ -45,7 +45,7 @@ dlr-downloader = "tasi.dlr.dataset:download"
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
-testpaths = [ "tests", "tasi",]
+testpaths = [ "tasi/tests"]
 doctest_optionflags = [ "ELLIPSIS", "NORMALIZE_WHITESPACE", "IGNORE_EXCEPTION_DETAIL",]
 
 [tool.coverage.run]
