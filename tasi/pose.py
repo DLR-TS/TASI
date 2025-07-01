@@ -72,8 +72,8 @@ class Pose(PoseBase):
             "classifications": classifications,
         }
 
-        assert (
-            dimension is None or boundingbox is None
+        assert not (
+            dimension is None and boundingbox is None
         ), "either dimension or boundingbox needs to be specified"
 
         if dimension is not None:
@@ -85,7 +85,8 @@ class Pose(PoseBase):
             boundingbox = boundingbox_from_dimension(
                 dimension, heading, relative_to=position
             )
-            attributes["boundingbox"] = boundingbox
+
+        attributes["boundingbox"] = boundingbox
 
         if yaw_rate is not None:
             attributes["yaw_rate"] = yaw_rate
