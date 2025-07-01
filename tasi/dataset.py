@@ -100,7 +100,7 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
         """
         classifications: pd.DataFrame = self.classifications  # type: ignore
 
-        if classifications.columns.nlevels > 2:
+        if classifications.columns.nlevels >= 2:
             # remove the second level to ensure result is not a tuple
             classifications = classifications.droplevel(axis=1, level=1)
 
@@ -165,7 +165,7 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
     @classmethod
     def from_attributes(
         cls,
-        location: pd.DataFrame,
+        position: pd.DataFrame,
         velocity: pd.DataFrame,
         acceleration: pd.DataFrame,
         heading: Union[pd.Series, pd.DataFrame],
@@ -183,18 +183,18 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
             from tasi.calculus import boundingbox_from_dimension
 
             boundingbox = boundingbox_from_dimension(
-                dimension, heading, relative_to=location
+                dimension, heading, relative_to=position
             )
 
         if velocity.empty:
             from tasi.calculus import calc_velocity_from_origins
 
-            velocity = calc_velocity_from_origins(location)
+            velocity = calc_velocity_from_origins(position)
 
         if acceleration.empty:
             from tasi.calculus import calc_acceleration_from_origins
 
-            acceleration = calc_acceleration_from_origins(location)
+            acceleration = calc_acceleration_from_origins(position)
 
         if yaw_rate is None or yaw_rate.empty:
             from tasi.calculus import calc_yaw_rate_from_headings
@@ -204,7 +204,7 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
         from tasi.utils import add_attributes
 
         df = add_attributes(
-            location,
+            position,
             velocity,
             acceleration,
             heading,
@@ -226,7 +226,9 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
 
         return cls(df)
 
-    def as_geopandas(self, *args, **kwargs) -> "GeoTrajectoryDataset":
+    def as_geopandas(
+        self, *args, activate: Union[str, Tuple[str]] = "position", **kwargs
+    ) -> "GeoTrajectoryDataset":
         """Convert to a geospatial representation using `geopandas`.
 
         Returns:
@@ -237,7 +239,10 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
             self.trajectory(tjid).as_geopandas(*args, **kwargs) for tjid in self.ids
         ]
 
-        return GeoTrajectoryDataset.from_trajectories(gtjs)
+        gds = GeoTrajectoryDataset.from_trajectories(gtjs)
+        gds.set_geometry(activate, inplace=True)
+
+        return gds
 
     @classmethod
     def from_trajectories(cls, tjs: List[Trajectory]) -> Self:
