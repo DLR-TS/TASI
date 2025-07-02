@@ -4,7 +4,7 @@
 User guide
 ###############
 
-Welcome to the ``tasi`` User-Guide 😀 In this section you will find some examples for different use-cases ``tasi`` can
+Welcome to the ``TASI`` User-Guide 😀 In this section you will find some examples for different use-cases ``TASI`` can
 be used for. If you have any questions or comments, feel free to raise an issue!
 
 .. raw:: html

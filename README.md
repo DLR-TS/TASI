@@ -11,7 +11,7 @@ traffic situation analysis and interpretation applications.
 
 ## Getting started
 
-Install `tasi` from the PyPi registry.
+Install ``TASI`` from the PyPi registry.
 ```bash
 pip install tasi
 ```

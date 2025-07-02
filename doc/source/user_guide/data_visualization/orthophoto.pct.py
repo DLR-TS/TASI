@@ -3,7 +3,7 @@
 #
 # If we work with trajectory data, we often want to visualize information from a
 # so called <em>birds eye view</em> on some digital layers, such as ortophotos.
-# Typically, those layers are provided by some Web Map Service (WMS). `tasi` is
+# Typically, those layers are provided by some Web Map Service (WMS). ``TASI`` is
 # equipped with classes that allows to query such WMS servers and visualize
 # them.
 #
@@ -19,18 +19,18 @@
 # In `tilemapbase`, visualization of images provided by a WMS server is managed
 # by two entities, a `Tile` and a `Plotter`. The `Tile` is the interface to the
 # WMS server and, originally, requires a center position and a zoom level since
-# this is the interface by [OSM](https://www.openstreetmap.org). In `tasi` a
+# this is the interface by [OSM](https://www.openstreetmap.org). In ``TASI`` a
 # customized version is available that allows to query WMS servers that
 # requires to specify a boundingbox using a 2-point definition (boundingbox tile).
 #
-# In `tasi` there is already a custom `Tile`, the `LowerSaxonyOrthophotoTile`
+# In ``TASI`` there is already a custom `Tile`, the `LowerSaxonyOrthophotoTile`
 # that provides access to the  orthophoto of Lower Saxony which is provided by
 # the [Landesamt für Geoinformation und Landesvermessung
 # Niedersachsen](https://ni-lgln-opengeodata.hub.arcgis.com/).
 #
 # Since in `tilemapbase`, the interface to the WMS server requires to specify a
-# center position and a zoom level, we have to adapt the original `Plotter`
-# since it would not work with a boundingbox tile. In `tasi`, the
+# position and a zoom level, we have to adapt the original `Plotter`
+# since it would not work with a boundingbox tile. In ``TASI``, the
 # `BoundingboxPlotter` is available that is a custom plotter that works with
 # these tiles.
 # %%
