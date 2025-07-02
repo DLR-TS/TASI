@@ -22,7 +22,7 @@ class DatasetTestCase(TestCase):
         import pandas as pd
 
         DLRTrajectoryDataset.from_attributes(
-            position=self.ds.center,
+            position=self.ds.position,
             velocity=pd.DataFrame(),
             acceleration=pd.DataFrame(),
             heading=self.ds.yaw,

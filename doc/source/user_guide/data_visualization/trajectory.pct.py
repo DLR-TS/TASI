@@ -2,7 +2,7 @@
 # # Visualization of trajectories
 # If we work with trajectory data, we often want to visualize them from a
 # so called `birds eye view`. The following example demonstrates how to achieve
-# this with `tasi` using the [DLR Urban Traffic Dataset](https://doi.org/10.5281/zenodo.11396371).
+# this with ``TASI`` using the [DLR Urban Traffic Dataset](https://doi.org/10.5281/zenodo.11396371).
 #
 # ## Load trajectories
 # At first, let's load trajectories from the DLR dataset.
@@ -111,12 +111,12 @@ tj_plotter.plot(ht, ax=ax)
 _ = ax.axis("off")
 # %% [markdown]
 # ## Visualizing geospatial trajectories
-# The `tasi` model for representing trajectory data using geospatial objects opens the world to utilize tools that
+# The ``TASI`` model for representing trajectory data using geospatial objects opens the world to utilize tools that
 # support `geopandas`. For instance, if you want an interactive view on trajectory data, we can utilize
 # [folium](https://python-visualization.github.io/folium/latest/) via `geopandas`. For this purpose, we need two
 # conversion steps.
 #
-# At first, we need to convert the dataset to a native `tasi` representation.
+# At first, we need to convert the dataset to a native ``TASI`` representation.
 # %%
 ds = ut.to_tasi()
 ds.head()

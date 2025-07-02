@@ -89,9 +89,9 @@ class ObjectDatasetAccessColumns(DatasetTestCase):
 
     def test_access_single_columns(self):
 
-        self.assertCountEqual(self.ds.center.columns, ["easting", "northing"])
-        self.assertNotIsInstance(self.ds.center, type(self.ds))
-        self.assertIsInstance(self.ds.center, pd.DataFrame)
+        self.assertCountEqual(self.ds.position.columns, ["easting", "northing"])
+        self.assertNotIsInstance(self.ds.position, type(self.ds))
+        self.assertIsInstance(self.ds.position, pd.DataFrame)
 
 
 class ObjectDatasetIndexingTestCase(DatasetTestCase):
@@ -131,7 +131,7 @@ class ObjectDatasetIndexingTestCase(DatasetTestCase):
         self.assertTrue(isinstance(df, PoseCollectionBase))
         self.assertEqual(2, len(df.timestamps))
 
-        df = self.ds.att(self.ds.timestamps[:4], "center")
+        df = self.ds.att(self.ds.timestamps[:4], "position")
 
         self.assertTrue(isinstance(df, pd.DataFrame))
         self.assertFalse(isinstance(df, PoseCollectionBase))
@@ -196,25 +196,25 @@ class ObjectTrajectoryLocIndexingTestCase(DatasetTestCase):
         self.assertTrue(isinstance(tj, Trajectory))
 
     def test_index_with_timestamps_with_column_via_loc(self):
-        df = self.tj.loc[self.tj.timestamps[:2], "center"]
+        df = self.tj.loc[self.tj.timestamps[:2], "position"]
 
         self.assertEqual(2, len(df))
         self.assertTrue(isinstance(df, pd.DataFrame))
 
     def test_index_with_timestamps_with_column(self):
-        df = self.tj.att(self.tj.timestamps[:2], "center")
+        df = self.tj.att(self.tj.timestamps[:2], "position")
 
         self.assertEqual(2, len(df))
         self.assertTrue(isinstance(df, pd.DataFrame))
 
     def test_index_with_timestamps_with_multiple_columns_via_loc(self):
         df = self.tj.loc[
-            self.tj.timestamps[:2], (["center", "velocity"], ["easting", "northing"])
+            self.tj.timestamps[:2], (["position", "velocity"], ["easting", "northing"])
         ]
 
         self.assertEqual(2, len(df))
         self.assertTrue(isinstance(df, pd.DataFrame))
-        self.assertIn("center", df.columns)
+        self.assertIn("position", df.columns)
         self.assertIn("velocity", df.columns)
 
     def test_index_with_single_timestamp(self):
@@ -224,13 +224,13 @@ class ObjectTrajectoryLocIndexingTestCase(DatasetTestCase):
         self.assertEqual(1, len(p1))
 
     def test_access_column_with_single_index(self):
-        s1 = self.tj.loc[self.tj.timestamps[2], "center"]
+        s1 = self.tj.loc[self.tj.timestamps[2], "position"]
 
         self.assertTrue(isinstance(s1, pd.Series))
         self.assertEqual(2, len(s1))
 
     def test_access_multiple_columns_with_single_index(self):
-        s1 = self.tj.loc[self.tj.timestamps[2], ["center", "center"]]
+        s1 = self.tj.loc[self.tj.timestamps[2], ["position", "position"]]
 
         self.assertTrue(isinstance(s1, pd.Series))
         self.assertEqual(4, len(s1))
@@ -238,7 +238,7 @@ class ObjectTrajectoryLocIndexingTestCase(DatasetTestCase):
 
     def test_access_multiple_nested_columns_with_single_index(self):
         s1 = self.tj.loc[
-            self.tj.timestamps[2], (["center", "center"], ["easting", "northing"])
+            self.tj.timestamps[2], (["position", "position"], ["easting", "northing"])
         ]
 
         self.assertTrue(isinstance(s1, pd.Series))
@@ -246,7 +246,7 @@ class ObjectTrajectoryLocIndexingTestCase(DatasetTestCase):
         self.assertEqual(s1.name, self.tj.id)
 
     def test_access_multiple_column_with_all_indexes(self):
-        df = self.tj.loc[:, (["center", "center"], ["easting", "northing"])]
+        df = self.tj.loc[:, (["position", "position"], ["easting", "northing"])]
 
         self.assertTrue(isinstance(df, pd.DataFrame))
         self.assertEqual(len(self.tj), len(df))
@@ -269,10 +269,10 @@ class ObjectTrajectoryiLocIndexingTestCase(DatasetTestCase):
 
         with self.assertRaises(ValueError):
             # this does not work
-            df = self.tj.iloc[:2, "center"]
+            df = self.tj.iloc[:2, "position"]
 
         # but this should
-        df = self.tj.iloc[:2].center
+        df = self.tj.iloc[:2].position
 
         self.assertEqual(2, len(df))
         self.assertTrue(isinstance(df, pd.DataFrame))
@@ -281,14 +281,14 @@ class ObjectTrajectoryiLocIndexingTestCase(DatasetTestCase):
 
         with self.assertRaises(IndexError):
             # this does not work
-            df = self.tj.iloc[:2, ["center", "velocity"]]
+            df = self.tj.iloc[:2, ["position", "velocity"]]
 
         # but this should
-        df = self.tj.iloc[:2][["center", "velocity"]]
+        df = self.tj.iloc[:2][["position", "velocity"]]
 
         self.assertEqual(2, len(df))
         self.assertTrue(isinstance(df, pd.DataFrame))
-        self.assertIn("center", df.columns)
+        self.assertIn("position", df.columns)
         self.assertIn("velocity", df.columns)
 
     def test_index_with_single_timestamp(self):
@@ -302,8 +302,8 @@ class ObjectTrajectoryiLocIndexingTestCase(DatasetTestCase):
 
         with self.assertRaises(ValueError):
             # this does not work
-            df1 = self.tj.iloc[0, "center"]
-        df1 = self.tj.iloc[0].center
+            df1 = self.tj.iloc[0, "position"]
+        df1 = self.tj.iloc[0].position
 
         self.assertTrue(isinstance(df1, pd.DataFrame))
         self.assertEqual(1, len(df1))
@@ -314,9 +314,9 @@ class ObjectTrajectoryiLocIndexingTestCase(DatasetTestCase):
 
         with self.assertRaises(IndexError):
             # this does not work
-            df1 = self.tj.iloc[0, ["center", "center"]]
+            df1 = self.tj.iloc[0, ["position", "position"]]
 
-        df1 = self.tj.iloc[0][["center", "center"]]
+        df1 = self.tj.iloc[0][["position", "position"]]
 
         self.assertTrue(isinstance(df1, pd.DataFrame))
         self.assertEqual(1, len(df1))
@@ -329,20 +329,20 @@ class ObjectDatasetManipulationTestCase(DatasetTestCase):
     def test_incrementing_attribute(self):
 
         ds: TrajectoryDataset = self.ds.copy()
-        ds["center"] = ds.center + 10
+        ds["position"] = ds.position + 10
 
-        np.testing.assert_array_equal(ds.center, self.ds.center + 10)
+        np.testing.assert_array_equal(ds.position, self.ds.position + 10)
 
-        ds["center"] = ds.center + 10
+        ds["position"] = ds.position + 10
 
-        np.testing.assert_array_equal(ds.center, self.ds.center + 10 + 10)
+        np.testing.assert_array_equal(ds.position, self.ds.position + 10 + 10)
 
     def test_shifting_center(self):
 
         ds = self.ds.copy()
-        ds["center"] = ds.center + 10
+        ds["position"] = ds.position + 10
 
-        np.testing.assert_array_almost_equal(ds.center, self.ds.center + 10)
+        np.testing.assert_array_almost_equal(ds.position, self.ds.position + 10)
 
     def test_heading_column_access(self):
         col = self.ds.loc[:, "yaw"]

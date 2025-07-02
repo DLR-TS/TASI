@@ -5,7 +5,7 @@
 Data Loading and Saving
 ##############################
 
-One of the key strengths of ``tasi`` is to support various data sources of trajectory data. On this page, you find some
+One of the key strengths of ``TASI`` is to support various data sources of trajectory data. On this page, you find some
 examples on how to load data from different data source.
 
 .. note::
