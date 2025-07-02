@@ -18,6 +18,7 @@ available via ``tasi.*`` or ``tasi.dataset.*``.
 
 .. toctree::
    :maxdepth: 2
+
    datasets/index
 
 

@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Iterable, List, Union
+from typing import Iterable, List, Tuple, Union
 
 import geopandas as gpd
 import numpy as np
@@ -155,10 +155,10 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
         """
         return np.array(
             [
-                self.center.easting.min(),
-                self.center.northing.min(),
-                self.center.easting.max(),
-                self.center.northing.max(),
+                self.position.easting.min(),
+                self.position.northing.min(),
+                self.position.easting.max(),
+                self.position.northing.max(),
             ]
         ).reshape(-1, 2)
 
