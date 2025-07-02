@@ -29,7 +29,7 @@ class TrajectoryDatasetAddAttribute(DatasetTestCase):
     def test_add_series_multiindex(self):
 
         # create a copy of the yaw attribute which we will use for testing purpose
-        s1 = self.ds[("center", "easting")].copy()
+        s1 = self.ds[("position", "easting")].copy()
 
         # increment by arbitraty number and change the name of the attribute
         s1 += 10
@@ -40,8 +40,8 @@ class TrajectoryDatasetAddAttribute(DatasetTestCase):
 
         # verify
         self.assertIn("center2", ds.attributes)
-        self.assertIn("easting", ds.center.columns)
-        np.testing.assert_array_equal(ds.center.easting + 10, ds.center2.easting)
+        self.assertIn("easting", ds.position.columns)
+        np.testing.assert_array_equal(ds.position.easting + 10, ds.center2.easting)
         self.assertIsInstance(ds, TrajectoryDataset)
 
 
@@ -71,7 +71,7 @@ class TrajectoryAddAttribute(DatasetTestCase):
         tj = self.ds.trajectory(self.ds.ids[0])
 
         # create a copy of the yaw attribute which we will use for testing purpose
-        s1 = tj[("center", "easting")].copy()
+        s1 = tj[("position", "easting")].copy()
 
         # increment by arbitraty number and change the name of the attribute
         s1 += 10
@@ -82,8 +82,8 @@ class TrajectoryAddAttribute(DatasetTestCase):
 
         # verify
         self.assertIn("center2", tj.attributes)
-        self.assertIn("easting", tj.center.columns)
-        np.testing.assert_array_equal(tj.center.easting + 10, tj.center2.easting)
+        self.assertIn("easting", tj.position.columns)
+        np.testing.assert_array_equal(tj.position.easting + 10, tj.center2.easting)
         self.assertIsInstance(tj, Trajectory)
 
 
@@ -113,7 +113,7 @@ class PoseAddAttribute(DatasetTestCase):
         pose = self.ds.iloc[0]
 
         # create a copy of the yaw attribute which we will use for testing purpose
-        s1 = pose[("center", "easting")].copy()
+        s1 = pose[("position", "easting")].copy()
 
         # increment by arbitraty number and change the name of the attribute
         s1 += 10
@@ -124,6 +124,6 @@ class PoseAddAttribute(DatasetTestCase):
 
         # verify
         self.assertIn("center2", pose.attributes)
-        self.assertIn("easting", pose.center.columns)
-        np.testing.assert_array_equal(pose.center.easting + 10, pose.center2.easting)
+        self.assertIn("easting", pose.position.columns)
+        np.testing.assert_array_equal(pose.position.easting + 10, pose.center2.easting)
         self.assertIsInstance(pose, Pose)

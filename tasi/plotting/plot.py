@@ -36,18 +36,18 @@ class BoundingboxPlotter(Plotter):
     def plot(
         self,
         ax: plt.Axes,
-        center: Tuple[float, float] = None,
+        position: Tuple[float, float] = None,
         zoom: float = 1,
         show_attribution: bool = True,
         attribution_kwargs=None,
         **kwargs
     ):
         """
-        Draw the tile for the center position given by ``center`` within the current extend and and zoom into the tile according to `zoom`.
+        Draw the tile for the position position given by ``position`` within the current extend and and zoom into the tile according to `zoom`.
 
         Args:
             ax (plt.Axes): The axes to plot onto.
-            center (Tuple[float, float]): The plotting center
+            position (Tuple[float, float]): The plotting position
             zoom (float): The zoom value
             show_attribution (bool): To thow the attribution information. Defaults to True.
 
@@ -80,13 +80,13 @@ class BoundingboxPlotter(Plotter):
             ],
             **kwargs,
         )
-        if center is None:
-            center = [self.xtilemin + (dx / 2), self.ytilemin + (dy / 2)]
+        if position is None:
+            position = [self.xtilemin + (dx / 2), self.ytilemin + (dy / 2)]
 
         # set the limit of the axes according to the given extend and zoom value
         ax.set(
-            xlim=[center[0] - (dx / 2) * zoom, center[0] + (dx / 2) * zoom],
-            ylim=[center[1] - (dy / 2) * zoom, center[1] + (dy / 2) * zoom],
+            xlim=[position[0] - (dx / 2) * zoom, position[0] + (dx / 2) * zoom],
+            ylim=[position[1] - (dy / 2) * zoom, position[1] + (dy / 2) * zoom],
         )
 
         if show_attribution:
