@@ -46,7 +46,7 @@ test:
   coverage: '/TOTAL.* (\d{1,3}%)/'
 
   script:
-    - poetry run pytest tasi --cov=tasi --cov-report=html:coverage
+    - poetry run pytest tasi/tests --cov=tasi --cov-report=html:coverage
 
   artifacts:
     paths:

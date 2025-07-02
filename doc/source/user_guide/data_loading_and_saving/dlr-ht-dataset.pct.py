@@ -7,7 +7,7 @@
 # ## Download dataset
 #
 # At first, we need to download the dataset. For that purpose, the class `DLRHHTDatasetManager`
-# is available in `tasi` that we will utilize in the following. The class `DLRHTVersion` is an
+# is available in ``TASI`` that we will utilize in the following. The class `DLRHTVersion` is an
 # enumerator that may be used to specify the version of the dataset to download or to get the latest version.
 #
 # <div class="alert alert-info">

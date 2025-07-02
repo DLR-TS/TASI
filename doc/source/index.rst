@@ -5,8 +5,8 @@
 TASI |version|
 ###############
 
-``tasi`` is a library to provide high-performance, easy-to-use data structures and data analysis
-tools for `Python`_ based traffic situation analysis applications. ``tasi`` extends `Pandas`_ with 
+``TASI`` is a library to provide high-performance, easy-to-use data structures and data analysis
+tools for `Python`_ based traffic situation analysis applications. ``TASI`` extends `Pandas`_ with 
 custom models to represent traffic data and utilizes `Matplotlib`_ for visualization. 
 
 .. _pandas: https://pandas.pydata.org
@@ -30,7 +30,7 @@ custom models to represent traffic data and utilizes `Matplotlib`_ for visualiza
     :doc:`About TASI <about>` :doc:`Contribute <development/index>`
 
 .. note::
-    This is first release version and ``tasi`` and currently focus on providing tools that enables you to work with the traffic datasets provided by members of the DLR  `TS`_ members. We will consecutively extend ``tasi`` to a Python library for traffic data management and analysis, situation visualization, situation criticality analysis and scenario creation, while providing access to common traffic datasets. Stay tuned |:grin:|
+    This is first release version and ``TASI`` and currently focus on providing tools that enables you to work with the traffic datasets provided by members of the DLR  `TS`_ members. We will consecutively extend ``TASI`` to a Python library for traffic data management and analysis, situation visualization, situation criticality analysis and scenario creation, while providing access to common traffic datasets. Stay tuned |:grin:|
 
 Useful links
 ***************

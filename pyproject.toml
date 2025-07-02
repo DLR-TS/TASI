@@ -39,6 +39,13 @@ shapely = "^2.1.0"
 geopandas = "^1.0.1"
 folium = "^0.19.5"
 mapclassify = "^2.8.1"
+sqlmodel = "^0.0.24"
+pydantic = "^2.11.7"
+sqlalchemy = "^2.0.41"
+psycopg = {extras = ["binary", "pool"], version = "^3.2.9"}
+geoalchemy2 = "^0.17.1"
+geojson-pydantic = "^2.0.0"
+pydantic-settings = "^2.10.1"
 
 [tool.poetry.scripts]
 dlr-downloader = "tasi.dlr.dataset:download"
@@ -47,9 +54,6 @@ dlr-downloader = "tasi.dlr.dataset:download"
 addopts = "--doctest-modules"
 testpaths = [ "tasi/tests"]
 doctest_optionflags = [ "ELLIPSIS", "NORMALIZE_WHITESPACE", "IGNORE_EXCEPTION_DETAIL",]
-
-[tool.coverage.run]
-omit = [ "tasi/_version.py",]
 
 [tool.poetry.group.test.dependencies]
 coverage = "^7.6.4"
@@ -61,6 +65,8 @@ pytest-cov = "^5.0.0"
 [tool.poetry.group.dev.dependencies]
 pylint = "^3.3.1"
 autopep8 = "^2.3.1"
+doc8 = "^2.0.0"
+rstcheck = "^6.2.5"
 
 [tool.poetry.group.build.dependencies]
 wheel = "*"
