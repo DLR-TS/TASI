@@ -221,9 +221,6 @@ class PositionBase(Base):
             altitude=self.altitude,
         )
 
-    # def as_tasi(self, **kwargs) -> pd.DataFrame:
-    #     return self.as_dataframe()[["easting", "northing"]]
-
 
 class BoundingBoxBase(Base):
 
