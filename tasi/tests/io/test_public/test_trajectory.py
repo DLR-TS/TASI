@@ -121,7 +121,7 @@ class TrajectoryConversion(TrajectoryTestCase):
         self.assertEqual(
             tasi.iloc[0].velocity.northing.item(), self.poses[0].velocity.y
         )
-        self.assertTrue(np.isnan(tasi.velocity.iloc[0].magnitude.item()))
+        self.assertTrue(tasi.velocity.iloc[0].magnitude.isna().item())
 
         # check interval against poses - ensure sorted
         self.assertEqual(tasi.interval.left, self.poses[0].timestamp)
