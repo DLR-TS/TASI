@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Self, Sequence, Type, TypeVar, Union, overload
+from typing import Dict, Literal, Self, Sequence, Type, TypeVar, Union, overload
 
 import pandas as pd
 
@@ -27,7 +27,7 @@ from tasi.io.orm.base import (
 T = TypeVar("T", bound="FromTASIMixin")
 
 
-TASI_COLUMN_MAPPING_VECTOR = {"easting": "x", "northing": "y"}
+TASI_COLUMN_MAPPING_VECTOR = {"easting": "x", "northing": "y", "altitude": "z"}
 TASI_COLUMN_MAPPING_VECTOR_INV = {v: k for k, v in TASI_COLUMN_MAPPING_VECTOR.items()}
 
 
@@ -79,13 +79,9 @@ class FromTASIMixin:
 class AsTASIMixin(ABC):
 
     @abstractmethod
-    def as_tasi(self, **kwargs) -> pd.DataFrame | TASIBase:
-        """Convert to a ``TASI`` internal representation
-
-        Returns:
-            pd.DataFrame | TASIBase: The internal representation format
-        """
-        ...
+    def as_tasi(
+        self, as_record: bool = False, **kwargs
+    ) -> pd.DataFrame | TASIBase | Dict: ...
 
 
 class AsORMMixin(ABC):
@@ -104,7 +100,7 @@ class AsORMMixin(ABC):
         return typing.get_type_hints(func)["return"].model_validate(self)
 
 
-class PublicEntityMixin(AsORMMixin, FromTASIMixin, AsTASIMixin): ...
+class PublicEntityMixin(AsORMMixin, AsTASIMixin, FromTASIMixin): ...
 
 
 class Classifications(PublicEntityMixin, ClassificationsBase):
@@ -138,7 +134,31 @@ class Classifications(PublicEntityMixin, ClassificationsBase):
             return [cls.model_validate(row) for i, row in df.iterrows()]
         return super().from_tasi(obj)
 
-    def as_tasi(self, **kwargs) -> pd.DataFrame:
+    @overload
+    def as_tasi(self, as_record: Literal[True], **kwargs) -> Dict:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            Dict: A flat dictionary that can be used with `pd.DataFrame.from_dict`
+        """
+        ...
+
+    @overload
+    def as_tasi(self, as_record: Literal[False], **kwargs) -> pd.DataFrame:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            pd.DataFrame | TASIBase: The internal representation format
+        """
+        ...
+
+    def as_tasi(self, as_record: bool = False, **kwargs) -> pd.DataFrame | Dict:
+        if as_record:
+            default_kwargs = dict(prefix="classifications", nlevels=3)
+            default_kwargs.update(kwargs)
+
+            return self.as_flat_dict(**default_kwargs)  # type: ignore
+
         return self.as_dataframe()
 
 
@@ -174,7 +194,33 @@ class Velocity(PublicEntityMixin, VelocityBase):
             return [cls.model_validate(row) for i, row in df.iterrows()]
         return super().from_tasi(obj)
 
-    def as_tasi(self, **kwargs) -> pd.DataFrame:
+    @overload
+    def as_tasi(self, as_record: Literal[True], **kwargs) -> Dict:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            Dict: A flat dictionary that can be used with `pd.DataFrame.from_dict`
+        """
+        ...
+
+    @overload
+    def as_tasi(self, as_record: Literal[False], **kwargs) -> pd.DataFrame:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            pd.DataFrame | TASIBase: The internal representation format
+        """
+        ...
+
+    def as_tasi(self, as_record: bool = False, **kwargs) -> pd.DataFrame | Dict:
+        if as_record:
+            default_kwargs = dict(
+                prefix="velocity", nlevels=3, replace=TASI_COLUMN_MAPPING_VECTOR_INV
+            )
+            default_kwargs.update(kwargs)
+
+            return self.as_flat_dict(**default_kwargs)  # type: ignore
+
         return self.as_dataframe()[["x", "y", "magnitude"]].rename(
             columns=TASI_COLUMN_MAPPING_VECTOR_INV
         )
@@ -215,7 +261,32 @@ class Acceleration(PublicEntityMixin, AccelerationBase):
             return [cls.model_validate(row) for i, row in df.iterrows()]
         return super().from_tasi(obj)
 
-    def as_tasi(self, **kwargs) -> pd.DataFrame:
+    @overload
+    def as_tasi(self, as_record: Literal[True], **kwargs) -> Dict:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            Dict: A flat dictionary that can be used with `pd.DataFrame.from_dict`
+        """
+        ...
+
+    @overload
+    def as_tasi(self, as_record: Literal[False], **kwargs) -> pd.DataFrame:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            pd.DataFrame | TASIBase: The internal representation format
+        """
+        ...
+
+    def as_tasi(self, as_record: bool = False, **kwargs) -> pd.DataFrame | Dict:
+        if as_record:
+            default_kwargs = dict(
+                prefix="acceleration", nlevels=3, replace=TASI_COLUMN_MAPPING_VECTOR_INV
+            )
+            default_kwargs.update(kwargs)
+
+            return self.as_flat_dict(**default_kwargs)  # type: ignore
 
         return self.as_dataframe()[["x", "y", "magnitude"]].rename(
             columns=TASI_COLUMN_MAPPING_VECTOR_INV
@@ -266,7 +337,31 @@ class Dimension(PublicEntityMixin, DimensionBase):
             return [cls.model_validate(row) for i, row in df.iterrows()]
         return super().from_tasi(obj)
 
-    def as_tasi(self, **kwargs) -> pd.DataFrame:
+    @overload
+    def as_tasi(self, as_record: Literal[True], **kwargs) -> Dict:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            Dict: A flat dictionary that can be used with `pd.DataFrame.from_dict`
+        """
+        ...
+
+    @overload
+    def as_tasi(self, as_record: Literal[False], **kwargs) -> pd.DataFrame:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            pd.DataFrame | TASIBase: The internal representation format
+        """
+        ...
+
+    def as_tasi(self, as_record: bool = False, **kwargs) -> pd.DataFrame | Dict:
+        if as_record:
+            default_kwargs = dict(prefix="dimension", nlevels=3)
+            default_kwargs.update(kwargs)
+
+            return self.as_flat_dict(**default_kwargs)  # type: ignore
+
         return self.as_dataframe()
 
 
@@ -301,8 +396,33 @@ class Position(PublicEntityMixin, PositionBase):
         """
         return super().as_orm()
 
-    def as_tasi(self, **kwargs) -> pd.DataFrame:
-        return self.as_dataframe()[["easting", "northing"]]
+    @overload
+    def as_tasi(self, as_record: Literal[True], **kwargs) -> Dict:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            Dict: A flat dictionary that can be used with `pd.DataFrame.from_dict`
+        """
+        ...
+
+    @overload
+    def as_tasi(self, as_record: Literal[False], **kwargs) -> pd.DataFrame:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            pd.DataFrame | TASIBase: The internal representation format
+        """
+        ...
+
+    def as_tasi(self, as_record: bool = False, **kwargs) -> pd.DataFrame | Dict:  # type: ignore
+
+        if as_record:
+            default_kwargs = dict(prefix="position", nlevels=3)
+            default_kwargs.update(kwargs)
+
+            return self.as_flat_dict(**default_kwargs)  # type: ignore
+        else:
+            return self.as_dataframe()[["easting", "northing"]]
 
     @classmethod
     def from_wkt(cls, wkt: str) -> Self:
@@ -429,14 +549,54 @@ class BoundingBox(PublicEntityMixin, BoundingBoxBase):
             left=self.left.as_orm(),
         )
 
-    def as_tasi(self, **kwargs) -> pd.DataFrame:
-        attr = {}
-        for side in self.model_dump().keys():
-            p: Position = getattr(self, side)
+    @overload
+    def as_tasi(self, as_record: Literal[True], **kwargs) -> Dict:
+        """Convert to a ``TASI`` internal representation
 
-            attr[side] = p.as_tasi()
+        Returns:
+            Dict: A flat dictionary that can be used with `pd.DataFrame.from_dict`
+        """
+        ...
 
-        return pd.concat(attr).droplevel(axis=0, level=1).stack().to_frame().T  # type: ignore
+    @overload
+    def as_tasi(self, as_record: Literal[False], **kwargs) -> pd.DataFrame:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            pd.DataFrame | TASIBase: The internal representation format
+        """
+        ...
+
+    def as_tasi(self, as_record: bool = False, **kwargs) -> pd.DataFrame | Dict:
+
+        sides = [
+            "front_left",
+            "front",
+            "front_right",
+            "right",
+            "rear_right",
+            "rear",
+            "rear_left",
+            "left",
+        ]
+        if as_record:
+            attr = {}
+            for side in sides:
+                attr.update(
+                    getattr(self, side).as_tasi(
+                        as_record=as_record, prefix=("boundingbox", side)
+                    )
+                )
+
+            return attr
+        else:
+            attr = {}
+            for side in sides:
+                p: Position = getattr(self, side)
+
+                attr[side] = p.as_tasi(as_record=False)
+
+            return pd.concat(attr).droplevel(axis=0, level=1).stack().to_frame().T  # type: ignore
 
     @overload
     @classmethod
