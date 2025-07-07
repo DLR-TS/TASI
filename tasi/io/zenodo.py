@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Dict
 
 import requests
 
@@ -12,12 +13,13 @@ class ZenodoConnector:
 
     ZENODO_API: str = "https://zenodo.org/api/records"
 
-    def __init__(self, title: str, parent_id: int = None):
+    def __init__(self, title: str, parent_id: int | None = None):
         """
         Initializes the ZenodoConnector object with a given title.
 
         Args:
             title (str): The title of the dataset to query from Zenodo.
+            parent_id (int, optional): The index of the parent record.
         """
         self.title = title
         self.parent_id = parent_id
@@ -26,14 +28,14 @@ class ZenodoConnector:
         self.versions = self.get_versions()
         self.dois = self.get_dois()
 
-    def get_records(self) -> list[dict]:
+    def get_records(self) -> list[Dict]:
         """
         This method sends a GET request to the Zenodo API and retrieves all
         records matching the given title. The records are then sorted by
         their creation date.
 
         Returns:
-            list[dict]: A list of records from Zenodo, sorted by creation date.
+            list[Dict]: A list of records from Zenodo, sorted by creation date.
 
         Raises:
             requests.exceptions.RequestException: If there is an error with the HTTP request.
@@ -68,14 +70,14 @@ class ZenodoConnector:
                 f"Error retrieving data. Status code: {response.status_code}"
             )
 
-    def get_versions(self) -> dict[str]:
+    def get_versions(self) -> Dict[str, int]:
         """
         This method extracts the version information from each record and
         returns it as a dictionary, along with the latest version.
 
         Returns:
-            dict[str]: A dictionary of versions with 'v' prefixed and version numbers as keys,
-                       including the latest version.
+            Dict[str, int]: A dictionary of versions with 'v' prefixed and
+                            version numbers as keys, including the latest version.
         """
         # Get the latest version
         latest_version = {"latest": "v" + self.records[0]["metadata"]["version"]}
@@ -91,14 +93,14 @@ class ZenodoConnector:
         # Return all versions
         return {**latest_version, **versions}
 
-    def get_dois(self) -> dict[str]:
+    def get_dois(self) -> Dict[str, int]:
         """
         This method extracts the DOI information from each record and maps
         it to its respective version. It also returns the latest DOI.
 
         Returns:
-            dict[str]: A dictionary of DOIs with 'v' prefixed and version numbers as keys,
-                       including the latest DOI.
+            Dict[str, int]: A dictionary of DOIs with 'v' prefixed and version
+                            numbers as keys, including the latest DOI.
         """
         # Get the latest DOI
         latest_doi = {"latest": int(self.records[0]["doi"].split(".")[-1])}
