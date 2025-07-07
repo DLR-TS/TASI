@@ -1,5 +1,6 @@
 import json
-from typing import Any, Dict, Self, Sequence, Union, overload
+from collections import defaultdict
+from typing import Any, Dict, Literal, Self, Sequence, Union, overload
 
 import pandas as pd
 from geojson_pydantic import Point
@@ -23,6 +24,8 @@ from tasi.io.public.traffic_participant import TrafficParticipant
 from tasi.io.util import as_geojson
 
 __all__ = ["PosePublic", "GeoPosePublic"]
+
+from tasi.io.util import FlatDict
 
 
 class PublicPoseBase(PoseBase):
@@ -90,21 +93,59 @@ class PosePublic(PublicEntityMixin, PublicPoseBase):
         else:
             raise TypeError
 
-    def as_tasi(self, **kwargs) -> tasi.Pose:
+    @overload
+    def as_tasi(self, as_record: Literal[True], **kwargs) -> Dict:
+        """Convert to a ``TASI`` internal representation
 
-        p = tasi.Pose.from_attributes(
-            timestamp=self.timestamp,
-            index=self.traffic_participant.id_object,
-            position=self.position.as_tasi(),
-            heading=pd.Series([self.orientation]),
-            dimension=self.dimension.as_tasi(),
-            velocity=self.velocity.as_tasi(),
-            acceleration=self.acceleration.as_tasi(),
-            classifications=self.classifications.as_tasi(),
-            boundingbox=self.boundingbox.as_tasi(),
-        )
+        Returns:
+            Dict: A flat dictionary that can be used with `pd.DataFrame.from_dict`
+        """
+        ...
 
-        return p
+    @overload
+    def as_tasi(self, as_record: Literal[False], **kwargs) -> tasi.Pose:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            tasi.Pose: The internal representation format
+        """
+        ...
+
+    def as_tasi(self, as_record: bool = False, **kwargs) -> tasi.Pose | Dict:
+
+        if as_record:
+
+            record = defaultdict(dict)
+
+            attributes = [
+                self.position.as_tasi(as_record=True),
+                FlatDict.from_dict({"heading": self.orientation}, nlevels=3),
+                self.dimension.as_tasi(as_record=True),
+                self.velocity.as_tasi(as_record=True),
+                self.acceleration.as_tasi(as_record=True),
+                self.classifications.as_tasi(as_record=True),
+                self.boundingbox.as_tasi(as_record=True),
+            ]
+
+            idx = idx = (self.timestamp, self.traffic_participant.id_object)
+
+            for d in attributes:
+                for key, value in d.items():
+                    record[key] = {idx: value}
+
+            return record
+        else:
+            return tasi.Pose.from_attributes(
+                timestamp=self.timestamp,
+                index=self.traffic_participant.id_object,
+                position=self.position.as_tasi(as_record=False),
+                heading=pd.Series([self.orientation]),
+                dimension=self.dimension.as_tasi(as_record=False),
+                velocity=self.velocity.as_tasi(as_record=False),
+                acceleration=self.acceleration.as_tasi(as_record=False),
+                classifications=self.classifications.as_tasi(as_record=False),
+                boundingbox=self.boundingbox.as_tasi(as_record=False),
+            )
 
     @overload
     @classmethod
@@ -223,8 +264,32 @@ class GeoPosePublic(PublicEntityMixin, PublicPoseBase):
             boundingbox=self.boundingbox.as_orm(),
         )
 
-    def as_tasi(self, **kwargs) -> tasi.GeoPose:
-        return self.as_pose().as_tasi().as_geopandas()
+    @overload
+    def as_tasi(self, as_record: Literal[True], **kwargs) -> Dict:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            Dict: A flat dictionary that can be used with `pd.DataFrame.from_dict`
+        """
+        ...
+
+    @overload
+    def as_tasi(self, as_record: Literal[False], **kwargs) -> tasi.GeoPose:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            tasi.Pose: The internal representation format
+        """
+        ...
+
+    def as_tasi(self, as_record: bool = False, **kwargs) -> Union[Dict, tasi.GeoPose]:
+
+        pose = self.as_pose().as_tasi(as_record=as_record)
+
+        if isinstance(pose, Dict):
+            return pose
+        else:
+            return pose.as_geopandas()
 
 
 MODELS = [PosePublic, GeoPosePublic]

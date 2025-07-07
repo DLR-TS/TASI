@@ -22,8 +22,28 @@ class TrajectoryPublic(Base, PublicEntityMixin):
     #: The poses of the trajectory
     poses: list[PosePublic]
 
-    def as_tasi(self, **kwargs) -> tasi.Trajectory:
-        return tasi.Trajectory(pd.concat([p.as_tasi() for p in self.poses]))
+    def as_tasi(self, as_record: bool = True, **kwargs) -> tasi.Trajectory:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            tasi.Trajectory: The internal representation format
+        """
+
+        if as_record:
+            record = self.poses[0].as_tasi(as_record=as_record)
+
+            for p in self.poses[1:]:
+                for k2, v2 in p.as_tasi(as_record=as_record).items():
+                    record[k2].update(v2)
+
+            tj = tasi.Trajectory.from_dict(record)
+            tj.index.names = tasi.Trajectory.INDEX_COLUMNS
+
+            return tj
+
+        return tasi.Trajectory(
+            pd.concat([p.as_tasi(as_record=as_record) for p in self.poses])
+        )
 
     def as_orm(self, **kwargs) -> TrajectoryORM:
 
