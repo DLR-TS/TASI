@@ -1,3 +1,4 @@
+import logging
 from enum import Enum
 from typing import Dict
 
@@ -52,23 +53,30 @@ class ZenodoConnector:
         if self.parent_id is not None:
             params["custom"] = f'pid_value:"{self.parent_id}"'
 
-        # query API
-        response = requests.get(self.ZENODO_API, params=params)
+        try:
+            # query API
+            response = requests.get(self.ZENODO_API, params=params)
 
-        if response.status_code == 200:
-            # Extract records from response
-            records = response.json()["hits"]["hits"]
+            if response.status_code == 200:
+                # Extract records from response
+                records = response.json()["hits"]["hits"]
 
-            if not records:
-                raise ValueError(
-                    f"No records found for {self.title=} and {self.parent_id=}"
+                if not records:
+                    raise ValueError(
+                        f"No records found for {self.title=} and {self.parent_id=}"
+                    )
+
+                return records
+            else:
+                raise requests.exceptions.RequestException(
+                    f"Error retrieving data. Status code: {response.status_code}"
                 )
-
-            return records
-        else:
-            raise requests.exceptions.RequestException(
-                f"Error retrieving data. Status code: {response.status_code}"
+        except requests.exceptions.ProxyError as err:
+            logging.warning(
+                "Failed to fetch datasets because of a proxy connection error. "
+                + "Ensure that the proxy is properly configured and allows accessing zenodo.org"
             )
+            return []
 
     def get_versions(self) -> Dict[str, int]:
         """
