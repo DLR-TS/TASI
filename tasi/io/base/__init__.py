@@ -1,4 +1,4 @@
-from typing import Annotated, Self, Sequence, Union, overload
+from typing import Annotated, Dict, List, Self, Sequence, Union, overload
 
 import numpy as np
 import pandas as pd
@@ -26,8 +26,26 @@ class DataFrameConversionMixin:
     def as_dict(self) -> dict:
         return self.model_dump()
 
-    def as_flat_dict(self) -> FlatDict | list[FlatDict]:
-        return FlatDict.from_dict(self.model_dump())
+    def as_flat_dict(
+        self,
+        drop: str | List[str] = "",
+        replace: Dict[str, str] | None = None,
+        **kwargs
+    ) -> FlatDict:
+
+        attr = self.model_dump()
+
+        if drop:
+            if isinstance(drop, str):
+                del attr[drop]
+            elif isinstance(drop, list):
+                list(map(attr.pop, drop))
+
+        if replace is not None:
+            for k, v in replace.items():
+                attr[v] = attr.pop(k)
+
+        return FlatDict.from_dict(attr, **kwargs)
 
     def as_series(self, name=None) -> pd.Series:
         return pd.Series(self.as_flat_dict(), name=name)  # type: ignore
@@ -203,8 +221,8 @@ class PositionBase(Base):
             altitude=self.altitude,
         )
 
-    def as_tasi(self, **kwargs) -> pd.DataFrame:
-        return self.as_dataframe()[["easting", "northing"]]
+    # def as_tasi(self, **kwargs) -> pd.DataFrame:
+    #     return self.as_dataframe()[["easting", "northing"]]
 
 
 class BoundingBoxBase(Base):

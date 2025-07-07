@@ -1,4 +1,5 @@
 import inspect
+from typing import Tuple
 
 import pandas as pd
 from geoalchemy2 import WKBElement
@@ -9,8 +10,15 @@ from shapely import to_geojson
 class FlatDict(dict):
 
     @classmethod
-    def from_dict(cls, d: dict):
-        return cls(as_flat_dict(d))
+    def from_dict(
+        cls,
+        d: dict,
+        nlevels: int | None = None,
+        prefix: str | Tuple[str, ...] = tuple(),
+    ):
+        retval = as_flat_dict(d, nlevels=nlevels, prefix=prefix)
+
+        return cls(retval)
 
     def as_dataframe(self):
         return pd.DataFrame([self], columns=self.as_index()).sort_index(axis=1)
@@ -45,14 +53,25 @@ def flatten_keys(din: dict, dout: dict, key: tuple = ()):
             dout.update({k_: v})
 
 
-def as_flat_dict(d: dict, equal_length: bool = True):
+def as_flat_dict(
+    d: dict,
+    equal_length: bool = True,
+    nlevels: int | None = None,
+    prefix: str | Tuple[str, ...] = tuple(),
+):
 
     d2 = {}
 
-    flatten_keys(d, d2)
+    if isinstance(prefix, str):
+        prefix = (prefix,)
 
-    # ensure all keys have the same depth
-    k_max = FlatDict(d2).depth
+    flatten_keys(d, d2, key=prefix)
+
+    if nlevels is not None:
+        k_max = nlevels
+    else:
+        # ensure all keys have the same depth
+        k_max = FlatDict(d2).depth
 
     if equal_length and k_max > 1:
         if k_max > 1:

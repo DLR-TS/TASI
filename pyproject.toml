@@ -26,12 +26,7 @@ aggressive = 3
 
 [tool.poetry.dependencies]
 python = "^3.11.0"
-pandas = "2.2.3"
-numpy = "2.0.2"
-numba = "0.60.0"
-typing-extensions = "4.12.2"
 coloredlogs = "^15.0.1"
-matplotlib = "3.9.2"
 tilemapbase = "^0.4.7"
 tqdm = "^4.67.1"
 scipy = "^1.15.2"
@@ -46,6 +41,9 @@ psycopg = {extras = ["binary", "pool"], version = "^3.2.9"}
 geoalchemy2 = "^0.17.1"
 geojson-pydantic = "^2.0.0"
 pydantic-settings = "^2.10.1"
+pandas = "^2.3.0"
+matplotlib = "^3.10.3"
+numba = "^0.61.2"
 
 [tool.poetry.scripts]
 dlr-downloader = "tasi.dlr.dataset:download"
