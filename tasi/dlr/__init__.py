@@ -1,6 +1,5 @@
 from .dataset import (
     DLRDatasetManager,
-    DLRHTDatasetManager,
     DLRHTVersion,
     DLRTrajectoryDataset,
     DLRUTDatasetManager,
@@ -8,3 +7,8 @@ from .dataset import (
     DLRUTVersion,
     ObjectClass,
 )
+
+try:
+    from .dataset import DLRHTDatasetManager, DLRUTDatasetManager
+except ImportError:
+    pass
