@@ -240,7 +240,7 @@ class GeoPosePublic(PublicEntityMixin, PublicPoseBase):
         attr = self.model_copy()
 
         # overwrite position
-        attr.position = Position.from_wkt(attr.position.akt)  # type: ignore
+        attr.position = Position.from_wkt(attr.position.wkt)  # type: ignore
 
         return PosePublic.model_validate(attr)
 
