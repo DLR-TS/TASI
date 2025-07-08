@@ -1,6 +1,6 @@
 import logging
 from enum import Enum
-from typing import Dict
+from typing import Dict, Optional
 
 import requests
 
@@ -88,18 +88,22 @@ class ZenodoConnector:
                             version numbers as keys, including the latest version.
         """
         # Get the latest version
-        latest_version = {"latest": "v" + self.records[0]["metadata"]["version"]}
+        if self.records:
 
-        # Get all other versions
-        versions = {
-            "v"
-            + record["metadata"]["version"].replace(".", "_"): "v"
-            + record["metadata"]["version"]
-            for record in self.records
-        }
+            latest_version = {"latest": "v" + self.records[0]["metadata"]["version"]}
 
-        # Return all versions
-        return {**latest_version, **versions}
+            # Get all other versions
+            versions = {
+                "v"
+                + record["metadata"]["version"].replace(".", "_"): "v"
+                + record["metadata"]["version"]
+                for record in self.records
+            }
+
+            # Return all versions
+            return {**latest_version, **versions}
+
+        return {}
 
     def get_dois(self) -> Dict[str, int]:
         """
@@ -110,19 +114,23 @@ class ZenodoConnector:
             Dict[str, int]: A dictionary of DOIs with 'v' prefixed and version
                             numbers as keys, including the latest DOI.
         """
-        # Get the latest DOI
-        latest_doi = {"latest": int(self.records[0]["doi"].split(".")[-1])}
+        if self.records:
 
-        # Get all other DOIs
-        dois = {
-            "v" + record["metadata"]["version"]: int(record["doi"].split(".")[-1])
-            for record in self.records
-        }
+            # Get the latest DOI
+            latest_doi = {"latest": int(self.records[0]["doi"].split(".")[-1])}
 
-        # Return all DOIs
-        return {**latest_doi, **dois}
+            # Get all other DOIs
+            dois = {
+                "v" + record["metadata"]["version"]: int(record["doi"].split(".")[-1])
+                for record in self.records
+            }
 
-    def get_version_enum(self) -> Enum:
+            # Return all DOIs
+            return {**latest_doi, **dois}
+
+        return {}
+
+    def get_version_enum(self) -> Optional[Enum]:
         """
         Generates an Enum for the versions.
 
@@ -132,4 +140,5 @@ class ZenodoConnector:
         Returns:
             Enum: An Enum class representing the dataset versions.
         """
-        return Enum(self.title.replace(" ", "") + "Version", self.versions)
+        if self.versions:
+            return Enum(self.title.replace(" ", "") + "Version", self.versions)
