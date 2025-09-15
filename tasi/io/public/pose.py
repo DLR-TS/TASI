@@ -1,13 +1,15 @@
 import json
 from collections import defaultdict
-from typing import Any, Dict, Literal, Self, Sequence, Union, overload
+from typing import Any, Dict, Literal, Self, Sequence, Union, overload, List
 
 import pandas as pd
 from geojson_pydantic import Point
 from shapely import Point as ShapelyPoint
 from shapely import to_geojson
+from datetime import datetime
 
 import tasi
+from tasi.base import TASIBase
 from tasi.io.base.pose import PoseBase
 from tasi.io.orm.pose import GeoPoseORM, PoseORM
 from tasi.io.orm.traffic_participant import TrafficParticipantORM
@@ -23,7 +25,12 @@ from tasi.io.public.base import (
 from tasi.io.public.traffic_participant import TrafficParticipant
 from tasi.io.util import as_geojson
 
-__all__ = ["PosePublic", "GeoPosePublic"]
+__all__ = [
+    "PosePublic",
+    "GeoPosePublic",
+    "PoseCollectionPublic",
+    "GeoPoseCollectionPublic",
+]
 
 from tasi.io.util import FlatDict
 
@@ -290,6 +297,48 @@ class GeoPosePublic(PublicEntityMixin, PublicPoseBase):
             return pose
         else:
             return pose.as_geopandas()
+
+
+class PoseCollectionPublic(PublicEntityMixin):
+
+    #: The time of the poses
+    timestamp: datetime
+
+    # the poses at the given time
+    poses: List[PosePublic]
+
+    def as_orm(self, **kwargs) -> Any:
+        raise NotImplementedError(
+            "There is currently no direct representation in internal TASI format."
+        )
+
+    def as_tasi(
+        self, as_record: bool = False, **kwargs
+    ) -> pd.DataFrame | TASIBase | Dict:
+        raise NotImplementedError(
+            "There is currently no direct representation in internal TASI format."
+        )
+
+
+class GeoPoseCollectionPublic(PublicEntityMixin):
+
+    #: The time of the poses
+    timestamp: datetime
+
+    # the geo-poses at the given time
+    poses: List[PosePublic]
+
+    def as_orm(self, **kwargs) -> Any:
+        raise NotImplementedError(
+            "There is currently no direct representation in the internal TASI format."
+        )
+
+    def as_tasi(
+        self, as_record: bool = False, **kwargs
+    ) -> pd.DataFrame | TASIBase | Dict:
+        raise NotImplementedError(
+            "There is currently no direct representation in the internal TASI format."
+        )
 
 
 MODELS = [PosePublic, GeoPosePublic]
