@@ -7,7 +7,12 @@ from .base import (
     Position,
     Velocity,
 )
-from .pose import GeoPosePublic, PosePublic
+from .pose import (
+    GeoPosePublic,
+    PosePublic,
+    PoseCollectionPublic,
+    GeoPoseCollectionPublic,
+)
 from .traffic_participant import TrafficParticipant
 from .trajectory import GeoTrajectoryPublic, TrajectoryPublic
 
@@ -21,6 +26,8 @@ __all__ = [
     "Velocity",
     "GeoPosePublic",
     "PosePublic",
+    "GeoPoseCollectionPublic",
+    "PoseCollectionPublic",
     "TrafficParticipant",
     "GeoTrajectoryPublic",
     "TrajectoryPublic",
