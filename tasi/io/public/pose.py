@@ -22,6 +22,7 @@ from tasi.io.public.base import (
     PublicEntityMixin,
     Velocity,
 )
+from tasi.io.base import Base
 from tasi.io.public.traffic_participant import TrafficParticipant
 from tasi.io.util import as_geojson
 
@@ -299,7 +300,7 @@ class GeoPosePublic(PublicEntityMixin, PublicPoseBase):
             return pose.as_geopandas()
 
 
-class PoseCollectionPublic(PublicEntityMixin):
+class PoseCollectionPublic(PublicEntityMixin, Base):
 
     #: The time of the poses
     timestamp: datetime
@@ -320,7 +321,7 @@ class PoseCollectionPublic(PublicEntityMixin):
         )
 
 
-class GeoPoseCollectionPublic(PublicEntityMixin):
+class GeoPoseCollectionPublic(PublicEntityMixin, Base):
 
     #: The time of the poses
     timestamp: datetime
