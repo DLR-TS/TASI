@@ -4,6 +4,7 @@ from typing import Iterable, List, Tuple, Union
 import geopandas as gpd
 import numpy as np
 import pandas as pd
+from fastdtw import fastdtw
 from typing_extensions import Self
 
 from .base import CollectionBase, GeoPoseCollectionBase, PoseCollectionBase
@@ -342,10 +343,43 @@ class RoadConditionDataset(Dataset):
     pass
 
 
-class TrafficLightDataset(Dataset):
+class TrafficLightDataset(Dataset, PoseCollectionBase):
     """Dataset of traffic light information"""
 
-    pass
+    @property
+    def _trajectory_constructor(self):
+        return TrafficLightDataset
+
+    @property
+    def _pose_constructor(self):
+        from .pose import TrafficLightPose
+
+        return TrafficLightPose
+
+    def _ensure_correct_type(self, *args, **kwargs):
+        return PoseCollectionBase._ensure_correct_type(self, *args, **kwargs)
+
+    def synchronize(self, ds: TrajectoryDataset) -> Tuple[TrajectoryDataset, Self]:
+        """Synchronize the given trajectory with this traffic light dataset
+
+        Args:
+            ds (TrajectoryDataset): A dataset of trajectories
+
+        Returns:
+            Tuple[TrajectoryDataset, Self]: Both datasets synchronized
+        """
+        # ensure given dataset is in the traffic light interval
+        mask = (ds.timestamps > self.interval.left) & (
+            ds.timestamps < self.interval.right
+        )
+
+        ds = ds.att(ds.timestamps[mask])  # type: ignore
+
+        # we will replicate every entry to match the entries in the given
+        # trajectory dataset
+        route = fastdtw(self.timestamps, ds.timestamps)[1]
+
+        return ds, self.iloc[[r[0] for r in route]]
 
 
 class TrafficVolumeDataset(Dataset):

@@ -10,9 +10,9 @@ from tasi.utils import add_attributes, position_to_point
 
 from .base import CollectionBase
 
-GeoPose = gpd.GeoDataFrame
+GeoPose = gpd.GeoDataFrame  # type: ignore
 
-__all__ = ["Pose", "GeoPose"]
+__all__ = ["Pose", "GeoPose", "PoseBase", "TrafficLightPose"]
 
 
 class PoseBase(CollectionBase):
@@ -158,3 +158,14 @@ class GeoPose(PoseBase, gpd.GeoDataFrame):
         cls, pose: Pose, position: Union[str, List[str], Tuple[str]] = "position"
     ):
         return pose.as_geopandas(position=position)
+
+
+class TrafficLightPose(PoseBase):
+
+    @property
+    def _constructor(self):
+        return TrafficLightPose
+
+    @property
+    def _constructor_sliced(self):
+        return pd.Series
