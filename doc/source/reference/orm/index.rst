@@ -31,7 +31,7 @@ They may help to convert data into the internal ``TASI`` data format.
     DimensionORM
     PositionORM
     VelocityORM
-    TrafficParticipantORM
+    TrafficLightStateORM
 
 Entities
 **********
@@ -43,4 +43,6 @@ Entities
     GeoPoseORM
     TrajectoryORM
     GeoTrajectoryORM
+    TrafficParticipantORM
+    TrafficLightORM
 

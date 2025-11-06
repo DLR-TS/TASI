@@ -258,8 +258,12 @@ class DLRDatasetManager:
         return self._dataset("openscenario", path)
 
 
-dlr_ut_records = ZenodoConnector("DLR Urban Traffic dataset", parent_id=11396371)
-DLRUTVersion = dlr_ut_records.get_version_enum()
+try:
+    dlr_ut_records = ZenodoConnector("DLR Urban Traffic dataset", parent_id=11396371)
+    DLRUTVersion = dlr_ut_records.get_version_enum()
+except requests.exceptions.RequestException:
+    DLRUTVersion = None
+
 
 if DLRUTVersion is None:
     logging.warning("Failed to fetch version of DLR UT dataset")

@@ -1,5 +1,5 @@
 import inspect
-from typing import Tuple
+from typing import Dict, Tuple
 
 import pandas as pd
 from geoalchemy2 import WKBElement
@@ -106,3 +106,39 @@ def as_geojson(obj: WKBElement | str) -> str | None:
         raise TypeError(f"Unsupported type {type(obj)}")
 
     return result
+
+
+def as_nested_dict(input_dict: Dict, replace_keys=None):
+    nested_dict = {}
+
+    if replace_keys is None:
+        replace_keys = {}
+
+    for key, value in input_dict.items():
+
+        # replace keys
+        key = [replace_keys[k] if k in replace_keys else k for k in key if k]
+
+        if len(key) == 1:
+            nested_dict[key[0]] = value
+        elif len(key) == 2:
+            first_level, second_level = key
+
+            if first_level not in nested_dict:
+                nested_dict[first_level] = {}
+
+            nested_dict[first_level][second_level] = value
+
+        elif len(key) == 3:
+            first_level, second_level, third_level = key
+
+            if first_level not in nested_dict:
+                nested_dict[first_level] = {}
+
+            if second_level not in nested_dict[first_level]:
+                nested_dict[first_level][second_level] = {}
+
+            nested_dict[first_level][second_level][third_level] = value
+        else:
+            raise RuntimeError("Unsupported nested dictionary depth")
+    return nested_dict
