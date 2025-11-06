@@ -5,9 +5,14 @@ Numerical data models
 
 .. currentmodule:: tasi
 
+The available data models based on `pandas`.
+
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    pose
    trajectory
    trajectorydataset
+   trafficlightpose
+   trafficlightdataset
+

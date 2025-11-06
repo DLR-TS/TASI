@@ -9,6 +9,8 @@ from tasi.io.orm.base import ClassificationsORM, DimensionORM
 from tasi.io.orm.traffic_participant import TrafficParticipantORM
 from tasi.io.public.base import Classifications, Dimension, PublicEntityMixin
 
+__all__ = ["TrafficParticipant"]
+
 
 class TrafficParticipant(PublicEntityMixin, TrafficParticipantBase):
 

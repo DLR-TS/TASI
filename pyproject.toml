@@ -44,6 +44,7 @@ pydantic-settings = "^2.10.1"
 pandas = "^2.3.0"
 matplotlib = "^3.10.3"
 numba = "^0.61.2"
+fastdtw = "^0.3.4"
 
 [tool.poetry.scripts]
 dlr-downloader = "tasi.dlr.dataset:download"
