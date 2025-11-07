@@ -14,5 +14,8 @@ build:
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry install --with docs
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry run python -c "import tilemapbase; tilemapbase.init(create=True)"
 
+  apt_packages:
+    - graphviz
+    
 sphinx:
   configuration: doc/source/conf.py
