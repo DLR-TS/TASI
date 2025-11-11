@@ -13,7 +13,7 @@ The following attributes are the basic attributes of the entities defined below.
 They may help to convert data into the internal ``TASI`` data format.
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     acceleration
     boundingbox
@@ -27,9 +27,11 @@ Entities
 **********
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     pose
     geopose
     trajectory
     geotrajectory
+    traffic_light
+    traffic_light_state

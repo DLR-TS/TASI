@@ -13,13 +13,14 @@ dataset = DLRUTDatasetManager(DLRUTVersion.latest)
 dataset.load()
 ut = DLRTrajectoryDataset.from_csv(dataset.trajectory()[0])
 ut
-import matplotlib.pyplot as plt
 
 # %% [markdown]
 # ## Plot trajectories
 # We now utilize the `TrajectoryPlotter` to visualize the trajectories of the
 # traffic participants that we've loaded.
 # %%
+import matplotlib.pyplot as plt
+
 from tasi.plotting import TrajectoryPlotter
 
 f, ax = plt.subplots()
@@ -93,7 +94,7 @@ from tasi.dlr.dataset import DLRHTDatasetManager, DLRHTVersion
 from tasi.dlr.plotting import DLRTrajectoryPlotter
 
 # load dataset
-dataset = DLRHTDatasetManager(DLRHTVersion.latest)
+dataset = DLRHTDatasetManager(DLRHTVersion.v1_1_0)
 dataset.load()
 ht = DLRTrajectoryDataset.from_csv(dataset.trajectory()[0])
 

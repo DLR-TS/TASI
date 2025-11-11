@@ -13,6 +13,8 @@ from tasi.io.public.base import PublicEntityMixin
 from tasi.io.public.pose import GeoPosePublic, PosePublic
 from tasi.io.public.traffic_participant import TrafficParticipant
 
+__all__ = ["TrajectoryPublic", "GeoTrajectoryPublic"]
+
 
 class TrajectoryPublic(Base, PublicEntityMixin):
 
