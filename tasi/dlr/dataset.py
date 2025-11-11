@@ -36,7 +36,13 @@ __all__ = [
     "DLRAirQualityDataset",
     "DLRRoadConditionDataset",
     "download",
+    "DLRUTConnector",
+    "DLRHTConnector",
 ]
+
+
+DLRUTConnector = ZenodoConnector("DLR Urban Traffic dataset", parent_id=11396371)
+DLRHTConnector = ZenodoConnector("DLR Highway Traffic dataset", parent_id=14012005)
 
 
 class DLRDatasetManager:
@@ -262,20 +268,22 @@ class DLRUTDatasetManager(DLRDatasetManager):
     """A manager to load the DLR UT dataset from zenodo"""
 
     try:
-        dlr_ut_records = ZenodoConnector(
-            "DLR Urban Traffic dataset", parent_id=11396371
-        )
-        VERSION_ENUM = dlr_ut_records.get_version_enum()
-        VERSION = dlr_ut_records.get_dois()
+
+        VERSION_ENUM = DLRUTConnector.get_version_enum()
+        VERSION = DLRUTConnector.get_dois()
         """Dict[str, int]: An internal mapping between version and the zenodo id
         """
 
         ARCHIVE = dict(
             **{
                 v: "DLR-Urban-Traffic-dataset"
-                for v in [key for key in VERSION if key != VERSION_ENUM.v1_0_0.value]
+                for v in [
+                    key
+                    for key in VERSION
+                    if key != DLRUTConnector.get_version_enum().v1_0_0.value
+                ]
             },
-            **{VERSION_ENUM.v1_0_0.value: "DLR-UT"},
+            **{DLRUTConnector.get_version_enum().v1_0_0.value: "DLR-UT"},
         )
     except requests.exceptions.RequestException:
         VERSION_ENUM = None
@@ -495,11 +503,8 @@ class DLRHTDatasetManager(DLRDatasetManager):
     """A manager to load the DLR HT dataset from zenodo"""
 
     try:
-        dlr_ht_records = ZenodoConnector(
-            "DLR Highway Traffic dataset", parent_id=14012005
-        )
-        VERSION_ENUM = dlr_ht_records.get_version_enum()
-        VERSION = dlr_ht_records.get_dois()
+        VERSION_ENUM = DLRHTConnector.get_version_enum()
+        VERSION = DLRHTConnector.get_dois()
         """Dict[str, int]: An internal mapping between version and the zenodo id
         """
     except requests.exceptions.RequestException:
@@ -571,6 +576,10 @@ class DLRRoadConditionDataset(AddIndexFromCSVMixin, RoadConditionDataset):
 
 class DLRTrafficVolumeDataset(AddIndexFromCSVMixin, TrafficVolumeDataset):
     pass
+
+
+DLRHTVersion = DLRHTDatasetManager.VERSION_ENUM
+DLRUTVersion = DLRUTDatasetManager.VERSION_ENUM
 
 
 def download():
