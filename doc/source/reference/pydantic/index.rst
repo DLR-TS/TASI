@@ -31,6 +31,7 @@ Entities
 
     pose
     geopose
+    posecollection
     trajectory
     geotrajectory
     traffic_light
