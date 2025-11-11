@@ -4,12 +4,14 @@ from tasi.io.orm.base import MODELS as BASE_MODELS
 from tasi.io.orm.base import *
 from tasi.io.orm.pose import MODELS as POSE_MODELS
 from tasi.io.orm.pose import *
+from tasi.io.orm.traffic_light import MODELS as TL_MODELS
+from tasi.io.orm.traffic_light import *
 from tasi.io.orm.traffic_participant import MODELS as TP_MODELS
 from tasi.io.orm.traffic_participant import TrafficParticipantORM
 from tasi.io.orm.trajectory import MODELS as TJ_MODELS
 from tasi.io.orm.trajectory import *
 
-MODELS = [*BASE_MODELS, *POSE_MODELS, *TP_MODELS, *TJ_MODELS]
+MODELS = [*BASE_MODELS, *POSE_MODELS, *TP_MODELS, *TJ_MODELS, *TL_MODELS]
 
 __all__ = [
     "ClassificationsORM",
@@ -23,6 +25,8 @@ __all__ = [
     "TrafficParticipantORM",
     "TrajectoryORM",
     "GeoTrajectoryORM",
+    "TrafficLightStateORM",
+    "TrafficLightORM",
 ]
 
 

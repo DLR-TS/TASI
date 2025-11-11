@@ -9,13 +9,14 @@ This module contains basic dataset models that may be used when working with tra
 
 The available classes to load and manage the subfolder of the datasets
 
-.. toctree::
-   :maxdepth: 1
+.. autosummary::
+   :toctree: api/
 
-   dataset
-   airqualitydataset
-   roadconditiondataset
-   trajectorydataset
-   trafficlightdataset
-   trafficvolumedataset
-   weatherdataset
+    Dataset
+    AirQualityDataset
+    RoadConditionDataset
+    TrajectoryDataset
+    TrafficLightDataset
+    TrafficVolumeDataset
+    WeatherDataset
+

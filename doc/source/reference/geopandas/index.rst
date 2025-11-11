@@ -5,8 +5,10 @@ Geospatial data models
 
 .. currentmodule:: tasi
 
+The available data models based on `GeoPandas`.
+
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    geopose
    geotrajectory
