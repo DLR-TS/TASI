@@ -496,8 +496,11 @@ class DLRUTTrafficLightDataset(TrafficLightDataset):
         return self.loc[self["state"] == signal_state]
 
 
-dlr_ht_records = ZenodoConnector("DLR Highway Traffic dataset", parent_id=14012005)
-DLRHTVersion = dlr_ht_records.get_version_enum()
+try:
+    dlr_ht_records = ZenodoConnector("DLR Highway Traffic dataset", parent_id=14012005)
+    DLRHTVersion = dlr_ht_records.get_version_enum()
+except requests.exceptions.RequestException:
+    DLRHTVersion = None
 
 if DLRHTVersion is None:
     logging.warning("Failed to fetch version of DLR HT dataset")
