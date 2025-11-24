@@ -52,6 +52,6 @@ class TestPoseConversion(TestCase):
 
     def test_convert_geopose(self):
 
-        geopose = self.pose.as_geopandas()
+        geopose = self.pose.as_geo()
 
         self.assertIsNotNone(geopose.geometry)

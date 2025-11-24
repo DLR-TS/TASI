@@ -3,9 +3,9 @@
 GeoTrajectoryPublic
 ========================
 
-.. currentmodule:: tasi.io
+.. currentmodule:: tasi.io.geo
 
-.. inheritance-diagram:: tasi.io.GeoTrajectoryPublic
+.. inheritance-diagram:: tasi.io.geo.GeoTrajectoryPublic
     :parts: 1
 
 A ``GeoTrajectory`` specialized for trajectory data representing the state of a

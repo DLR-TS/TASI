@@ -1,19 +1,19 @@
 from functools import wraps
 from typing import Iterable, List, Tuple, Union
 
-import geopandas as gpd
 import numpy as np
 import pandas as pd
-from fastdtw import fastdtw
+from dtaidistance.dtw import best_path, warping_paths
 from typing_extensions import Self
 
-from .base import CollectionBase, GeoPoseCollectionBase, PoseCollectionBase
-from .trajectory import GeoTrajectory, Trajectory
+from tasi.utils import requires_extra
+
+from ..base import CollectionBase, PoseCollectionBase
+from ..trajectory.base import Trajectory
 
 __all__ = [
     "Dataset",
     "TrajectoryDataset",
-    "GeoTrajectoryDataset",
     "WeatherDataset",
     "AirQualityDataset",
     "RoadConditionDataset",
@@ -44,13 +44,13 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
 
     @property
     def _trajectory_constructor(self):
-        from .trajectory import Trajectory
+        from ..trajectory.base import Trajectory
 
         return Trajectory
 
     @property
     def _pose_constructor(self):
-        from .pose import Pose
+        from ..pose.base import Pose
 
         return Pose
 
@@ -227,18 +227,16 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
 
         return cls(df)
 
-    def as_geopandas(
-        self, *args, activate: Union[str, Tuple[str]] = "position", **kwargs
-    ) -> "GeoTrajectoryDataset":
+    @requires_extra("geo")
+    def as_geo(self, *args, activate: Union[str, Tuple[str]] = "position", **kwargs):
         """Convert to a geospatial representation using `geopandas`.
 
         Returns:
             GeoTrajectoryDataset: The dataset represented with GeoObjects.
         """
+        from .geo import GeoTrajectoryDataset
 
-        gtjs = [
-            self.trajectory(tjid).as_geopandas(*args, **kwargs) for tjid in self.ids
-        ]
+        gtjs = [self.trajectory(tjid).as_geo(*args, **kwargs) for tjid in self.ids]
 
         gds = GeoTrajectoryDataset.from_trajectories(gtjs)
         gds.set_geometry(activate, inplace=True)
@@ -294,37 +292,6 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
         return PoseCollectionBase._ensure_correct_type(self, *args, **kwargs)
 
 
-class GeoTrajectoryDataset(Dataset, GeoPoseCollectionBase):
-    """Representation of a dataset of trajectory information using ``GeoPandas``"""
-
-    @classmethod
-    def from_trajectories(cls, tjs: List[GeoTrajectory]) -> Self:
-        """Create a dataset based on trajectories
-
-        Args:
-            tjs (List[GeoTrajectory]): The trajectories
-
-        Returns:
-            GeoTrajectoryDataset: A dataset with the given trajectories
-        """
-        return cls(pd.concat(tjs, axis=0))
-
-    def explore(self, crs: str = "EPSG:32632", *args, **kwargs):
-
-        if self.crs is None:
-            self = self.set_crs(crs)
-
-        # a quick hack for now since we dont want to update the orignal columns
-        self = gpd.GeoDataFrame(self)
-
-        # we need to flatten index for visualization purpose
-        self.columns = [
-            "_".join(l) if l[1] else l[0] for l in self.columns.to_flat_index()
-        ]
-
-        return self.explore(*args, **kwargs)
-
-
 class WeatherDataset(Dataset):
     """Dataset of weather information"""
 
@@ -352,7 +319,7 @@ class TrafficLightDataset(Dataset, PoseCollectionBase):
 
     @property
     def _pose_constructor(self):
-        from .pose import TrafficLightPose
+        from ..pose.base import TrafficLightPose
 
         return TrafficLightPose
 
@@ -377,7 +344,11 @@ class TrafficLightDataset(Dataset, PoseCollectionBase):
 
         # we will replicate every entry to match the entries in the given
         # trajectory dataset
-        route = fastdtw(self.timestamps, ds.timestamps)[1]
+        paths = warping_paths(
+            self.timestamps.values.astype(np.float64),
+            ds.timestamps.values.astype(np.float64),
+        )[1]
+        route = best_path(paths)
 
         return ds, self.iloc[[r[0] for r in route]]
 

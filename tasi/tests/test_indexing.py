@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
 
-from tasi.base import CollectionBase, PandasBase
-from tasi.dataset import PoseCollectionBase, TrajectoryDataset
+from tasi.base import CollectionBase, PandasBase, PoseCollectionBase
+from tasi.dataset import TrajectoryDataset
 from tasi.pose import Pose
-from tasi.trajectory import Trajectory
+from tasi.trajectory.base import Trajectory
 
 from . import DatasetTestCase
 

@@ -12,7 +12,7 @@ import requests
 from tqdm import tqdm
 
 from tasi.base import PandasBase
-from tasi.dataset import (
+from tasi.dataset.base import (
     AirQualityDataset,
     RoadConditionDataset,
     TrafficLightDataset,
@@ -36,7 +36,13 @@ __all__ = [
     "DLRAirQualityDataset",
     "DLRRoadConditionDataset",
     "download",
+    "DLRUTConnector",
+    "DLRHTConnector",
 ]
+
+
+DLRUTConnector = ZenodoConnector("DLR Urban Traffic dataset", parent_id=11396371)
+DLRHTConnector = ZenodoConnector("DLR Highway Traffic dataset", parent_id=14012005)
 
 
 class DLRDatasetManager:
@@ -258,92 +264,89 @@ class DLRDatasetManager:
         return self._dataset("openscenario", path)
 
 
-try:
-    dlr_ut_records = ZenodoConnector("DLR Urban Traffic dataset", parent_id=11396371)
-    DLRUTVersion = dlr_ut_records.get_version_enum()
-except requests.exceptions.RequestException:
-    DLRUTVersion = None
+class DLRUTDatasetManager(DLRDatasetManager):
+    """A manager to load the DLR UT dataset from zenodo"""
 
+    try:
 
-if DLRUTVersion is None:
-    logging.warning("Failed to fetch version of DLR UT dataset")
-
-else:
-
-    class DLRUTDatasetManager(DLRDatasetManager):
-        """A manager to load the DLR UT dataset from zenodo"""
-
-        VERSION_ENUM = DLRUTVersion
-        VERSION = dlr_ut_records.get_dois()
+        VERSION_ENUM = DLRUTConnector.get_version_enum()
+        VERSION = DLRUTConnector.get_dois()
         """Dict[str, int]: An internal mapping between version and the zenodo id
         """
 
         ARCHIVE = dict(
             **{
                 v: "DLR-Urban-Traffic-dataset"
-                for v in [key for key in VERSION if key != DLRUTVersion.v1_0_0.value]
+                for v in [
+                    key
+                    for key in VERSION
+                    if key != DLRUTConnector.get_version_enum().v1_0_0.value
+                ]
             },
-            **{DLRUTVersion.v1_0_0.value: "DLR-UT"},
+            **{DLRUTConnector.get_version_enum().v1_0_0.value: "DLR-UT"},
         )
+    except requests.exceptions.RequestException:
+        VERSION_ENUM = None
+        VERSION = None
 
-        @classmethod
-        def area(cls):
-            return "urban"
+    @classmethod
+    def area(cls):
+        return "urban"
 
-        def _dataset(self, variant: str, path: Path = None) -> List[str]:
-            """Searches for files in the dataset specified at ``path`` for dataset information ``variant``
+    def _dataset(self, variant: str, path: Path = None) -> List[str]:
+        """Searches for files in the dataset specified at ``path`` for dataset information ``variant``
 
-            Args:
-                path (Path): The path of the dataset.
-                variant (str): The dataset information to search for
+        Args:
+            path (Path): The path of the dataset.
+            variant (str): The dataset information to search for
 
-            Returns:
-                List[str]: The files found in the dataset for the specified dataset information
-            """
-            if path is None:
-                path = self._path
+        Returns:
+            List[str]: The files found in the dataset for the specified dataset information
+        """
+        if path is None:
+            path = self._path
 
-            if not isinstance(path, Path):
-                path = Path(path)
+        if not isinstance(path, Path):
+            path = Path(path)
 
-            # join dataset path and name
-            path = path.joinpath(self.name)
+        # join dataset path and name
+        path = path.joinpath(self.name)
 
-            # add type of data
-            if self.version not in [
-                DLRUTVersion.v1_0_0.value,
-                DLRUTVersion.v1_0_1.value,
-                DLRUTVersion.v1_1_0.value,
-            ]:
-                path = path.joinpath(self.DATA_TYPES[variant])
+        # add type of data
+        if self.version not in [
+            self.VERSION_ENUM.v1_0_0.value,
+            self.VERSION_ENUM.v1_0_1.value,
+            self.VERSION_ENUM.v1_1_0.value,
+        ]:
+            path = path.joinpath(self.DATA_TYPES[variant])
 
-            # add variant of data
-            path = path.joinpath(variant)
+        # add variant of data
+        path = path.joinpath(variant)
 
-            # return file pathes of variant
-            return [os.path.join(path, p) for p in sorted(os.listdir(path))]
+        # return file pathes of variant
+        return [os.path.join(path, p) for p in sorted(os.listdir(path))]
 
-        def traffic_lights(self, path: Path = None) -> List[str]:
-            """List of files with traffic light data.
+    def traffic_lights(self, path: Path = None) -> List[str]:
+        """List of files with traffic light data.
 
-            Args:
-                path (Path): The path of the dataset
+        Args:
+            path (Path): The path of the dataset
 
-            Returns:
-                List[str]: The files with traffic light data
-            """
-            return self._dataset("traffic_lights", path)
+        Returns:
+            List[str]: The files with traffic light data
+        """
+        return self._dataset("traffic_lights", path)
 
-        def air_quality(self, path: Path = None) -> List[str]:
-            """List of files with air quality data.
+    def air_quality(self, path: Path = None) -> List[str]:
+        """List of files with air quality data.
 
-            Args:
-                path (Path): The path of the dataset
+        Args:
+            path (Path): The path of the dataset
 
-            Returns:
-                List[str]: The files with air quality data
-            """
-            return self._dataset("air_quality", path)
+        Returns:
+            List[str]: The files with air quality data
+        """
+        return self._dataset("air_quality", path)
 
 
 class ObjectClass(IntEnum):
@@ -496,55 +499,52 @@ class DLRUTTrafficLightDataset(TrafficLightDataset):
         return self.loc[self["state"] == signal_state]
 
 
-dlr_ht_records = ZenodoConnector("DLR Highway Traffic dataset", parent_id=14012005)
-DLRHTVersion = dlr_ht_records.get_version_enum()
+class DLRHTDatasetManager(DLRDatasetManager):
+    """A manager to load the DLR HT dataset from zenodo"""
 
-if DLRHTVersion is None:
-    logging.warning("Failed to fetch version of DLR HT dataset")
-else:
-
-    class DLRHTDatasetManager(DLRDatasetManager):
-        """A manager to load the DLR HT dataset from zenodo"""
-
-        VERSION_ENUM = DLRHTVersion
-        VERSION = dlr_ht_records.get_dois()
+    try:
+        VERSION_ENUM = DLRHTConnector.get_version_enum()
+        VERSION = DLRHTConnector.get_dois()
         """Dict[str, int]: An internal mapping between version and the zenodo id
         """
+    except requests.exceptions.RequestException:
+        VERSION_ENUM = None
+        VERSION = None
 
-        @classmethod
-        def area(cls):
-            return "highway"
+    @classmethod
+    def area(cls):
+        return "highway"
 
-        @property
-        def archivename(self):
-            """The base name of the archive"""
-            return "DLR-Highway-Traffic-dataset"
+    @property
+    def archivename(self):
+        """The base name of the archive"""
+        return "DLR-Highway-Traffic-dataset"
 
-        def _dataset(self, variant: str, path: Path = None) -> List[str]:
-            """Searches for files in the dataset specified at ``path`` for dataset information ``variant``
+    def _dataset(self, variant: str, path: Path = None) -> List[str]:
+        """Searches for files in the dataset specified at ``path`` for dataset information ``variant``
 
-            Args:
-                path (Path): The path of the dataset.
-                variant (str): The dataset information to search for
+        Args:
+            path (Path): The path of the dataset.
+            variant (str): The dataset information to search for
 
-            Returns:
-                List[str]: The files found in the dataset for the specified dataset information
-            """
-            if path is None:
-                path = self._path
+        Returns:
+            List[str]: The files found in the dataset for the specified dataset information
+        """
+        if path is None:
+            path = self._path
 
-            if not isinstance(path, Path):
-                path = Path(path)
+        if not isinstance(path, Path):
+            path = Path(path)
 
-            # join dataset path and name, type and variant
-            path = (
-                path.joinpath(self.name)
-                .joinpath(self.DATA_TYPES[variant])
-                .joinpath(variant)
-            )
+        # join dataset path and name, type and variant
+        path = (
+            path.joinpath(self.name)
+            .joinpath(self.DATA_TYPES[variant])
+            .joinpath(variant)
+        )
 
-            # return file pathes of variant
-            return [os.path.join(path, p) for p in sorted(os.listdir(path))]
+        # return file pathes of variant
+        return [os.path.join(path, p) for p in sorted(os.listdir(path))]
 
 
 class AddIndexFromCSVMixin:
@@ -576,6 +576,10 @@ class DLRRoadConditionDataset(AddIndexFromCSVMixin, RoadConditionDataset):
 
 class DLRTrafficVolumeDataset(AddIndexFromCSVMixin, TrafficVolumeDataset):
     pass
+
+
+DLRHTVersion = DLRHTDatasetManager.VERSION_ENUM
+DLRUTVersion = DLRUTDatasetManager.VERSION_ENUM
 
 
 def download():

@@ -16,7 +16,7 @@ Serialization / IO / conversion
    :toctree: api/
 
    Pose.from_csv
-   Pose.as_geopandas
+   Pose.as_geo
 
 Attributes
 ***********

@@ -1,11 +1,32 @@
-from copy import copy
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
-from shapely import LineString, MultiLineString, MultiPoint, Point
 
 MULTI_INDEX_SEPERATOR = "|"
+
+__all__ = [
+    "enlarge_index",
+    "flatten_index",
+    "add_attributes",
+    "to_pandas_multiindex",
+    "requires_module",
+    "requires_extra",
+    "MULTI_INDEX_SEPERATOR",
+    "has_extra",
+]
+
+
+Extra = Literal["database", "geo", "performance", "visualization", "wms", "io"]
+
+ExtraMapping: Dict[Extra, str] = {
+    "database": "sqlalchemy",
+    "geo": "geopandas",
+    "visualization": "matplotlib",
+    "wms": "tilemapbase",
+    "performance": "numba",
+    "io": "sqlmodel",
+}
 
 
 def enlarge_index(index: pd.MultiIndex, max_levels: int, attr=None) -> List[Tuple]:
@@ -429,77 +450,65 @@ def to_pandas_multiindex(
     return pd.MultiIndex.from_arrays(np.array(names).T)
 
 
-def position_to_point(df: pd.DataFrame, position: Any) -> Union[Point, MultiPoint]:
-    """
-    Convert the position to a shapely Point
+def requires_module(module_name: Union[str, List[str]], extra: Extra | str = ""):
 
-    Args:
-        position (Any): The position to convert
+    if isinstance(module_name, str):
+        module_name = [module_name]
 
-    Raises:
-        ValueError: If the position is unsupported
+    not_available = []
+    for m in module_name:
 
-    Returns:
-        Union[Point, MultiPoint]: Either a single Point or multiple Points for nested positions.
-    """
-    df = df.sort_index(axis=1)
+        try:
+            __import__(m)
+        except ImportError:
+            not_available.append(m)
 
-    values = df[position]
+    def decorator(func):
 
-    # get the flatten columns (remove empty levels)
-    flat_columns = flatten_index(values.columns)
+        if not not_available:
+            return func
 
-    if flat_columns.nlevels == 2:
-        # nested position attributes
-        return MultiPoint(
-            [
-                position_to_point(df, (position, p))
-                for p in values.columns.get_level_values(0)
-            ]
-        )
+        def missing_module_stub(*args, **kwargs):
+            mdls = ",".join(not_available)
+            raise RuntimeError(
+                f"The function '{func.__name__}' is unavailable because the module(s) '{mdls}' could not be imported."
+                + (f" Please install 'tasi[{extra}]'." if extra else "")
+            )
 
-    elif flat_columns.nlevels == 1:
-        # single position attribute
-        return Point(values.values[:, :2])
-    else:
-        # unsupported position attribute
-        raise ValueError(f"Unsupported position {position}")
+        return missing_module_stub
+
+    return decorator
 
 
-def position_to_linestring(
-    df: pd.DataFrame, position: Any
-) -> Union[LineString, MultiLineString]:
-    """
-    Convert the position to a shapely LineString
+def requires_extra(extra: Extra):
 
-    Args:
-        position (Any): The position to convert
+    module_name = ExtraMapping[extra]
 
-    Raises:
-        ValueError: If the position is unsupported
+    not_available = False
+    try:
+        __import__(module_name)
+    except ImportError:
+        not_available = True
 
-    Returns:
-        Union[LineString, MultiLineString]: Either a single LineString or multiple LineStrings for nested positions.
-    """
-    df = df.sort_index(axis=1)
+    def decorator(func):
 
-    values = df[position]
+        if not not_available:
+            return func
 
-    # get the flatten columns (remove empty levels)
-    flat_columns = flatten_index(values.columns)
+        def missing_module_stub(*args, **kwargs):
+            raise RuntimeError(
+                f"The function '{func.__name__}' is unavailable because the extra '{module_name}' is not installed. Please install it with 'tasi[{extra}]'."
+            )
 
-    if flat_columns.nlevels == 2:
-        # nested position attributes
-        return MultiLineString(
-            [
-                position_to_linestring(df, (position, p))
-                for p in values.columns.get_level_values(0)
-            ]
-        )
+        return missing_module_stub
 
-    elif flat_columns.nlevels == 1:
-        # single position attribute
-        return LineString(values.values[:, :2])
-    else:
-        # unsupported position attribute
-        raise ValueError(f"Unsupported position {position}")
+    return decorator
+
+
+def has_extra(extra: Extra) -> bool:
+
+    try:
+        __import__(ExtraMapping[extra])
+        return True
+    except ImportError:
+        return False

@@ -3,7 +3,7 @@
 BoundingboxPlotter
 ##########################
 
-.. currentmodule:: tasi.plotting
+.. currentmodule:: tasi.plotting.wms
 
 A ``Plotter`` to visualize layers from a ``WMS`` server that requires a ``boundingbox`` parameter.
 

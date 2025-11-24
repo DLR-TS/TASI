@@ -3,8 +3,6 @@
 Plotting
 ##############
 
-.. currentmodule:: tasi.plotting
-
 
 Everything around plotting static content using `matplotlib`.
 

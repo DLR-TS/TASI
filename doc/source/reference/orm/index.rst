@@ -3,8 +3,6 @@
 Object Relation Mapper models
 ===============================
 
-.. currentmodule:: tasi.io.orm
-
 
 To save traffic data into the database, the following models can be used.
 
@@ -25,13 +23,13 @@ They may help to convert data into the internal ``TASI`` data format.
 .. autosummary::
    :toctree: api/
 
-    AccelerationORM
-    BoundingBoxORM
-    ClassificationsORM
-    DimensionORM
-    PositionORM
-    VelocityORM
-    TrafficLightStateORM
+    tasi.io.orm.AccelerationORM
+    tasi.io.orm.BoundingBoxORM
+    tasi.io.orm.ClassificationsORM
+    tasi.io.orm.DimensionORM
+    tasi.io.orm.PositionORM
+    tasi.io.orm.VelocityORM
+    tasi.io.orm.TrafficLightStateORM
 
 Entities
 **********
@@ -39,10 +37,19 @@ Entities
 .. autosummary::
    :toctree: api/
 
-    PoseORM
-    GeoPoseORM
-    TrajectoryORM
-    GeoTrajectoryORM
-    TrafficParticipantORM
-    TrafficLightORM
+    tasi.io.orm.PoseORM
+    tasi.io.orm.TrajectoryORM
+    tasi.io.orm.TrafficParticipantORM
+    tasi.io.orm.TrafficLightORM
+
+
+Geo Entities
+**************
+
+
+.. autosummary::
+   :toctree: api/
+
+    tasi.io.orm.geo.GeoPoseORM
+    tasi.io.orm.geo.GeoTrajectoryORM
 
