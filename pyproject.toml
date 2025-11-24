@@ -45,12 +45,13 @@ tqdm = "^4.67.1"
 numba = "^0.62.1"
 
 [tool.poetry.extras]
-geo = [ "geojson-pydantic", "geopandas", "shapely"]
-visualization = [ "matplotlib", "mapclassify", "folium"]
-wms = [ "matplotlib", "mapclassify", "folium","tilemapbase"]
-database = [ "psycopg"]
-performance = [ "numba"]
-io = ["sqlmodel", "pydantic-settings", "sqlalchemy", "geoalchemy", "shapely"]
+geo = [ "geojson-pydantic", "geopandas", "shapely",]
+visualization = [ "matplotlib", "mapclassify", "folium",]
+wms = [ "matplotlib", "mapclassify", "folium", "tilemapbase",]
+database = [ "psycopg",]
+performance = [ "numba",]
+io = [ "sqlmodel", "pydantic-settings", "sqlalchemy", "geoalchemy", "shapely",]
+all = [ "geojson-pydantic", "geopandas", "matplotlib", "folium", "mapclassify", "tilemapbase", "psycopg", "numba", "sqlmodel", "pydantic-settings", "sqlalchemy", "geoalchemy", "shapely",]
 
 [tool.poetry.scripts]
 dlr-downloader = "tasi.dlr.dataset:download"
