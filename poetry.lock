@@ -175,7 +175,7 @@ description = "Generate complex HTML+JS pages with Python"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
-markers = "extra == \"visualization\" or extra == \"wms\""
+markers = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""
 files = [
     {file = "branca-0.8.2-py3-none-any.whl", hash = "sha256:2ebaef3983e3312733c1ae2b793b0a8ba3e1c4edeb7598e10328505280cf2f7c"},
     {file = "branca-0.8.2.tar.gz", hash = "sha256:e5040f4c286e973658c27de9225c1a5a7356dd0702a7c8d84c0f0dfbde388fe7"},
@@ -195,7 +195,7 @@ files = [
     {file = "certifi-2025.11.12-py3-none-any.whl", hash = "sha256:97de8790030bbd5c2d96b7ec782fc2f7820ef8dba6db909ccf95449f2d062d4b"},
     {file = "certifi-2025.11.12.tar.gz", hash = "sha256:d8ab5478f2ecd78af242878415affce761ca6bc54a22a27e026d7c25357c3316"},
 ]
-markers = {main = "extra == \"geo\" or extra == \"visualization\" or extra == \"wms\""}
+markers = {main = "extra == \"geo\" or extra == \"all\" or extra == \"visualization\" or extra == \"wms\""}
 
 [[package]]
 name = "cffi"
@@ -417,7 +417,7 @@ files = [
     {file = "charset_normalizer-3.4.4-py3-none-any.whl", hash = "sha256:7a32c560861a02ff789ad905a2fe94e3f840803362c84fecf1851cb4cf3dc37f"},
     {file = "charset_normalizer-3.4.4.tar.gz", hash = "sha256:94537985111c35f28720e43603b8e7b43a6ecfb2ce1d3058bbe955b73404e21a"},
 ]
-markers = {main = "extra == \"visualization\" or extra == \"wms\""}
+markers = {main = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""}
 
 [[package]]
 name = "click"
@@ -502,7 +502,7 @@ description = "Python library for calculating contours of 2D quadrilateral grids
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
-markers = "extra == \"visualization\" or extra == \"wms\""
+markers = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""
 files = [
     {file = "contourpy-1.3.3-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:709a48ef9a690e1343202916450bc48b9e51c049b089c7f79a267b46cffcdaa1"},
     {file = "contourpy-1.3.3-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:23416f38bfd74d5d28ab8429cc4d63fa67d5068bd711a85edb1c3fb0c3e2f381"},
@@ -700,7 +700,7 @@ description = "Composable style cycles"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
-markers = "extra == \"visualization\" or extra == \"wms\""
+markers = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""
 files = [
     {file = "cycler-0.12.1-py3-none-any.whl", hash = "sha256:85cef7cff222d8644161529808465972e51340599459b8ac3ccbac5a854e0d30"},
     {file = "cycler-0.12.1.tar.gz", hash = "sha256:88bb128f02ba341da8ef447245a9e138fae777f6a23943da4540077d3601eb1c"},
@@ -902,7 +902,7 @@ description = "Make beautiful maps with Leaflet.js & Python"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
-markers = "extra == \"visualization\" or extra == \"wms\""
+markers = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""
 files = [
     {file = "folium-0.19.7-py2.py3-none-any.whl", hash = "sha256:4f60efffd0a97fc22d94cba75cfa0bf954a87b828d7f2b878059e55d38c51c40"},
     {file = "folium-0.19.7.tar.gz", hash = "sha256:cf256a1e38441e7a8e01977bceeba34f86fd68745d7d7e490ccbecc79dc0d388"},
@@ -925,7 +925,7 @@ description = "Tools to manipulate font files"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
-markers = "extra == \"visualization\" or extra == \"wms\""
+markers = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""
 files = [
     {file = "fonttools-4.60.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:9a52f254ce051e196b8fe2af4634c2d2f02c981756c6464dc192f1b6050b4e28"},
     {file = "fonttools-4.60.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:c7420a2696a44650120cdd269a5d2e56a477e2bfa9d95e86229059beb1c19e15"},
@@ -1026,7 +1026,7 @@ description = "Pydantic data models for the GeoJSON spec."
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
-markers = "extra == \"geo\""
+markers = "extra == \"geo\" or extra == \"all\""
 files = [
     {file = "geojson_pydantic-2.1.0-py3-none-any.whl", hash = "sha256:f9091bed334ab9fbb1bef113674edc1212a3737f374a0b13b1aa493f57964c1d"},
     {file = "geojson_pydantic-2.1.0.tar.gz", hash = "sha256:78a52b2a7cd9c113bac4898a81ce00c146c7927dd2804f1c7e9fd05c2515073f"},
@@ -1047,7 +1047,7 @@ description = "Geographic pandas extensions"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
-markers = "extra == \"geo\""
+markers = "extra == \"geo\" or extra == \"all\""
 files = [
     {file = "geopandas-1.1.1-py3-none-any.whl", hash = "sha256:589e61aaf39b19828843df16cb90234e72897e2579be236f10eee0d052ad98e8"},
     {file = "geopandas-1.1.1.tar.gz", hash = "sha256:1745713f64d095c43e72e08e753dbd271678254b24f2e01db8cdb8debe1d293d"},
@@ -1160,7 +1160,7 @@ files = [
     {file = "idna-3.11-py3-none-any.whl", hash = "sha256:771a87f49d9defaf64091e6e6fe9c18d4833f140bd19464795bc32d966ca37ea"},
     {file = "idna-3.11.tar.gz", hash = "sha256:795dafcc9c04ed0c1fb032c2aa73654d8e8c5023a7df64a53f39190ada629902"},
 ]
-markers = {main = "extra == \"visualization\" or extra == \"wms\""}
+markers = {main = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""}
 
 [package.extras]
 all = ["flake8 (>=7.1.1)", "mypy (>=1.11.2)", "pytest (>=8.3.2)", "ruff (>=0.6.2)"]
@@ -1308,7 +1308,7 @@ files = [
     {file = "jinja2-3.1.6-py3-none-any.whl", hash = "sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67"},
     {file = "jinja2-3.1.6.tar.gz", hash = "sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d"},
 ]
-markers = {main = "extra == \"visualization\" or extra == \"wms\""}
+markers = {main = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""}
 
 [package.dependencies]
 MarkupSafe = ">=2.0"
@@ -1323,7 +1323,7 @@ description = "Lightweight pipelining with Python functions"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
-markers = "extra == \"visualization\" or extra == \"wms\""
+markers = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""
 files = [
     {file = "joblib-1.5.2-py3-none-any.whl", hash = "sha256:4e1f0bdbb987e6d843c70cf43714cb276623def372df3c22fe5266b2670bc241"},
     {file = "joblib-1.5.2.tar.gz", hash = "sha256:3faa5c39054b2f03ca547da9b2f52fde67c06240c31853f306aea97f13647b55"},
@@ -1457,7 +1457,7 @@ description = "A fast implementation of the Cassowary constraint solver"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
-markers = "extra == \"visualization\" or extra == \"wms\""
+markers = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""
 files = [
     {file = "kiwisolver-1.4.9-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:b4b4d74bda2b8ebf4da5bd42af11d02d04428b2c32846e4c2c93219df8a7987b"},
     {file = "kiwisolver-1.4.9-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:fb3b8132019ea572f4611d770991000d7f58127560c4889729248eb5852a102f"},
@@ -1569,7 +1569,7 @@ description = "lightweight wrapper around basic LLVM functionality"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
-markers = "extra == \"performance\""
+markers = "extra == \"performance\" or extra == \"all\""
 files = [
     {file = "llvmlite-0.45.1-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:1b1af0c910af0978aa55fa4f60bbb3e9f39b41e97c2a6d94d199897be62ba07a"},
     {file = "llvmlite-0.45.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:02a164db2d79088bbd6e0d9633b4fe4021d6379d7e4ac7cc85ed5f44b06a30c5"},
@@ -1601,7 +1601,7 @@ description = "Classification Schemes for Choropleth Maps."
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
-markers = "extra == \"visualization\" or extra == \"wms\""
+markers = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""
 files = [
     {file = "mapclassify-2.10.0-py3-none-any.whl", hash = "sha256:dc39d6d924d546cdf2573bd587a7770e1a6ded3cb98272d6f0144319038566c5"},
     {file = "mapclassify-2.10.0.tar.gz", hash = "sha256:0d6736a08c0b1e10e6197224ef512951514204706514244bd01aea49fd1442b3"},
@@ -1762,7 +1762,7 @@ files = [
     {file = "markupsafe-3.0.3-cp39-cp39-win_arm64.whl", hash = "sha256:38664109c14ffc9e7437e86b4dceb442b0096dfe3541d7864d9cbe1da4cf36c8"},
     {file = "markupsafe-3.0.3.tar.gz", hash = "sha256:722695808f4b6457b320fdc131280796bdceb04ab50fe1795cd540799ebe1698"},
 ]
-markers = {main = "extra == \"visualization\" or extra == \"wms\""}
+markers = {main = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""}
 
 [[package]]
 name = "matplotlib"
@@ -1771,7 +1771,7 @@ description = "Python plotting package"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
-markers = "extra == \"visualization\" or extra == \"wms\""
+markers = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""
 files = [
     {file = "matplotlib-3.10.7-cp310-cp310-macosx_10_12_x86_64.whl", hash = "sha256:7ac81eee3b7c266dd92cee1cd658407b16c57eed08c7421fa354ed68234de380"},
     {file = "matplotlib-3.10.7-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:667ecd5d8d37813a845053d8f5bf110b534c3c9f30e69ebd25d4701385935a6d"},
@@ -2066,7 +2066,7 @@ description = "Python package for creating and manipulating graphs and networks"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
-markers = "extra == \"visualization\" or extra == \"wms\""
+markers = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""
 files = [
     {file = "networkx-3.6-py3-none-any.whl", hash = "sha256:cdb395b105806062473d3be36458d8f1459a4e4b98e236a66c3a48996e07684f"},
     {file = "networkx-3.6.tar.gz", hash = "sha256:285276002ad1f7f7da0f7b42f004bcba70d381e936559166363707fdad3d72ad"},
@@ -2090,7 +2090,7 @@ description = "compiling Python code using LLVM"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
-markers = "extra == \"performance\""
+markers = "extra == \"performance\" or extra == \"all\""
 files = [
     {file = "numba-0.62.1-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:a323df9d36a0da1ca9c592a6baaddd0176d9f417ef49a65bb81951dce69d941a"},
     {file = "numba-0.62.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:e1e1f4781d3f9f7c23f16eb04e76ca10b5a3516e959634bd226fc48d5d8e7a0a"},
@@ -2494,7 +2494,7 @@ files = [
     {file = "pillow-12.0.0-pp311-pypy311_pp73-win_amd64.whl", hash = "sha256:b290fd8aa38422444d4b50d579de197557f182ef1068b75f5aa8558638b8d0a5"},
     {file = "pillow-12.0.0.tar.gz", hash = "sha256:87d4f8125c9988bfbed67af47dd7a953e2fc7b0cc1e7800ec6d2080d490bb353"},
 ]
-markers = {main = "extra == \"visualization\" or extra == \"wms\""}
+markers = {main = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""}
 
 [package.extras]
 docs = ["furo", "olefile", "sphinx (>=8.2)", "sphinx-autobuild", "sphinx-copybutton", "sphinx-inline-tabs", "sphinxext-opengraph"]
@@ -2592,7 +2592,7 @@ description = "PostgreSQL database adapter for Python"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
-markers = "extra == \"database\""
+markers = "extra == \"database\" or extra == \"all\""
 files = [
     {file = "psycopg-3.2.13-py3-none-any.whl", hash = "sha256:a481374514f2da627157f767a9336705ebefe93ea7a0522a6cbacba165da179a"},
     {file = "psycopg-3.2.13.tar.gz", hash = "sha256:309adaeda61d44556046ec9a83a93f42bbe5310120b1995f3af49ab6d9f13c1d"},
@@ -2619,7 +2619,7 @@ description = "PostgreSQL database adapter for Python -- C optimisation distribu
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
-markers = "extra == \"database\" and implementation_name != \"pypy\""
+markers = "(extra == \"database\" or extra == \"all\") and implementation_name != \"pypy\""
 files = [
     {file = "psycopg_binary-3.2.13-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:9e25eb65494955c0dabdcd7097b004cbd70b982cf3cbc7186c2e854f788677a9"},
     {file = "psycopg_binary-3.2.13-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:732b25c2d932ca0655ea2588563eae831dc0842c93c69be4754a5b0e9760b38d"},
@@ -2692,7 +2692,7 @@ description = "Connection Pool for Psycopg"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
-markers = "extra == \"database\""
+markers = "extra == \"database\" or extra == \"all\""
 files = [
     {file = "psycopg_pool-3.2.8-py3-none-any.whl", hash = "sha256:5474137f3a58e697e0141d0311e70ec067fc4466031496d7f9ef3e2c28a1dc09"},
     {file = "psycopg_pool-3.2.8.tar.gz", hash = "sha256:854e17c2a637c3b9f8d8b24faad57d4cf850baf3fc03ca56ef7e5b4998e391b9"},
@@ -2917,7 +2917,7 @@ description = "Settings management using Pydantic"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
-markers = "extra == \"io\""
+markers = "extra == \"io\" or extra == \"all\""
 files = [
     {file = "pydantic_settings-2.12.0-py3-none-any.whl", hash = "sha256:fddb9fd99a5b18da837b29710391e945b1e30c135477f484084ee513adb93809"},
     {file = "pydantic_settings-2.12.0.tar.gz", hash = "sha256:005538ef951e3c2a68e1c08b292b5f2e71490def8589d4221b95dab00dafcfd0"},
@@ -3051,7 +3051,7 @@ description = "Vectorized spatial vector file format I/O using GDAL/OGR"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
-markers = "extra == \"geo\""
+markers = "extra == \"geo\" or extra == \"all\""
 files = [
     {file = "pyogrio-0.11.1-cp310-cp310-macosx_12_0_arm64.whl", hash = "sha256:838ead7df8388d938ce848354e384ae5aa46fe7c5f74f9da2d58f064bda053f7"},
     {file = "pyogrio-0.11.1-cp310-cp310-macosx_12_0_x86_64.whl", hash = "sha256:6f51aa9fc3632e6dcb3dd5562b4a56a3a31850c3f630aef3587d5889a1f65275"},
@@ -3104,7 +3104,7 @@ description = "pyparsing - Classes and methods to define and execute parsing gra
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
-markers = "extra == \"visualization\" or extra == \"wms\""
+markers = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""
 files = [
     {file = "pyparsing-3.2.5-py3-none-any.whl", hash = "sha256:e38a4f02064cf41fe6593d328d0512495ad1f3d8a91c4f73fc401b3079a59a5e"},
     {file = "pyparsing-3.2.5.tar.gz", hash = "sha256:2df8d5b7b2802ef88e8d016a2eb9c7aeaa923529cd251ed0fe4608275d4105b6"},
@@ -3120,7 +3120,7 @@ description = "Python interface to PROJ (cartographic projections and coordinate
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
-markers = "extra == \"geo\""
+markers = "extra == \"geo\" or extra == \"all\""
 files = [
     {file = "pyproj-3.7.2-cp311-cp311-macosx_13_0_x86_64.whl", hash = "sha256:2514d61f24c4e0bb9913e2c51487ecdaeca5f8748d8313c933693416ca41d4d5"},
     {file = "pyproj-3.7.2-cp311-cp311-macosx_14_0_arm64.whl", hash = "sha256:8693ca3892d82e70de077701ee76dd13d7bca4ae1c9d1e739d72004df015923a"},
@@ -3282,7 +3282,7 @@ description = "Read key-value pairs from a .env file and set them as environment
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
-markers = "extra == \"io\""
+markers = "extra == \"io\" or extra == \"all\""
 files = [
     {file = "python_dotenv-1.2.1-py3-none-any.whl", hash = "sha256:b81ee9561e9ca4004139c6cbba3a238c32b03e4894671e181b671e8cb8425d61"},
     {file = "python_dotenv-1.2.1.tar.gz", hash = "sha256:42667e897e16ab0d66954af0e60a9caa94f0fd4ecf3aaf6d2d260eec1aa36ad6"},
@@ -3519,7 +3519,7 @@ files = [
     {file = "requests-2.32.5-py3-none-any.whl", hash = "sha256:2462f94637a34fd532264295e186976db0f5d453d1cdd31473c85a6a161affb6"},
     {file = "requests-2.32.5.tar.gz", hash = "sha256:dbba0bac56e100853db0ea71b82b4dfd5fe2bf6d3754a8893c3af500cec7d7cf"},
 ]
-markers = {main = "extra == \"visualization\" or extra == \"wms\""}
+markers = {main = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""}
 
 [package.dependencies]
 certifi = ">=2017.4.17"
@@ -3746,7 +3746,7 @@ description = "A set of python modules for machine learning and data mining"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
-markers = "extra == \"visualization\" or extra == \"wms\""
+markers = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""
 files = [
     {file = "scikit_learn-1.7.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:6b33579c10a3081d076ab403df4a4190da4f4432d443521674637677dc91e61f"},
     {file = "scikit_learn-1.7.2-cp310-cp310-macosx_12_0_arm64.whl", hash = "sha256:36749fb62b3d961b1ce4fedf08fa57a1986cd409eff2d783bca5d4b9b5fce51c"},
@@ -3803,7 +3803,7 @@ description = "Fundamental algorithms for scientific computing in Python"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
-markers = "extra == \"visualization\" or extra == \"wms\""
+markers = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""
 files = [
     {file = "scipy-1.16.3-cp311-cp311-macosx_10_14_x86_64.whl", hash = "sha256:40be6cf99e68b6c4321e9f8782e7d5ff8265af28ef2cd56e9c9b2638fa08ad97"},
     {file = "scipy-1.16.3-cp311-cp311-macosx_12_0_arm64.whl", hash = "sha256:8be1ca9170fcb6223cc7c27f4305d680ded114a1567c0bd2bfcbf947d1b17511"},
@@ -3904,7 +3904,7 @@ description = "Manipulation and analysis of geometric objects"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
-markers = "extra == \"geo\" or extra == \"io\""
+markers = "extra == \"geo\" or extra == \"io\" or extra == \"all\""
 files = [
     {file = "shapely-2.1.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:7ae48c236c0324b4e139bea88a306a04ca630f49be66741b340729d380d8f52f"},
     {file = "shapely-2.1.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:eba6710407f1daa8e7602c347dfc94adc02205ec27ed956346190d66579eb9ea"},
@@ -4369,7 +4369,7 @@ description = "SQLModel, SQL databases in Python, designed for simplicity, compa
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
-markers = "extra == \"io\""
+markers = "extra == \"io\" or extra == \"all\""
 files = [
     {file = "sqlmodel-0.0.24-py3-none-any.whl", hash = "sha256:6778852f09370908985b667d6a3ab92910d0d5ec88adcaf23dbc242715ff7193"},
     {file = "sqlmodel-0.0.24.tar.gz", hash = "sha256:cc5c7613c1a5533c9c7867e1aab2fd489a76c9e8a061984da11b4e613c182423"},
@@ -4433,7 +4433,7 @@ description = "threadpoolctl"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
-markers = "extra == \"visualization\" or extra == \"wms\""
+markers = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""
 files = [
     {file = "threadpoolctl-3.6.0-py3-none-any.whl", hash = "sha256:43a0b8fd5a2928500110039e43a5eed8480b918967083ea48dc3ab9f13c4a7fb"},
     {file = "threadpoolctl-3.6.0.tar.gz", hash = "sha256:8ab8b4aa3491d812b623328249fab5302a68d2d71745c8a4c719a2fcaba9f44e"},
@@ -4446,7 +4446,7 @@ description = "Use OpenStreetMap tiles as basemaps in python / matplotlib"
 optional = false
 python-versions = ">=3.6"
 groups = ["main"]
-markers = "extra == \"wms\""
+markers = "extra == \"wms\" or extra == \"all\""
 files = [
     {file = "tilemapbase-0.4.7.tar.gz", hash = "sha256:6db0f28f77c5fdb42557e17bb87914aafe08a90f602953d5cc07fb5a1caac7f6"},
 ]
@@ -4652,7 +4652,7 @@ files = [
     {file = "urllib3-2.5.0-py3-none-any.whl", hash = "sha256:e6b01673c0fa6a13e374b50871808eb3bf7046c4b125b216f6bf1cc604cff0dc"},
     {file = "urllib3-2.5.0.tar.gz", hash = "sha256:3fc47733c7e419d4bc3f6b3dc2b4f890bb743906a30d56ba4a5bfa4bbff92760"},
 ]
-markers = {main = "extra == \"visualization\" or extra == \"wms\""}
+markers = {main = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""}
 
 [package.extras]
 brotli = ["brotli (>=1.0.9) ; platform_python_implementation == \"CPython\"", "brotlicffi (>=0.8.0) ; platform_python_implementation != \"CPython\""]
@@ -4706,7 +4706,7 @@ description = "Source of XYZ tiles providers"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
-markers = "extra == \"visualization\" or extra == \"wms\""
+markers = "extra == \"visualization\" or extra == \"wms\" or extra == \"all\""
 files = [
     {file = "xyzservices-2025.11.0-py3-none-any.whl", hash = "sha256:de66a7599a8d6dad63980b77defd1d8f5a5a9cb5fc8774ea1c6e89ca7c2a3d2f"},
     {file = "xyzservices-2025.11.0.tar.gz", hash = "sha256:2fc72b49502b25023fd71e8f532fb4beddbbf0aa124d90ea25dba44f545e17ce"},
@@ -4728,6 +4728,7 @@ files = [
 platformdirs = ">=3.5.1"
 
 [extras]
+all = ["folium", "geojson-pydantic", "geopandas", "mapclassify", "matplotlib", "numba", "psycopg", "pydantic-settings", "shapely", "sqlalchemy", "sqlmodel", "tilemapbase"]
 database = ["psycopg"]
 geo = ["geojson-pydantic", "geopandas", "shapely"]
 io = ["pydantic-settings", "shapely", "sqlalchemy", "sqlmodel"]
@@ -4738,4 +4739,4 @@ wms = ["folium", "mapclassify", "matplotlib", "tilemapbase"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11.0"
-content-hash = "1641a29214957a29560e66902e3bd201980468ec431fe65cb5eea69109733e3b"
+content-hash = "ab51f04e5d538192c1db6bff9faa2666bb15c2d35cb14c605de961e29b2e3fb4"
