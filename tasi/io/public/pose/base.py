@@ -113,6 +113,15 @@ class PosePublic(PublicEntityMixin, PublicPoseBase):
         """
         ...
 
+    @overload
+    def as_tasi(self, as_record: bool = False, **kwargs) -> tasi.Pose:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            tasi.Pose: The internal representation format
+        """
+        ...
+
     def as_tasi(self, as_record: bool = False, **kwargs) -> tasi.Pose | Dict:
 
         if as_record:
