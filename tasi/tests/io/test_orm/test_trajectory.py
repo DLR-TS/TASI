@@ -1,7 +1,9 @@
 from sqlmodel import Session
 
-from tasi.io.orm.trajectory import GeoTrajectoryORM, TrajectoryORM
-from tasi.io.public.trajectory import GeoTrajectoryPublic, TrajectoryPublic
+from tasi.io import TrajectoryPublic
+from tasi.io.geo import GeoTrajectoryPublic
+from tasi.io.orm import TrajectoryORM
+from tasi.io.orm.geo import GeoTrajectoryORM
 from tasi.tests.io.test_orm import DBTestCase
 from tasi.tests.io.test_public.test_trajectory import TrajectoryTestCase
 

@@ -1,21 +1,19 @@
 from datetime import datetime, timedelta
 from unittest import TestCase
 
-import numpy as np
-
-from tasi.io.orm.pose import GeoPoseORM, PoseORM
-from tasi.io.orm.traffic_participant import TrafficParticipantORM
-from tasi.io.public.base import (
+from tasi.io import (
     Acceleration,
     BoundingBox,
     Classifications,
     Dimension,
+    PosePublic,
     Position,
+    TrafficParticipant,
+    TrajectoryPublic,
     Velocity,
 )
-from tasi.io.public.pose import GeoPosePublic, PosePublic
-from tasi.io.public.traffic_participant import TrafficParticipant
-from tasi.io.public.trajectory import TrajectoryPublic
+from tasi.io.geo import GeoPoseORM, GeoPosePublic
+from tasi.io.orm import PoseORM, TrafficParticipantORM
 
 
 class TrajectoryTestCase(TestCase):

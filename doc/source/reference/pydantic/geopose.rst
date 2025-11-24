@@ -3,9 +3,9 @@
 GeoPosePublic
 ========================
 
-.. currentmodule:: tasi.io
+.. currentmodule:: tasi.io.geo
 
-.. inheritance-diagram:: tasi.io.GeoPosePublic
+.. inheritance-diagram:: tasi.io.geo.GeoPosePublic
     :parts: 1
     
 A ``Pose`` specialized for trajectory data representing the state of a traffic participant for a specific point in time

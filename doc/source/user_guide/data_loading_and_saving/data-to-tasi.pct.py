@@ -130,11 +130,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from tasi import TrajectoryDataset
-from tasi.plotting import (
-    BoundingboxPlotter,
-    LowerSaxonyOrthophotoTile,
-    TrajectoryPlotter,
-)
+from tasi.plotting import TrajectoryPlotter
+
+# the following is only possible if tasi[wms] is installed
+from tasi.plotting.wms import BoundingboxPlotter, LowerSaxonyOrthophotoTile
 
 f, ax = plt.subplots(figsize=(8, 8))
 

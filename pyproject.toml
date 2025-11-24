@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "tasi"
-version = "0.1.0+37.gea38d8f.dirty"
+version = "0+unknown"
 description = "Library for Traffic Analysis and Situation Interpretation"
 authors = [ "Lars Klitzke <lars.klitzke@dlr.de>", "Clemens Schicktanz <clemens.schicktanz@dlr.de",]
 readme = "README.md"
@@ -27,32 +27,43 @@ aggressive = 3
 [tool.poetry.dependencies]
 python = "^3.11.0"
 coloredlogs = "^15.0.1"
-tilemapbase = "^0.4.7"
-tqdm = "^4.67.1"
-scipy = "^1.15.2"
 shapely = "^2.1.0"
 geopandas = "^1.0.1"
-folium = "^0.19.5"
-mapclassify = "^2.8.1"
 sqlmodel = "^0.0.24"
 pydantic = "^2.11.7"
-sqlalchemy = "^2.0.41"
-psycopg = {extras = ["binary", "pool"], version = "^3.2.9"}
-geoalchemy2 = "^0.17.1"
 geojson-pydantic = "^2.0.0"
 pydantic-settings = "^2.10.1"
 pandas = "^2.3.0"
+sqlalchemy = "^2.0.41"
+geoalchemy2 = "^0.17.1"
 matplotlib = "^3.10.3"
-numba = "^0.61.2"
-fastdtw = "^0.3.4"
+mapclassify = "^2.8.1"
+folium = "^0.19.5"
+tilemapbase = "^0.4.7"
+dtaidistance = "^2.3.13"
+tqdm = "^4.67.1"
+numba = "^0.62.1"
+
+[tool.poetry.extras]
+geo = [ "geojson-pydantic", "geopandas", "shapely",]
+visualization = [ "matplotlib", "mapclassify", "folium",]
+wms = [ "matplotlib", "mapclassify", "folium", "tilemapbase",]
+database = [ "psycopg",]
+performance = [ "numba",]
+io = [ "sqlmodel", "pydantic-settings", "sqlalchemy", "geoalchemy", "shapely",]
+all = [ "geojson-pydantic", "geopandas", "matplotlib", "folium", "mapclassify", "tilemapbase", "psycopg", "numba", "sqlmodel", "pydantic-settings", "sqlalchemy", "geoalchemy", "shapely",]
 
 [tool.poetry.scripts]
 dlr-downloader = "tasi.dlr.dataset:download"
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
-testpaths = [ "tasi/tests"]
+testpaths = [ "tasi/tests",]
 doctest_optionflags = [ "ELLIPSIS", "NORMALIZE_WHITESPACE", "IGNORE_EXCEPTION_DETAIL",]
+
+[tool.poetry.dependencies.psycopg]
+extras = [ "binary", "pool",]
+version = "^3.2.9"
 
 [tool.poetry.group.test.dependencies]
 coverage = "^7.6.4"

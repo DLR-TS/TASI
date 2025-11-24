@@ -3,7 +3,7 @@
 WMS Interface
 ##############
 
-.. currentmodule:: tasi.plotting
+.. currentmodule:: tasi.plotting.wms
 
 This package contains other package, classes and tools around traffic data visualization. All classes and function exposed in ``tasi.plotting.*`` namespace plus those listed in the reference are public.
 
