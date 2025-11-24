@@ -1,17 +1,17 @@
 from datetime import datetime, timedelta
 from unittest import TestCase
 
-from tasi.io.public.base import (
+from tasi.io import (
     Acceleration,
     BoundingBox,
     Classifications,
     Dimension,
+    PosePublic,
     Position,
+    TrafficParticipant,
+    TrajectoryPublic,
     Velocity,
 )
-from tasi.io.public.pose import PosePublic
-from tasi.io.public.traffic_participant import TrafficParticipant
-from tasi.io.public.trajectory import TrajectoryPublic
 
 
 class TrafficParticipantTestCase(TestCase):

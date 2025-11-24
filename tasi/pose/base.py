@@ -2,17 +2,14 @@ from datetime import datetime
 from functools import partial
 from typing import List, Tuple, Union
 
-import geopandas as gpd
 import numpy as np
 import pandas as pd
 
-from tasi.utils import add_attributes, position_to_point
+from tasi.utils import add_attributes, requires_extra
 
-from .base import CollectionBase
+from ..base import CollectionBase
 
-GeoPose = gpd.GeoDataFrame  # type: ignore
-
-__all__ = ["Pose", "GeoPose", "PoseBase", "TrafficLightPose"]
+__all__ = ["Pose", "PoseBase", "TrafficLightPose"]
 
 
 class PoseBase(CollectionBase):
@@ -104,11 +101,12 @@ class Pose(PoseBase):
 
         return cls(df)
 
-    def as_geopandas(
+    @requires_extra("geo")
+    def as_geo(
         self,
         position: Union[str, List[str], Tuple[str]] = "position",
         active="position",
-    ) -> GeoPose:
+    ):
         """Convert the pose to a geometric representation
 
 
@@ -119,6 +117,10 @@ class Pose(PoseBase):
         Returns:
             GeoPose: Geospatial representation of the pose.
         """
+
+        import geopandas as gpd
+
+        from ..utils.geo import position_to_point
 
         if not isinstance(position, list):
             position = [position]
@@ -136,28 +138,12 @@ class Pose(PoseBase):
         )
         positions.index = self.index
 
+        from .geo import GeoPose
+
         pose = GeoPose(add_attributes(self.drop(columns=position), positions))
         pose.set_geometry(active, inplace=True)
 
         return pose
-
-
-class GeoPose(PoseBase, gpd.GeoDataFrame):
-    """Representation of a traffic participant's pose with geospatial encoded position"""
-
-    @property
-    def _constructor(self):
-        return GeoPose
-
-    @property
-    def _constructor_sliced(self):
-        return pd.Series
-
-    @classmethod
-    def from_pose(
-        cls, pose: Pose, position: Union[str, List[str], Tuple[str]] = "position"
-    ):
-        return pose.as_geopandas(position=position)
 
 
 class TrafficLightPose(PoseBase):

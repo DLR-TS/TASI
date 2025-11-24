@@ -4,16 +4,16 @@ from unittest import TestCase
 import pandas as pd
 from pydantic import ValidationError
 
-from tasi.io.public.base import (
+from tasi.io import (
     Acceleration,
     BoundingBox,
     Classifications,
     Dimension,
+    PosePublic,
     Position,
+    TrafficParticipant,
     Velocity,
 )
-from tasi.io.public.pose import PosePublic
-from tasi.io.public.traffic_participant import TrafficParticipant
 
 
 class TestPoseInit(TestCase):

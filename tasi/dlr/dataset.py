@@ -12,7 +12,7 @@ import requests
 from tqdm import tqdm
 
 from tasi.base import PandasBase
-from tasi.dataset import (
+from tasi.dataset.base import (
     AirQualityDataset,
     RoadConditionDataset,
     TrafficLightDataset,

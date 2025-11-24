@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import List, Self, Tuple, Union
 
-import geopandas as gpd
 import numpy as np
 import pandas as pd
 
@@ -289,7 +288,3 @@ class PoseCollectionBase(CollectionBase):
             if not isinstance(df, pd.Series):
                 return pd.DataFrame(df)
             return df
-
-
-class GeoPoseCollectionBase(PoseCollectionBase, gpd.GeoDataFrame):
-    pass

@@ -32,7 +32,7 @@ class DatasetTestCase(TestCase):
 
     def test_convert_to_tasi(self):
 
-        from tasi.dataset import TrajectoryDataset as TD
+        from tasi.dataset.base import TrajectoryDataset as TD
 
         obj = self.ds.to_tasi()
 

@@ -2,16 +2,17 @@ from datetime import datetime
 
 from sqlmodel import Session
 
-from tasi.io.public.base import (
+from tasi.io import (
     Acceleration,
     BoundingBox,
     Classifications,
     Dimension,
+    PosePublic,
     Position,
+    TrafficParticipant,
     Velocity,
 )
-from tasi.io.public.pose import GeoPosePublic, PosePublic
-from tasi.io.public.traffic_participant import TrafficParticipant
+from tasi.io.geo import GeoPosePublic
 from tasi.tests.io.test_orm import DBTestCase
 
 
@@ -103,7 +104,7 @@ class TestGeoPoseSave(DBTestCase):
 
     def test_save_pose(self):
 
-        from tasi.io.orm.pose import GeoPoseORM
+        from tasi.io.orm.geo import GeoPoseORM
 
         pose_orm = self.pose.as_orm()
 

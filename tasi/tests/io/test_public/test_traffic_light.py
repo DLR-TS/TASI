@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from unittest import TestCase
 
 from tasi.io import TrafficLight, TrafficLightState
