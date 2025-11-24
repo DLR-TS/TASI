@@ -1,130 +1,21 @@
 import json
 from typing import Any, Dict, Optional, Self, Union, overload
 
-import pandas as pd
 from geojson_pydantic import LineString
 from shapely import LineString as ShapelyLineString
 from shapely import to_geojson, wkt
 
 import tasi
 from tasi.io.base import Base
-from tasi.io.orm.trajectory import GeoTrajectoryORM, TrajectoryORM
+from tasi.io.orm.trajectory import TrajectoryORM
+from tasi.io.orm.trajectory.geo import GeoTrajectoryORM
 from tasi.io.public.base import PublicEntityMixin
-from tasi.io.public.pose import GeoPosePublic, PosePublic
 from tasi.io.public.traffic_participant import TrafficParticipant
 
-__all__ = ["TrajectoryPublic", "GeoTrajectoryPublic"]
+from ..pose.geo import GeoPosePublic
+from .base import TrajectoryPublic
 
-
-class TrajectoryPublic(Base, PublicEntityMixin):
-
-    #: A reference to the traffic participant
-    traffic_participant: TrafficParticipant
-
-    #: The poses of the trajectory
-    poses: list[PosePublic]
-
-    def as_tasi(self, as_record: bool = True, **kwargs) -> tasi.Trajectory:
-        """Convert to a ``TASI`` internal representation
-
-        Returns:
-            tasi.Trajectory: The internal representation format
-        """
-
-        if as_record:
-            record = self.poses[0].as_tasi(as_record=as_record)
-
-            for p in self.poses[1:]:
-                for k2, v2 in p.as_tasi(as_record=as_record).items():
-                    record[k2].update(v2)
-
-            tj = tasi.Trajectory.from_dict(record)
-            tj.index.names = tasi.Trajectory.INDEX_COLUMNS
-
-            return tj
-
-        return tasi.Trajectory(
-            pd.concat([p.as_tasi(as_record=as_record) for p in self.poses])
-        )
-
-    def as_orm(self, **kwargs) -> TrajectoryORM:
-
-        tp = self.traffic_participant.as_orm()
-
-        return TrajectoryORM(
-            poses=list(map(lambda p: p.as_orm(traffic_participant=tp), self.poses)),
-            traffic_participant=tp,
-        )
-
-    def as_geo(self) -> "GeoTrajectoryPublic":
-        """Convert to its GeoObject-based representation
-
-        Returns:
-            GeoTrajectory: The same trajectory but with GeoObjects
-        """
-        return GeoTrajectoryPublic.from_trajectory(self)
-
-    @overload
-    @classmethod
-    def from_orm(cls, obj: TrajectoryORM) -> Self: ...
-
-    @overload
-    @classmethod
-    def from_orm(cls, obj: Any, update: Dict[str, Any] | None = None) -> Self: ...
-
-    @classmethod
-    def from_orm(
-        cls,
-        obj: Union[TrajectoryORM, Any],
-        update: Optional[Dict[str, Any]] = None,
-    ) -> Self:
-
-        if isinstance(obj, TrajectoryORM):
-            return cls.model_validate(obj)
-
-            # attr = obj.model_dump()
-
-            # poses = list(
-            #     map(
-            #         GeoPose.from_orm,
-            #         sorted(obj.poses, key=lambda gp: gp.timestamp),
-            #     )
-            # )
-
-            # attr["geometry"] = LineString(
-            #     **json.loads(
-            #         to_geojson(
-            #             ShapelyLineString(
-            #                 list(
-            #                     map(
-            #                         lambda p: p.position.wkt,
-            #                         poses,
-            #                     )
-            #                 )  # type: ignore
-            #             )
-            #         )
-            #     )
-            # )
-
-            # obj = cls.model_validate(attr)
-            # obj.poses = poses
-
-            # return obj
-
-        else:
-            return super().from_orm(obj, update=update)
-
-    @classmethod
-    def from_tasi(cls, obj: tasi.Trajectory, **kwargs) -> Self:
-
-        tp = TrafficParticipant.from_tasi(obj)
-
-        return cls(
-            poses=[
-                PosePublic.from_tasi(obj.iloc[idx], tp=tp) for idx in range(len(obj))
-            ],
-            traffic_participant=tp,
-        )
+__all__ = ["GeoTrajectoryPublic"]
 
 
 class GeoTrajectoryPublic(Base, PublicEntityMixin):
@@ -253,4 +144,7 @@ class GeoTrajectoryPublic(Base, PublicEntityMixin):
         Returns:
             tasi.GeoTrajectory: Representation based on `GeoPandas`
         """
-        return self.as_trajectory().as_tasi().as_geopandas(**kwargs)
+        return self.as_trajectory().as_tasi().as_geo(**kwargs)
+
+
+MODELS = [GeoTrajectoryPublic]

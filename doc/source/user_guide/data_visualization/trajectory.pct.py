@@ -57,7 +57,7 @@ plotter.plot(ut, ax=ax, alpha=0.2)
 # We can also combine the `TrajectoryPlotter` with the `BoundingboxPlotter` to
 # visualize trajectories on an orthophoto.
 # %%
-from tasi.plotting import BoundingboxPlotter, LowerSaxonyOrthophotoTile
+from tasi.plotting.wms import BoundingboxPlotter, LowerSaxonyOrthophotoTile
 
 f, ax = plt.subplots()
 
@@ -126,7 +126,7 @@ ds.head()
 # also uses `pandas`. Hence, we will now convert to use `geopandas` while the `position` attribute should be encoded as
 # a `GeoObject`.
 # %%
-gds = ds.as_geopandas("position")
+gds = ds.as_geo("position")
 # %% [markdown]
 # We need to set the position attribute as the
 # [*active*](https://geopandas.org/en/stable/docs/user_guide/data_structures.html#geodataframe) geometry.

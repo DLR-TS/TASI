@@ -1,7 +1,8 @@
 stages:
   - build
   - images
-  - test
+  - extra-test
+  - full-test
   - deploy
 
 .build_base: &build_base
@@ -24,7 +25,7 @@ stages:
 .test_base: &test_base
   <<: *build_base
 
-  stage: test
+  stage: full-test
 
   image: ${DLR_REGISTRY}/python:v3.11.12
 
@@ -56,6 +57,57 @@ test:
   needs:
     - job: wheel
     - job: sdist
+
+
+.extra_base: &extra_base
+  
+  stage: extra-test
+
+  before_script:
+    - WHEEL="$(ls dist)"
+    - SUFFIX="${CI_JOB_NAME#extra-}"
+    - poetry run pip install dist/${WHEEL}[${SUFFIX}]
+
+  artifacts:
+    paths:
+      - dist
+
+  needs:
+    - job: wheel
+
+
+extra-io:
+  <<: *extra_base
+
+  script:
+    - poetry run python -c "from tasi.io import *"
+
+extra-visualization:
+  <<: *extra_base
+
+  script:
+    - poetry run python -c "from tasi.plotting import *"
+
+extra-wms:
+  <<: *extra_base
+
+  before_script:
+    - WHEEL="$(ls dist)"
+    - poetry run pip install dist/${WHEEL}[wms]
+
+  script:
+    - poetry run python -c "from tasi.plotting.wms import *"
+
+extra-geo:
+  <<: *extra_base
+
+  before_script:
+    - WHEEL="$(ls dist)"
+    - poetry run pip install dist/${WHEEL}[io,geo]
+
+  script:
+    - poetry run python -c "from tasi.io.geo import *"
+
 
 doc:
   <<: *test_base

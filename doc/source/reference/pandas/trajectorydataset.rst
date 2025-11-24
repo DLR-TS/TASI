@@ -25,7 +25,7 @@ Serialization / IO / conversion
    :toctree: api/
 
    TrajectoryDataset.from_csv
-   TrajectoryDataset.as_geopandas
+   TrajectoryDataset.as_geo
 
 Indexing
 *********

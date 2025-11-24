@@ -36,3 +36,13 @@ Entities
     geotrajectory
     traffic_light
     traffic_light_state
+
+Geo Entities
+*************
+
+.. toctree::
+    :maxdepth: 1
+
+    geopose
+    geoposecollection
+    geotrajectory

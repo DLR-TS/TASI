@@ -1,8 +1,19 @@
+from tasi.utils import has_extra
+
+EXTRA = has_extra("wms")
+
+if not EXTRA:
+    raise ImportError("Please install tasi[wms] for visualization of WMS layers.")
+
 import io as _io
 import urllib
 from copy import copy
+from typing import Tuple
 
+import numpy as np
 import PIL.Image as _Image
+from matplotlib.axes import Axes
+from tilemapbase.mapping import Plotter
 from tilemapbase.tiles import Tiles
 
 
@@ -121,3 +132,165 @@ class LowerSaxonyOrthophotoTile(BoundingboxTiles):
     SOURCE_NAME = "LGLN"
 
     ATTRIBUTION = "(C) GeoBasis-DE/LGLN 2024 CC-BY 4.0"
+
+
+class BoundingboxPlotter(Plotter):
+    """
+    A specialization of the `tilemapbase.Plotter` to show tiles given a region as a boundingbox in UTM coordinates.
+    """
+
+    def __init__(
+        self, extent: np.ndarray, tile_provider: BoundingboxTiles, padding: int = 0
+    ):
+        """
+        Create a plotter for the given `extend` and using the provided `tile_provider`
+
+        Args:
+            extent (np.ndarray): A 2*2 matrix as the 2-point definition of the region to plot.
+            tile_provider (ClassVar[BoundingboxTiles]): The tile provider to use for fetching tiles
+            padding (int, optional): An additional padding in meters around the given extend. Defaults to 0.
+        """
+
+        self._extent = extent
+        self._original_extent = extent
+        self._tile_provider = tile_provider
+
+        self._padding = padding
+
+    def plot(
+        self,
+        ax: Axes,
+        position: Tuple[float, float] | None = None,
+        zoom: float = 1,
+        show_attribution: bool = True,
+        attribution_kwargs=None,
+        **kwargs,
+    ):
+        """
+        Draw the tile for the position position given by ``position`` within the current extend and and zoom into the tile according to `zoom`.
+
+        Args:
+            ax (plt.Axes): The axes to plot onto.
+            position (Tuple[float, float]): The plotting position
+            zoom (float): The zoom value
+            show_attribution (bool): To thow the attribution information. Defaults to True.
+
+        Raises:
+            ValueError: If the zoom value is not within (0,1).
+
+        """
+
+        if zoom == 0 or zoom > 1:
+            raise ValueError("The zoom value needs to be within (0,1).")
+
+        # get the tile for the current extend
+        tile = self._tile_provider.get_tile(
+            self.xtilemin, self.ytilemin, self.xtilemax, self.ytilemax
+        )
+
+        # get the size of the extend
+        dx = self.xtilemax - self.xtilemin
+        dy = self.ytilemax - self.ytilemin
+
+        # draw the tile on the axes and specify the extend in the given coordinate system
+        ax.imshow(
+            tile,  # type: ignore
+            interpolation="lanczos",
+            extent=(
+                int(self.xtilemin),
+                int(self.xtilemax),
+                int(self.ytilemin),
+                int(self.ytilemax),
+            ),
+            **kwargs,
+        )
+        if position is None:
+            position = (self.xtilemin + (dx / 2), self.ytilemin + (dy / 2))
+
+        # set the limit of the axes according to the given extend and zoom value
+        ax.set(
+            xlim=[position[0] - (dx / 2) * zoom, position[0] + (dx / 2) * zoom],
+            ylim=[position[1] - (dy / 2) * zoom, position[1] + (dy / 2) * zoom],
+        )
+
+        if show_attribution:
+
+            default_config = {
+                "fontsize": 5,
+                "transform": ax.transAxes,
+                "s": self._tile_provider.ATTRIBUTION,
+            }
+
+            attribution_kwargs = (
+                attribution_kwargs if attribution_kwargs is not None else {}
+            )
+
+            if dx > dy:
+
+                default_config.update(
+                    {"x": 1, "y": 1.01, "ha": "right", "va": "bottom"}
+                )
+
+                default_config.update(attribution_kwargs)
+
+                ax.text(**default_config)
+
+            else:
+
+                default_config.update(
+                    {"x": 1.02, "y": 0.01, "rotation": 90, "ha": "left", "va": "bottom"}
+                )
+
+                default_config.update(attribution_kwargs)
+
+                ax.text(**default_config)
+
+    @property
+    def extent(self):
+        """
+        The region in 2-point definition
+
+        Returns:
+            np.ndarray: A 2*2 matrix
+        """
+        return self._original_extent
+
+    @property
+    def xtilemin(self) -> int:
+        """
+        The smallest x-coordinate in tilespace
+
+        Returns:
+            int: Minimum easting
+        """
+        return int(np.min(self._extent[:, 0])) - self._padding
+
+    @property
+    def xtilemax(self) -> int:
+        """
+        The greatest x-coordinate in tilespace
+
+        Returns:
+            int: Maximum easting
+        """
+        return int(np.max(self._extent[:, 0])) + self._padding
+
+    @property
+    def ytilemin(self) -> int:
+        """
+        The smallest y-coordinate in tilespace
+
+        Returns:
+            int: Minimum northing
+        """
+        return int(np.min(self._extent[:, 1])) - self._padding
+
+    @property
+    def ytilemax(self) -> int:
+        """
+        The greatest y-coordinate in tilespace
+
+        Returns:
+            int: Maximum northing
+        """
+        return int(np.max(self._extent[:, 1])) + self._padding

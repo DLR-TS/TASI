@@ -3,7 +3,7 @@
 LowerSaxonyOrthophotoTile
 ##########################
 
-.. currentmodule:: tasi.plotting
+.. currentmodule:: tasi.plotting.wms
 
 A ``Tile`` to provide access to the orthophoto provided by the LGLN of Lower Saxony, Germany.
 

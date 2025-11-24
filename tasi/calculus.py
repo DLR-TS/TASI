@@ -1,76 +1,28 @@
-import logging
+from tasi.utils import has_extra
+
+EXTRA = has_extra("performance")
+
+
+if EXTRA:
+    from numba import jit, njit  # pyright: ignore[reportMissingImports]
+else:
+
+    def jit(*args, **kwargs):
+
+        def decorator(func):
+            return func
+
+        return decorator
+
+    def njit(*args, **kwargs):
+        return jit(*args)
+
+
 from numbers import Number
 from typing import List, Union
 
 import numpy as np
 import pandas as pd
-from numba import float32, float64, jit, njit
-
-#: Type definition for a 8 bit floating point number
-Double = float64  # type: ignore
-
-#: Type definition for a 8 bit floating point vector
-DoubleVector = Double[:]
-
-#: Type definition for a 8 bit floating point matrix
-DoubleMatrix = Double[:, :]
-
-#: Type definition for a 4 bit floating point value
-Float = float32  # type: ignore
-
-#: Type definition for a 4 bit floating point vector
-FloatVector = float32[:]  # type: ignore
-
-#: Type definition for a 4 bit floating point matrix
-FloatMatrix = float32[:, :]  # type: ignore
-
-#: Type definition for a 4 bit floating point vector or matrix
-FloatVecOrMat = Union[FloatVector, FloatMatrix]
-
-
-def dot(v1: FloatVector, v2: FloatVector):
-    """
-    The dot product between ``v1`` and ``v2``.
-
-    The functions uses the Einstein-Summation-Convention for the dot product between either a matrix of column vectors
-    and a single vector or multiple vectors (also as column vectors).
-
-    Args:
-        v1 (FloatVector): A M*2 matrix
-        v2 (FloatVector): Either a 2*1 vector or a M*2 matrix.
-
-    Returns:
-        FloatVector: A 1*M vector with the dot product
-
-    See Also:
-        vdot: For a vectorized version of the dot product
-
-    Examples:
-        The dot product between a matrix and a vector
-
-            >>> m1 = np.array([[1, 1], [2, 2], [3, 3]]).T
-            >>> m1
-            array([[1, 2, 3],
-                   [1, 2, 3]])
-
-            >>> v1 = np.array([1, 0])
-            >>> dot(m1, v1)
-            array([1, 2, 3])
-
-        or to multiple vectors column-wise
-
-            >>> m2 = np.array([[1, 0], [0, 1], [1, 0]]).T
-            >>> m2
-            array([[1, 0, 1],
-                   [0, 1, 0]])
-
-            >>> dot(m1, m2)
-            array([1, 2, 3])
-
-    """
-    if len(v2.shape) == 1:
-        return np.einsum("ij, i -> j", v1, v2)
-    return np.einsum("ij, ij -> j", v1, v2)
 
 
 @njit(fastmath=True)

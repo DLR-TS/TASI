@@ -8,7 +8,7 @@ from pandas.core.api import DataFrame as DataFrame
 from tasi.io.base.traffic_light import Base, TrafficLightBase, TrafficLightStateBase
 from tasi.io.public.base import PublicEntityMixin
 from tasi.io.util import as_nested_dict
-from tasi.pose import TrafficLightPose
+from tasi.pose.base import TrafficLightPose
 
 __all__ = ["TrafficLightState", "TrafficLight", "TrafficLightCollection"]
 

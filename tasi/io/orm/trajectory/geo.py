@@ -5,19 +5,12 @@ from shapely import to_geojson, wkt
 from sqlalchemy import Column, func
 from sqlmodel import Field, Relationship
 
-from tasi.io.base.trajectory import TrajectoryORMBase
-from tasi.io.orm.pose import GeoPoseORM, PoseORM, TrafficParticipantORM
+from tasi.io.orm.pose import TrafficParticipantORM
 
-__all__ = ["TrajectoryORM", "GeoTrajectoryORM"]
+from ..pose.geo import GeoPoseORM
+from .base import TrajectoryORMBase
 
-
-class TrajectoryORM(TrajectoryORMBase, table=True):
-
-    poses: list[PoseORM] = Relationship(back_populates="trajectory")
-
-    traffic_participant: TrafficParticipantORM = Relationship(  # type: ignore
-        back_populates="trajectory",
-    )
+__all__ = ["GeoTrajectoryORM"]
 
 
 class GeoTrajectoryORM(TrajectoryORMBase, table=True):
@@ -52,4 +45,4 @@ class GeoTrajectoryORM(TrajectoryORMBase, table=True):
             return to_geojson(to_shape(geometry))  # type: ignore
 
 
-MODELS = [TrajectoryORM, GeoTrajectoryORM]
+MODELS = [GeoTrajectoryORM]

@@ -45,7 +45,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from tasi.plotting import BoundingboxPlotter, LowerSaxonyOrthophotoTile
+from tasi.plotting.wms import BoundingboxPlotter, LowerSaxonyOrthophotoTile
 
 f, ax = plt.subplots(figsize=(8, 8))
 

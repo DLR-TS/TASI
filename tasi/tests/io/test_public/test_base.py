@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import numpy as np
 
-from tasi.io.public.base import BoundingBox, Dimension, Position
+from tasi.io import BoundingBox, Dimension, Position
 
 
 class TestBoundingbox(TestCase):

@@ -2,9 +2,6 @@ import inspect
 from typing import Dict, Tuple
 
 import pandas as pd
-from geoalchemy2 import WKBElement
-from geoalchemy2.shape import to_shape
-from shapely import to_geojson
 
 
 class FlatDict(dict):
@@ -92,20 +89,6 @@ def get_return_type(method):
         return sig.return_annotation.__annotations__["return"]
     else:
         return None
-
-
-def as_geojson(obj: WKBElement | str) -> str | None:
-
-    if obj is None:
-        # Probably unnecessary if field is not nullable
-        result = None
-    elif isinstance(obj, WKBElement):
-        # e.g. session.get results in a `WKBElement`
-        result = to_geojson(to_shape(obj))
-    else:
-        raise TypeError(f"Unsupported type {type(obj)}")
-
-    return result
 
 
 def as_nested_dict(input_dict: Dict, replace_keys=None):
