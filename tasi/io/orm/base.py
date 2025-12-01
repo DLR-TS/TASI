@@ -120,6 +120,8 @@ class PositionORM(Base, IdPrimaryKeyMixin):
 
     altitude: Mapped[Optional[float]]
 
+    easting: Mapped[float]
+
 
 class BoundingBoxORM(Base, IdPrimaryKeyMixin):
 
