@@ -10,7 +10,7 @@ __all__ = ["TrajectoryORM"]
 
 class TrajectoryORM(Base, TrajectoryORMBase, IdPrimaryKeyMixin):
 
-    poses: Mapped[list["PoseORM"]] = relationship()
+    poses: Mapped[list["PoseORM"]] = relationship(back_populates="trajectory")
 
     @declared_attr
     def traffic_participant(self) -> Mapped[Optional[TrafficParticipantORM]]:
