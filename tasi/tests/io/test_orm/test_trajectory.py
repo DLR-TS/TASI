@@ -1,11 +1,11 @@
-from sqlmodel import Session
+from sqlalchemy.orm import Session
 
 from tasi.io import TrajectoryPublic
 from tasi.io.geo import GeoTrajectoryPublic
-from tasi.io.orm import TrajectoryORM
-from tasi.io.orm.geo import GeoTrajectoryORM
-from tasi.tests.io.test_orm import DBTestCase
+from tasi.io.orm import GeoTrajectoryORM, TrajectoryORM
 from tasi.tests.io.test_public.test_trajectory import TrajectoryTestCase
+
+from . import DBTestCase
 
 
 class TrajectoryDBCase(DBTestCase, TrajectoryTestCase):

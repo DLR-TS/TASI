@@ -5,15 +5,31 @@ from typing import Any, Dict, List, Literal, Self, overload
 import pandas as pd
 from pandas.core.api import DataFrame as DataFrame
 
-from tasi.io.base.traffic_light import Base, TrafficLightBase, TrafficLightStateBase
-from tasi.io.public.base import PublicEntityMixin
-from tasi.io.util import as_nested_dict
-from tasi.pose.base import TrafficLightPose
+from tasi import TrafficLightPose
+
+from ..util import as_nested_dict
+from .base import BaseModel, PublicEntityMixin
 
 __all__ = ["TrafficLightState", "TrafficLight", "TrafficLightCollection"]
 
 
-class TrafficLightState(TrafficLightStateBase, PublicEntityMixin):
+class TrafficLightState(BaseModel, PublicEntityMixin):
+    """Traffic light states according to Vienna Convention, Article 23"""
+
+    #: Red signal value
+    red: bool = False
+
+    #: Amber signal value
+    amber: bool = False
+
+    #: Green signal value
+    green: bool = False
+
+    #: The signal is unknown
+    unknown: bool = False
+
+    #: Any other state
+    other: int = -1
 
     @overload
     def as_tasi(self, as_record: Literal[True], **kwargs) -> Dict:
@@ -43,7 +59,13 @@ class TrafficLightState(TrafficLightStateBase, PublicEntityMixin):
         return self.as_dataframe()
 
 
-class TrafficLight(TrafficLightBase, PublicEntityMixin):
+class TrafficLight(BaseModel, PublicEntityMixin):
+
+    #: The time of traffic light state
+    timestamp: datetime
+
+    #: Indicate if the traffic light is flashing
+    flashing: bool
 
     #: The state of the traffic light
     state: TrafficLightState
@@ -103,7 +125,7 @@ class TrafficLight(TrafficLightBase, PublicEntityMixin):
         )
 
 
-class TrafficLightCollection(PublicEntityMixin, Base):
+class TrafficLightCollection(BaseModel, PublicEntityMixin):
 
     #: The time of the poses
     timestamp: datetime
