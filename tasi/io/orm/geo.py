@@ -14,4 +14,4 @@ from .trajectory.geo import *
 
 MODELS = [*POSE_MODELS, *TRAJECTORY_MODELS]
 
-__all__ = ["MODELS", "GeoPoseORM", "GeoTrajectoryORM"]
+__all__ = ["GeoPoseORM", "GeoTrajectoryORM"]

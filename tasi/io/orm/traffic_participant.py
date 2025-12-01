@@ -1,46 +1,49 @@
-from typing import Self, Union
+from datetime import datetime
+from typing import Optional, Self
 
-from sqlmodel import Field, Relationship, Session, select
+from .base import Base, ClassificationsORM, DimensionORM, IdPrimaryKeyMixin
+from .utils import *
 
-from tasi import Pose as TASIPose
-from tasi import Trajectory as TASITrajectory
-from tasi.io.base import IdPrimaryKeyMixing
-from tasi.io.base.traffic_participant import TrafficParticipantBase
-from tasi.io.env import DEFAULT_DATABASE_SETTINGS
-from tasi.io.orm.base import ClassificationsORM, DimensionORM, ORMBase
+__all__ = ["TrafficParticipantORM"]
 
 
-class TrafficParticipantORM(
-    TrafficParticipantBase, ORMBase, IdPrimaryKeyMixing, table=True
-):
+class TrafficParticipantORM(Base, IdPrimaryKeyMixin):
 
-    trajectory: Union["TrajectoryORM", None] = Relationship(  # type: ignore
+    #: The first time the traffic participant was within the measurement site
+    start_time: Mapped[Optional[datetime]]
+
+    #: The last time the traffic participant was within the measurement site
+    end_time: Mapped[Optional[datetime]]
+
+    #: A unique identifier
+    id_object: Mapped[int] = mapped_column(index=True, unique=True)
+
+    id_dimension: Mapped[int] = mapped_column(
+        ForeignKey(f"schema.{DimensionORM.__tablename__}.id")
+    )
+
+    id_classification: Mapped[int] = mapped_column(
+        ForeignKey(f"schema.{ClassificationsORM.__tablename__}.id")
+    )
+
+    trajectory: Mapped[Optional["TrajectoryORM"]] = relationship(
         back_populates="traffic_participant"
     )
 
-    geotrajectory: Union["GeoTrajectoryORM", None] = Relationship(  # type: ignore
+    geotrajectory: Mapped[Optional["GeoTrajectoryORM"]] = relationship(
         back_populates="traffic_participant"
     )
 
-    id_dimension: int | None = Field(
-        default=None, foreign_key=f"{DEFAULT_DATABASE_SETTINGS.CONTEXT}.dimension.id"
-    )
+    dimension: Mapped[Optional[DimensionORM]] = relationship()
 
-    dimension: DimensionORM | None = Relationship()
-
-    id_classification: int | None = Field(
-        default=None,
-        foreign_key=f"{DEFAULT_DATABASE_SETTINGS.CONTEXT}.classifications.id",
-    )
-
-    classifications: ClassificationsORM | None = Relationship()
+    classifications: Mapped[Optional[ClassificationsORM]] = relationship()
 
     @classmethod
     def by_id_object(cls, id_object: int, session: Session, **kwargs) -> Self:
 
-        entry = session.exec(
-            select(cls).where(cls.id_object == id_object)
-        ).one_or_none()
+        entry: Optional[Self] = (
+            session.query(cls).where(cls.id_object == id_object).one_or_none()
+        )
 
         if entry is None:
             entry = cls(id_object=id_object, **kwargs)

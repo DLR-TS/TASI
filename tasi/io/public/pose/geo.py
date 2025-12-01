@@ -6,17 +6,17 @@ import pandas as pd
 from geoalchemy2 import WKBElement
 from geoalchemy2.shape import to_shape
 from geojson_pydantic import Point
+from pydantic import field_validator
 from shapely import Point as ShapelyPoint
 from shapely import to_geojson
 
 import tasi
 from tasi.base import TASIBase
-from tasi.io.base import Base
 from tasi.io.orm import PoseORM, TrafficParticipantORM
 from tasi.io.orm.pose.geo import GeoPoseORM
-from tasi.utils import requires_extra
 
-from .base import PosePublic, Position, PublicEntityMixin, PublicPoseBase
+from .base import BaseModel, PosePublic, Position, PublicEntityMixin
+from .core import GeoPoseBase
 
 __all__ = [
     "as_geojson",
@@ -39,10 +39,19 @@ def as_geojson(obj: WKBElement | str) -> str | None:
     return result
 
 
-class GeoPosePublic(PublicEntityMixin, PublicPoseBase):
+class GeoPosePublic(GeoPoseBase):
 
     #: The traffic participant's position represent as *GeoObject*
     position: Point
+
+    @field_validator("position", mode="before")
+    def position_validator(
+        cls,
+        value: Union[Point, WKBElement],
+    ):
+        if isinstance(value, WKBElement):
+            return Point(**json.loads(as_geojson(value)))
+        return value
 
     @classmethod
     def from_pose(cls, pose: PosePublic, position: str = "position"):
@@ -108,18 +117,19 @@ class GeoPosePublic(PublicEntityMixin, PublicPoseBase):
     def from_orm(cls, obj: PoseORM) -> Self: ...
 
     @classmethod
-    def from_orm(
-        cls, obj: Union[GeoPoseORM, Any], update: Dict[str, Any] | None = None
-    ) -> Self:
+    def from_orm(cls, obj: Union[GeoPoseORM, Any]) -> Self:
 
         if isinstance(obj, GeoPoseORM):
 
-            p2 = obj.model_copy()  # type: ignore
-            p2.position = Point(**json.loads(as_geojson(obj.position)))  # type: ignore
+            return cls.model_validate(obj)
 
-            return cls.model_validate(p2)
+            obj.position = Point(**json.loads(as_geojson(obj.position)))  # type: ignore
+
+            return cls.model_validate(
+                dict(position=Point(**json.loads(as_geojson(obj.position))))
+            )
         else:
-            return super().from_orm(obj, update=update)
+            return super().model_validate(obj)
 
     def as_orm(
         self, traffic_participant: TrafficParticipantORM | None = None, **kwargs
@@ -143,7 +153,7 @@ class GeoPosePublic(PublicEntityMixin, PublicPoseBase):
         )
 
 
-class GeoPoseCollectionPublic(PublicEntityMixin, Base):
+class GeoPoseCollectionPublic(BaseModel, PublicEntityMixin):
 
     #: The time of the poses
     timestamp: datetime

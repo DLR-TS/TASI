@@ -6,22 +6,18 @@ from shapely import LineString as ShapelyLineString
 from shapely import to_geojson, wkt
 
 import tasi
-from tasi.io.base import Base
-from tasi.io.orm.trajectory import TrajectoryORM
-from tasi.io.orm.trajectory.geo import GeoTrajectoryORM
-from tasi.io.public.base import PublicEntityMixin
-from tasi.io.public.traffic_participant import TrafficParticipant
 
+from ...orm.trajectory.base import TrajectoryORM
+from ...orm.trajectory.geo import GeoTrajectoryORM
+from ..base import PublicEntityMixin
 from ..pose.geo import GeoPosePublic
 from .base import TrajectoryPublic
+from .core import TrajectoryBase
 
 __all__ = ["GeoTrajectoryPublic"]
 
 
-class GeoTrajectoryPublic(Base, PublicEntityMixin):
-
-    #: A reference to the traffic participant
-    traffic_participant: TrafficParticipant
+class GeoTrajectoryPublic(TrajectoryBase, PublicEntityMixin):
 
     #: The poses of the trajectory
     poses: list["GeoPosePublic"] = []
@@ -46,15 +42,13 @@ class GeoTrajectoryPublic(Base, PublicEntityMixin):
 
         if isinstance(obj, GeoTrajectoryORM):
 
-            obj2 = obj.model_copy()  # type: ignore
-
             # convert obj poses to geoposes
             poses = list(
                 map(
                     GeoPosePublic.from_orm,
                     sorted(obj.poses, key=lambda gp: gp.timestamp),
                 )
-            )  # type: ignore
+            )
 
             # get shapely coordinates of all points
             coordinates = list(
@@ -69,8 +63,6 @@ class GeoTrajectoryPublic(Base, PublicEntityMixin):
                 **json.loads(to_geojson(ShapelyLineString(coordinates)))
             )
 
-            obj2.geometry = geometry  # type: ignore
-
             return cls.model_validate(
                 dict(
                     geometry=geometry,
@@ -80,7 +72,7 @@ class GeoTrajectoryPublic(Base, PublicEntityMixin):
             )
 
         else:
-            return super().from_orm(obj, update=update)
+            return super().model_validate(obj)
 
     def as_orm(self, **kwargs) -> GeoTrajectoryORM:
 
