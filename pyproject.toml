@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "tasi"
-version = ""
+version = "0.0.0"
 description = "Library for Traffic Analysis and Situation Interpretation"
 authors = [ "Lars Klitzke <lars.klitzke@dlr.de>", "Clemens Schicktanz <clemens.schicktanz@dlr.de",]
 readme = "README.md"
