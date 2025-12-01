@@ -1,7 +1,8 @@
 from unittest import TestCase
+from uuid import uuid4
 
-from tasi.io.env import DEFAULT_DATABASE_SETTINGS
 from tasi.io.orm import create_tables, drop_tables
+from tasi.io.orm.db import DatabaseSettings
 
 
 class DBTestCase(TestCase):
@@ -9,11 +10,12 @@ class DBTestCase(TestCase):
     def setUp(self) -> None:
         super().setUp()
 
-        self.engine = DEFAULT_DATABASE_SETTINGS.create_engine()
+        self.settings = DatabaseSettings(SCHEMA=str(uuid4()))
 
-        create_tables(self.engine)
+        self.engine = self.settings.create_engine()
+        self.settings.init(self.engine)
 
     def tearDown(self) -> None:
         super().tearDown()
 
-        drop_tables(self.engine)
+        self.settings.shutdown(self.engine, with_schema=True)

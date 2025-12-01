@@ -1,31 +1,23 @@
-from sqlmodel import Field, Relationship
+from typing import Optional
 
-from tasi.io.base import Base, IdPrimaryKeyMixing
-from tasi.io.env import DEFAULT_DATABASE_SETTINGS
-from tasi.io.orm.base import ORMBase
-from tasi.io.orm.pose import PoseORM, TrafficParticipantORM
+from ..base import Base, IdPrimaryKeyMixin
+from ..traffic_participant import TrafficParticipantORM
+from ..utils import *
+from .core import TrajectoryORMBase
 
 __all__ = ["TrajectoryORM"]
 
 
-class TrajectoryORMBase(Base, ORMBase, IdPrimaryKeyMixing):
+class TrajectoryORM(Base, TrajectoryORMBase, IdPrimaryKeyMixin):
 
-    __abstract__ = True
+    poses: Mapped[list["PoseORM"]] = relationship(back_populates="trajectory")
 
-    id_traffic_participant: int | None = Field(
-        default=None,
-        foreign_key=f"{DEFAULT_DATABASE_SETTINGS.CONTEXT}.trafficparticipant.id",
-        unique=True,
-    )
-
-
-class TrajectoryORM(TrajectoryORMBase, table=True):
-
-    poses: list[PoseORM] = Relationship(back_populates="trajectory")
-
-    traffic_participant: TrafficParticipantORM = Relationship(  # type: ignore
-        back_populates="trajectory",
-    )
+    @declared_attr
+    def traffic_participant(self) -> Mapped[Optional[TrafficParticipantORM]]:
+        return relationship(
+            TrafficParticipantORM,
+            back_populates="trajectory",
+        )
 
 
 MODELS = [TrajectoryORM]

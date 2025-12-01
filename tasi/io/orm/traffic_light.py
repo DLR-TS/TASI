@@ -1,24 +1,43 @@
-from sqlmodel import Field, Relationship
-from tasi.io.base.traffic_light import TrafficLightBase, TrafficLightStateBase
-from tasi.io.env import DEFAULT_DATABASE_SETTINGS
-from tasi.io.orm.base import IdPrimaryKeyMixing, ORMBase
+from datetime import datetime
+
+from tasi.io.orm.base import Base, IdPrimaryKeyMixin
+
+from .utils import *
+
+__all__ = ["TrafficLightStateORM", "TrafficLightORM"]
 
 
-class TrafficLightStateORM(
-    TrafficLightStateBase, ORMBase, IdPrimaryKeyMixing, table=True
-):
-    pass
+class TrafficLightStateORM(Base, IdPrimaryKeyMixin):
+
+    #: Red signal value
+    red: Mapped[bool]
+
+    #: Amber signal value
+    amber: Mapped[bool]
+
+    #: Green signal value
+    green: Mapped[bool]
+
+    #: The signal is unknown
+    unknown: Mapped[bool]
+
+    #: Any other state
+    other: Mapped[int] = mapped_column(default=-1)
 
 
-class TrafficLightORM(ORMBase, TrafficLightBase, IdPrimaryKeyMixing, table=True):
+class TrafficLightORM(Base, IdPrimaryKeyMixin):
 
-    id_state: int | None = Field(
-        default=None,
-        description="The state of the traffic light",
-        foreign_key=f"{DEFAULT_DATABASE_SETTINGS.CONTEXT}.{TrafficLightStateORM.__tablename__}.id",
+    #: The time of traffic light state
+    timestamp: Mapped[datetime]
+
+    #: Indicate if the traffic light is flashing
+    flashing: Mapped[bool]
+
+    id_state: Mapped[int] = mapped_column(
+        ForeignKey(f"schema.{TrafficLightStateORM.__tablename__}.id")
     )
 
-    state: TrafficLightStateORM = Relationship()
+    state: Mapped[TrafficLightStateORM] = relationship()
 
 
-MODELS = [TrafficLightStateORM, TrafficLightORM]
+MODELS = [TrafficLightORM, TrafficLightStateORM]

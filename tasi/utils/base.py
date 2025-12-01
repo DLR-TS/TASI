@@ -25,7 +25,7 @@ ExtraMapping: Dict[Extra, str] = {
     "visualization": "matplotlib",
     "wms": "tilemapbase",
     "performance": "numba",
-    "io": "sqlmodel",
+    "io": "pydantic",
 }
 
 
