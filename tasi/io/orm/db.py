@@ -103,7 +103,7 @@ class DatabaseSettings(BaseSettings):
             engine = self.create_engine(**kwargs)
 
         if with_schema:
-            with engine.connect() as conn:
+            with engine.connect() as conn, conn.begin():
                 conn.execute(DropSchema(self.SCHEMA, cascade=True, if_exists=True))
         else:
 
