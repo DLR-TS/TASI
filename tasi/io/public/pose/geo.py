@@ -12,7 +12,7 @@ from shapely import to_geojson
 
 import tasi
 from tasi.base import TASIBase
-from tasi.io.orm import PoseORM, TrafficParticipantORM
+from tasi.io.orm import PoseORM, PositionORM, TrafficParticipantORM
 from tasi.io.orm.pose.geo import GeoPoseORM
 
 from .base import BaseModel, PosePublic, Position, PublicEntityMixin
@@ -25,12 +25,9 @@ __all__ = [
 ]
 
 
-def as_geojson(obj: WKBElement | str) -> str | None:
+def as_geojson(obj: WKBElement | str) -> str:
 
-    if obj is None:
-        # Probably unnecessary if field is not nullable
-        result = None
-    elif isinstance(obj, WKBElement):
+    if isinstance(obj, WKBElement):
         # e.g. session.get results in a `WKBElement`
         result = to_geojson(to_shape(obj))  # type: ignore
     else:
@@ -51,6 +48,9 @@ class GeoPosePublic(GeoPoseBase):
     ):
         if isinstance(value, WKBElement):
             return Point(**json.loads(as_geojson(value)))
+        elif isinstance(value, (Position, PositionORM)):
+            return Point.create(coordinates=[value.easting, value.northing])
+
         return value
 
     @classmethod
@@ -58,13 +58,10 @@ class GeoPosePublic(GeoPoseBase):
 
         attr = pose.model_dump()
 
-        attr[position] = Point(
-            **json.loads(
-                to_geojson(
-                    ShapelyPoint([pose.position.easting, pose.position.northing])
-                )
-            )
-        )
+        if not isinstance(position, str):
+            attr["position"] = reduce(lambda a, b: getattr(a, b), position, pose)
+        else:
+            attr["position"] = getattr(pose, position)
 
         return cls.model_validate(attr)
 

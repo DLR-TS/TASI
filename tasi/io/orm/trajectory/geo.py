@@ -14,7 +14,7 @@ __all__ = ["GeoTrajectoryORM"]
 
 class GeoTrajectoryORM(Base, TrajectoryORMBase, IdPrimaryKeyMixin):
 
-    poses: Mapped[list["GeoPoseORM"]] = relationship()
+    poses: Mapped[list["GeoPoseORM"]] = relationship(back_populates="trajectory")
 
     geometry: Mapped[WKBElement] = mapped_column(Geometry("LINESTRING", srid=32632))
 
