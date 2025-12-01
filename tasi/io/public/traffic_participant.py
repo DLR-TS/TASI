@@ -1,30 +1,41 @@
+from datetime import datetime
 from typing import Self
 
 from pandas.core.api import DataFrame as DataFrame
 
 import tasi
 from tasi.base import TASIBase
-from tasi.io.base.traffic_participant import TrafficParticipantBase
-from tasi.io.orm.base import ClassificationsORM, DimensionORM
-from tasi.io.orm.traffic_participant import TrafficParticipantORM
-from tasi.io.public.base import Classifications, Dimension, PublicEntityMixin
+from tasi.io.orm import ClassificationsORM, DimensionORM, TrafficParticipantORM
+
+from .base import BaseModel, Classifications, Dimension, PublicEntityMixin
+
+__all__ = ["TrafficParticipant"]
 
 __all__ = ["TrafficParticipant"]
 
 
-class TrafficParticipant(PublicEntityMixin, TrafficParticipantBase):
+class TrafficParticipant(BaseModel, PublicEntityMixin):
 
     #: The traffic participants dimension
-    dimension: Dimension | None = None
+    dimension: Dimension
 
     #: The traffic participants object type likelihoods
-    classifications: Classifications | None = None
+    classifications: Classifications
+
+    #: The first time the traffic participant was within the measurement site
+    start_time: datetime | None = None
+
+    #: The last time the traffic participant was within the measurement site
+    end_time: datetime | None = None
+
+    #: A unique identifier
+    id_object: int
 
     def as_orm(self, **kwargs) -> TrafficParticipantORM:
 
         return TrafficParticipantORM(
-            dimension=DimensionORM.model_validate(self.dimension),
-            classifications=ClassificationsORM.model_validate(self.classifications),
+            dimension=DimensionORM(**self.dimension.model_dump()),
+            classifications=ClassificationsORM(**self.classifications.model_dump()),
             start_time=self.start_time,
             end_time=self.end_time,
             id_object=self.id_object,
@@ -48,7 +59,12 @@ class TrafficParticipant(PublicEntityMixin, TrafficParticipantBase):
             )
 
         elif isinstance(obj, tasi.Pose):
-            tp = cls(id_object=obj.id.item())
+
+            tp = cls(
+                id_object=obj.id.item(),
+                classifications=Classifications.from_tasi(obj),
+                dimension=Dimension.from_tasi(obj),
+            )
         else:
             raise TypeError(f"Unsupported TASI entity {type(obj)}.")
         return tp

@@ -1,17 +1,13 @@
-from typing import Any, Dict, Union
+from typing import Optional
 
-from sqlmodel import Field, Relationship
-from sqlmodel.main import SQLModel
-
-from tasi.io.base import (
-    AccelerationBase,
-    BoundingBoxBase,
-    ClassificationsBase,
-    DimensionBase,
-    PositionBase,
-    VelocityBase,
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import (
+    DeclarativeBase,
+    Mapped,
+    declared_attr,
+    mapped_column,
+    relationship,
 )
-from tasi.io.env import DEFAULT_DATABASE_SETTINGS
 
 __all__ = [
     "ClassificationsORM",
@@ -20,109 +16,155 @@ __all__ = [
     "DimensionORM",
     "PositionORM",
     "BoundingBoxORM",
-    "ORMBase",
+    "Base",
 ]
 
 
-class ORMBase:
+class Base(DeclarativeBase):
 
-    @classmethod
-    def model_validate(
-        cls: Any,
-        obj: Any,
-        *,
-        strict: Union[bool, None] = None,
-        from_attributes: Union[bool, None] = None,
-        context: Union[Dict[str, Any], None] = None,
-        update: Union[Dict[str, Any], None] = None,
-    ) -> SQLModel: ...
+    @declared_attr
+    def __tablename__(cls):
+        name: str = cls.__name__.lower()
 
+        if name.endswith("orm"):
+            name = name[:-3]
 
-from typing import TypeVar
+        return name
 
-_ORMBase = TypeVar("_ORMBase", bound=ORMBase)
+    @declared_attr
+    def __table_args__(cls):
+        return {"schema": "schema"}
 
 
-class IdPrimaryKeyMixing:
+class IdPrimaryKeyMixin:
 
-    id: int | None = Field(default=None, primary_key=True)
+    __abstract__ = True
 
-
-class ClassificationsORM(
-    ClassificationsBase, IdPrimaryKeyMixing, ORMBase, table=True
-): ...
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
 
-class VelocityORM(VelocityBase, IdPrimaryKeyMixing, ORMBase, table=True): ...
+class ClassificationsORM(Base, IdPrimaryKeyMixin):
+
+    unknown: Mapped[float]
+
+    pedestrian: Mapped[float]
+
+    bicycle: Mapped[float]
+
+    motorbike: Mapped[float]
+
+    car: Mapped[float]
+
+    van: Mapped[float]
+
+    truck: Mapped[float]
+
+    other: Mapped[float]
 
 
-class AccelerationORM(AccelerationBase, IdPrimaryKeyMixing, ORMBase, table=True): ...
+class Vector3DMixin:
+
+    __abstract__ = True
+
+    x: Mapped[float]
+
+    y: Mapped[float]
+
+    z: Mapped[float]
+
+    magnitude: Mapped[Optional[float]]
 
 
-class DimensionORM(DimensionBase, IdPrimaryKeyMixing, ORMBase, table=True): ...
+class VelocityORM(Base, Vector3DMixin, IdPrimaryKeyMixin): ...
 
 
-class PositionORM(PositionBase, IdPrimaryKeyMixing, ORMBase, table=True): ...
+class AccelerationORM(Base, Vector3DMixin, IdPrimaryKeyMixin): ...
 
 
-class BoundingBoxORM(BoundingBoxBase, IdPrimaryKeyMixing, ORMBase, table=True):
+class DimensionORM(Base, IdPrimaryKeyMixin):
 
-    id_front_left: int | None = Field(
-        default=None, foreign_key=f"{DEFAULT_DATABASE_SETTINGS.CONTEXT}.position.id"
+    width: Mapped[float]
+    """float: The traffic participant's width in meter"""
+
+    height: Mapped[float]
+    """float: The traffic participant's height in meter"""
+
+    length: Mapped[float]
+    """float: The traffic participant's length in meter"""
+
+
+class PositionORM(Base, IdPrimaryKeyMixin):
+
+    easting: Mapped[float]
+
+    northing: Mapped[float]
+
+    altitude: Mapped[Optional[float]]
+
+class BoundingBoxORM(Base, IdPrimaryKeyMixin):
+
+    id_front_left: Mapped[int] = mapped_column(
+        ForeignKey(f"schema.{PositionORM.__tablename__}.id")
     )
 
-    front_left: PositionORM | None = Relationship(
-        sa_relationship_kwargs={"foreign_keys": "[BoundingBoxORM.id_front_left]"},
+    id_front: Mapped[int] = mapped_column(
+        ForeignKey(f"schema.{PositionORM.__tablename__}.id")
     )
 
-    id_front: int | None = Field(
-        default=None, foreign_key=f"{DEFAULT_DATABASE_SETTINGS.CONTEXT}.position.id"
-    )
-    front: PositionORM | None = Relationship(
-        sa_relationship_kwargs={"foreign_keys": "[BoundingBoxORM.id_front]"},
+    id_front_right: Mapped[int] = mapped_column(
+        ForeignKey(f"schema.{PositionORM.__tablename__}.id")
     )
 
-    id_front_right: int | None = Field(
-        default=None, foreign_key=f"{DEFAULT_DATABASE_SETTINGS.CONTEXT}.position.id"
-    )
-    front_right: PositionORM | None = Relationship(
-        sa_relationship_kwargs={"foreign_keys": "[BoundingBoxORM.id_front_right]"},
+    id_right: Mapped[int] = mapped_column(
+        ForeignKey(f"schema.{PositionORM.__tablename__}.id")
     )
 
-    id_right: int | None = Field(
-        default=None, foreign_key=f"{DEFAULT_DATABASE_SETTINGS.CONTEXT}.position.id"
-    )
-    right: PositionORM | None = Relationship(
-        sa_relationship_kwargs={"foreign_keys": "[BoundingBoxORM.id_right]"},
+    id_rear_right: Mapped[int] = mapped_column(
+        ForeignKey(f"schema.{PositionORM.__tablename__}.id")
     )
 
-    id_rear_right: int | None = Field(
-        default=None, foreign_key=f"{DEFAULT_DATABASE_SETTINGS.CONTEXT}.position.id"
-    )
-    rear_right: PositionORM | None = Relationship(
-        sa_relationship_kwargs={"foreign_keys": "[BoundingBoxORM.id_rear_right]"},
+    id_rear: Mapped[int] = mapped_column(
+        ForeignKey(f"schema.{PositionORM.__tablename__}.id")
     )
 
-    id_rear: int | None = Field(
-        default=None, foreign_key=f"{DEFAULT_DATABASE_SETTINGS.CONTEXT}.position.id"
+    id_rear_left: Mapped[int] = mapped_column(
+        ForeignKey(f"schema.{PositionORM.__tablename__}.id")
     )
 
-    rear: PositionORM | None = Relationship(
-        sa_relationship_kwargs={"foreign_keys": "[BoundingBoxORM.id_rear]"},
+    id_left: Mapped[int] = mapped_column(
+        ForeignKey(f"schema.{PositionORM.__tablename__}.id")
     )
 
-    id_rear_left: int | None = Field(
-        default=None, foreign_key=f"{DEFAULT_DATABASE_SETTINGS.CONTEXT}.position.id"
-    )
-    rear_left: PositionORM | None = Relationship(
-        sa_relationship_kwargs={"foreign_keys": "[BoundingBoxORM.id_rear_left]"},
+    front_left: Mapped[PositionORM] = relationship(
+        PositionORM, foreign_keys=[id_front_left]
     )
 
-    id_left: int | None = Field(
-        default=None, foreign_key=f"{DEFAULT_DATABASE_SETTINGS.CONTEXT}.position.id"
+    front: Mapped[Optional[PositionORM]] = relationship(
+        PositionORM, foreign_keys=[id_front]
     )
-    left: PositionORM | None = Relationship(
-        sa_relationship_kwargs={"foreign_keys": "[BoundingBoxORM.id_left]"},
+
+    front_right: Mapped[Optional[PositionORM]] = relationship(
+        PositionORM, foreign_keys=[id_front_right]
+    )
+
+    right: Mapped[Optional[PositionORM]] = relationship(
+        PositionORM, foreign_keys=[id_right]
+    )
+
+    rear_right: Mapped[Optional[PositionORM]] = relationship(
+        PositionORM, foreign_keys=[id_rear_right]
+    )
+
+    rear: Mapped[Optional[PositionORM]] = relationship(
+        PositionORM, foreign_keys=[id_rear]
+    )
+
+    rear_left: Mapped[Optional[PositionORM]] = relationship(
+        PositionORM, foreign_keys=[id_rear_left]
+    )
+
+    left: Mapped[Optional[PositionORM]] = relationship(
+        PositionORM, foreign_keys=[id_left]
     )
 
 

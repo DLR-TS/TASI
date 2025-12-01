@@ -3,18 +3,17 @@ from typing import Any, Dict, Optional, Self, Union, overload
 import pandas as pd
 
 import tasi
-from tasi.io.base import Base
-from tasi.io.public.base import PublicEntityMixin
-from tasi.io.public.pose.base import PosePublic
-from tasi.io.public.traffic_participant import TrafficParticipant
+
+from ...orm.trajectory.base import TrajectoryORM
+from ..base import PublicEntityMixin
+from ..pose.base import PosePublic
+from ..traffic_participant import TrafficParticipant
+from .core import TrajectoryBase
 
 __all__ = ["TrajectoryPublic"]
 
 
-class TrajectoryPublic(Base, PublicEntityMixin):
-
-    #: A reference to the traffic participant
-    traffic_participant: TrafficParticipant
+class TrajectoryPublic(TrajectoryBase, PublicEntityMixin):
 
     #: The poses of the trajectory
     poses: list[PosePublic]
@@ -42,17 +41,6 @@ class TrajectoryPublic(Base, PublicEntityMixin):
             pd.concat([p.as_tasi(as_record=as_record) for p in self.poses])
         )
 
-    def as_orm(self, **kwargs):
-
-        from tasi.io.orm.trajectory import TrajectoryORM
-
-        tp = self.traffic_participant.as_orm()
-
-        return TrajectoryORM(
-            poses=list(map(lambda p: p.as_orm(traffic_participant=tp), self.poses)),
-            traffic_participant=tp,
-        )
-
     def as_geo(self):
         """Convert to its GeoObject-based representation
 
@@ -75,9 +63,16 @@ class TrajectoryPublic(Base, PublicEntityMixin):
             traffic_participant=tp,
         )
 
+    def as_orm(self, **kwargs):
 
-try:
-    from tasi.io.orm.trajectory import TrajectoryORM
+        from tasi.io.orm.trajectory.base import TrajectoryORM
+
+        tp = self.traffic_participant.as_orm()
+
+        return TrajectoryORM(
+            poses=list(map(lambda p: p.as_orm(traffic_participant=tp), self.poses)),
+            traffic_participant=tp,
+        )
 
     @overload
     @classmethod
@@ -98,7 +93,4 @@ try:
             return cls.model_validate(obj)
 
         else:
-            return super().from_orm(obj, update=update)
-
-except ImportError:
-    pass
+            return super().model_validate(obj)

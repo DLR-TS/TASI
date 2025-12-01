@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlmodel import Session
+from sqlalchemy.orm import Session
 
 from tasi.io import (
     Acceleration,
@@ -42,7 +42,7 @@ class TestPoseSave(DBTestCase):
 
     def test_save_pose(self):
 
-        from tasi.io.orm.pose import PoseORM
+        from tasi.io.orm import PoseORM
 
         pose_orm = self.pose.as_orm()
 
@@ -104,7 +104,7 @@ class TestGeoPoseSave(DBTestCase):
 
     def test_save_pose(self):
 
-        from tasi.io.orm.geo import GeoPoseORM
+        from tasi.io.orm import GeoPoseORM
 
         pose_orm = self.pose.as_orm()
 
@@ -128,15 +128,17 @@ class TestGeoPoseSave(DBTestCase):
 
             self.assertEqual(obj, pose_orm)
 
+            obj2: GeoPoseORM = obj  # type: ignore
+
             # try create pose from orm
-            pose: GeoPosePublic = GeoPosePublic.from_orm(obj)
+            pose: GeoPosePublic = GeoPosePublic.from_orm(obj2)
 
             # verify entity has an id
-            self.assertIsNotNone(obj.traffic_participant)
+            self.assertIsNotNone(obj2.traffic_participant)
             self.assertIsNotNone(pose.boundingbox)
             self.assertIsNotNone(pose.position)
 
             self.assertEqual(
-                pose.traffic_participant.id_object, obj.traffic_participant.id_object
+                pose.traffic_participant.id_object, obj2.traffic_participant.id_object
             )
             self.assertEqual(pose.traffic_participant, self.pose.traffic_participant)

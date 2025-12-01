@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "tasi"
-version = "0+unknown"
+version = "0.8.1+144.g19ffbce.dirty"
 description = "Library for Traffic Analysis and Situation Interpretation"
 authors = [ "Lars Klitzke <lars.klitzke@dlr.de>", "Clemens Schicktanz <clemens.schicktanz@dlr.de",]
 readme = "README.md"
@@ -29,7 +29,6 @@ python = "^3.11.0"
 coloredlogs = "^15.0.1"
 shapely = "^2.1.0"
 geopandas = "^1.0.1"
-sqlmodel = "^0.0.24"
 pydantic = "^2.11.7"
 geojson-pydantic = "^2.0.0"
 pydantic-settings = "^2.10.1"

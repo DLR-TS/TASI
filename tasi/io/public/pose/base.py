@@ -6,12 +6,11 @@ import pandas as pd
 
 import tasi
 from tasi.base import TASIBase
-from tasi.io.base import Base
-from tasi.io.base.pose import PoseBase
-from tasi.io.orm.pose import PoseORM
-from tasi.io.orm.traffic_participant import TrafficParticipantORM
-from tasi.io.public.base import (
+from tasi.io.orm import PoseORM, TrafficParticipantORM
+
+from ..base import (
     Acceleration,
+    BaseModel,
     BoundingBox,
     Classifications,
     Dimension,
@@ -19,7 +18,8 @@ from tasi.io.public.base import (
     PublicEntityMixin,
     Velocity,
 )
-from tasi.io.public.traffic_participant import TrafficParticipant
+from ..traffic_participant import TrafficParticipant
+from .core import PoseBase
 
 __all__ = [
     "PosePublic",
@@ -30,28 +30,7 @@ from tasi.io.util import FlatDict
 from tasi.utils import requires_extra
 
 
-class PublicPoseBase(PoseBase):
-
-    #: The dimension of the traffic participant measurement for the pose's time
-    dimension: Dimension
-
-    #: A reference to the traffic participant this pose belongs to
-    traffic_participant: TrafficParticipant
-
-    #: The traffic participant's velocity
-    velocity: Velocity
-
-    #: The traffic participant's acceleration
-    acceleration: Acceleration
-
-    #: The traffic participant's boundingbox
-    boundingbox: BoundingBox
-
-    #: The traffic participant's object type probabilities
-    classifications: Classifications
-
-
-class PosePublic(PublicEntityMixin, PublicPoseBase):
+class PosePublic(PublicEntityMixin, PoseBase):
 
     #: The traffic participant's position
     position: Position
@@ -106,6 +85,15 @@ class PosePublic(PublicEntityMixin, PublicPoseBase):
 
     @overload
     def as_tasi(self, as_record: Literal[False], **kwargs) -> tasi.Pose:
+        """Convert to a ``TASI`` internal representation
+
+        Returns:
+            tasi.Pose: The internal representation format
+        """
+        ...
+
+    @overload
+    def as_tasi(self, as_record: bool = False, **kwargs) -> tasi.Pose:
         """Convert to a ``TASI`` internal representation
 
         Returns:
@@ -194,7 +182,7 @@ class PosePublic(PublicEntityMixin, PublicPoseBase):
         return GeoPosePublic.from_pose(self, position=position)
 
 
-class PoseCollectionPublic(PublicEntityMixin, Base):
+class PoseCollectionPublic(PublicEntityMixin, BaseModel):
 
     #: The time of the poses
     timestamp: datetime
