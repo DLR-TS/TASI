@@ -7,6 +7,7 @@ from io import TextIOWrapper
 from pathlib import Path
 from typing import List, Tuple, Union
 
+import numpy as np
 import pandas as pd
 import requests
 from tqdm import tqdm
@@ -458,7 +459,7 @@ class DLRTrajectoryDataset(TrajectoryDataset):
             position=self.position,
             velocity=self.velocity,
             acceleration=self.acceleration,
-            heading=self.yaw,
+            heading=np.deg2rad(self.yaw),
             classifications=self.classifications,
             dimension=self.dimension,
         )
