@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Optional, Self
 
+from sqlalchemy import BIGINT
+
 from .base import Base, ClassificationsORM, DimensionORM, IdPrimaryKeyMixin
 from .utils import *
 
@@ -16,7 +18,7 @@ class TrafficParticipantORM(Base, IdPrimaryKeyMixin):
     end_time: Mapped[Optional[datetime]]
 
     #: A unique identifier
-    id_object: Mapped[int] = mapped_column(index=True, unique=True)
+    id_object: Mapped[int] = mapped_column(BIGINT, index=True, unique=True)
 
     id_dimension: Mapped[int] = mapped_column(
         ForeignKey(f"schema.{DimensionORM.__tablename__}.id")
