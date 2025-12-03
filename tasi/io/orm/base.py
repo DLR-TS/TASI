@@ -1,9 +1,10 @@
-from typing import Optional
+from typing import Optional, Self
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
+    Session,
     declared_attr,
     mapped_column,
     relationship,
@@ -34,6 +35,24 @@ class Base(DeclarativeBase):
     @declared_attr
     def __table_args__(cls):
         return {"schema": "schema"}
+
+    def get(self, session: Session, **kwargs) -> Self:
+        """Get the entry from the database of this entity based on the given keyword-arguments.
+
+        Args:
+            session (Session): The SQLAlchemy session
+
+        Returns:
+            Self: Either the entity that is available in the database matching
+            the keyword-arguments as WHERE claus or a new instance.
+
+        """
+        entry = session.query(type(self)).filter_by(**kwargs).one_or_none()
+
+        if entry is None:
+            entry = type(self)(**kwargs)
+
+        return entry
 
 
 class IdPrimaryKeyMixin:
@@ -100,6 +119,7 @@ class PositionORM(Base, IdPrimaryKeyMixin):
     northing: Mapped[float]
 
     altitude: Mapped[Optional[float]]
+
 
 class BoundingBoxORM(Base, IdPrimaryKeyMixin):
 
