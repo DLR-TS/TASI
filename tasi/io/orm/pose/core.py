@@ -40,7 +40,7 @@ class PoseORMBase:
     )
 
     id_traffic_participant: Mapped[Optional[int]] = mapped_column(
-        ForeignKey(f"schema.{TrafficParticipantORM.__tablename__}.id")
+        ForeignKey(f"schema.{TrafficParticipantORM.__tablename__}.id_object")
     )
 
     id_velocity: Mapped[Optional[int]] = mapped_column(

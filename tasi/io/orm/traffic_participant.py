@@ -3,22 +3,22 @@ from typing import Optional, Self
 
 from sqlalchemy import BIGINT
 
-from .base import Base, ClassificationsORM, DimensionORM, IdPrimaryKeyMixin
+from .base import Base, ClassificationsORM, DimensionORM
 from .utils import *
 
 __all__ = ["TrafficParticipantORM"]
 
 
-class TrafficParticipantORM(Base, IdPrimaryKeyMixin):
+class TrafficParticipantORM(Base):
+
+    #: A unique identifier
+    id_object: Mapped[int] = mapped_column(BIGINT, primary_key=True)
 
     #: The first time the traffic participant was within the measurement site
     start_time: Mapped[Optional[datetime]]
 
     #: The last time the traffic participant was within the measurement site
     end_time: Mapped[Optional[datetime]]
-
-    #: A unique identifier
-    id_object: Mapped[int] = mapped_column(BIGINT, index=True, unique=True)
 
     id_dimension: Mapped[int] = mapped_column(
         ForeignKey(f"schema.{DimensionORM.__tablename__}.id")
@@ -43,9 +43,7 @@ class TrafficParticipantORM(Base, IdPrimaryKeyMixin):
     @classmethod
     def by_id_object(cls, id_object: int, session: Session, **kwargs) -> Self:
 
-        entry: Optional[Self] = (
-            session.query(cls).where(cls.id_object == id_object).one_or_none()
-        )
+        entry: Optional[Self] = session.get(cls, id_object)
 
         if entry is None:
             entry = cls(id_object=id_object, **kwargs)
