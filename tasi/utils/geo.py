@@ -23,7 +23,7 @@ def position_to_point(df: pd.DataFrame, position: Any) -> Union[Point, MultiPoin
     """
     df = df.sort_index(axis=1)
 
-    values = df[position]
+    values = df[position][["easting", "northing"]]
 
     # get the flatten columns (remove empty levels)
     flat_columns = flatten_index(values.columns)
