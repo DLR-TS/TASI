@@ -79,6 +79,11 @@ class Trajectory(TrajectoryBase):
 
     @property
     def smos(self):
+        """Provides access to SMoS metric estimation methods
+
+        Returns:
+            TrajectoryExtension: The extension for SMoS estimation
+        """
         from ..extensions.smos import TrajectoryExtension
 
         return TrajectoryExtension(self)
