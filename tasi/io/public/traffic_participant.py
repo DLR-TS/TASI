@@ -11,8 +11,6 @@ from .base import BaseModel, Classifications, Dimension, PublicEntityMixin
 
 __all__ = ["TrafficParticipant"]
 
-__all__ = ["TrafficParticipant"]
-
 
 class TrafficParticipant(BaseModel, PublicEntityMixin):
 

@@ -5,10 +5,13 @@ Trajectory
 
 .. currentmodule:: tasi
 
-A :py:class:`Trajectory` specialized for trajectory data representing the evolution of a traffic participant. A
-trajectory is a collection of :py:class:`Pose`s.
+A :py:class:`Trajectory` specialized for trajectory data representing the
+evolution of a traffic participant. A trajectory is a collection of
+:py:class:`Pose`s.
 
-
+.. inheritance-diagram:: tasi.Trajectory
+    :top-classes: pandas.core.frame.DataFrame
+    :parts: 1
 
 Serialization / IO / conversion
 ************************************
@@ -26,7 +29,7 @@ Indexing
    :toctree: api/
 
    Trajectory.att
-   TrajectoryDataset.trajectory
+
 
 Filtering
 ***********
@@ -54,7 +57,7 @@ Attributes
    Trajectory.id
    Trajectory.interval
    Trajectory.timestamps
-
+   Trajectory.smos
 
 .. note::
 

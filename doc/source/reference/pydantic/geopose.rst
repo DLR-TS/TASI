@@ -20,7 +20,6 @@ Factory methods
    :toctree: api/
 
    GeoPosePublic.from_orm
-   GeoPosePublic.from_tasi
    GeoPosePublic.from_pose
    GeoPosePublic.model_validate
 

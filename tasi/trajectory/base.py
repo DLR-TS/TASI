@@ -57,23 +57,32 @@ class Trajectory(TrajectoryBase):
     @requires_extra("geo")
     def as_geo(
         self,
-        position: Union[str, List[str], Tuple[str]] = "position",
+        position: Union[str, List[str | Tuple[str, ...]], Tuple[str, ...]] = "position",
         aggregate: bool = True,
     ):
-        """
-        Convert the trajectory to a geometric representation
+        """Convert the trajectory to a geometric representation
 
         Args:
-            position (Union[str, List[str], Tuple[str]], optional): Objects' reference(s) to be converted into a
-            geoDataFrame
-            aggregate: (bool): If the positions should be aggregated to LineString objects
+            position (Union[str, List[str  |  Tuple[str, ...]], Tuple[str,...]]): Objects' reference(s)
+            to be converted into geo object. Defaults to "position".
+            aggregate (bool, optional): If the positions should be aggregated to LineString objects. Defaults to True.
 
         Returns:
             tasi.GeoTrajectory: The positions as GeoDataFrame
-
         """
         from .geo import GeoTrajectory
 
         return GeoTrajectory.from_trajectory(
             tj=self, position=position, aggregate=aggregate
         )
+
+    @property
+    def smos(self):
+        """Provides access to SMoS metric estimation methods
+
+        Returns:
+            TrajectoryExtension: The extension for SMoS estimation
+        """
+        from ..extensions.smos import TrajectoryExtension
+
+        return TrajectoryExtension(self)
