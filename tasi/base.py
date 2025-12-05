@@ -231,6 +231,18 @@ class CollectionBase(PandasBase, IndexMixin):
         finally:
             self.columns = old_columns
 
+    @property
+    def woid(self) -> pd.DataFrame:
+        """Without the object id on the index
+
+        This property will return a `DataFrame` without the `id` on the index
+        that can be used to compare trajectories with each other.
+
+        Returns:
+            pd.DataFrame: A DataFrame with the `id` as a column.
+        """
+        return self.reset_index("id")
+
 
 class PoseCollectionBase(CollectionBase):
 

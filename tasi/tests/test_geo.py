@@ -27,6 +27,34 @@ class GeoConversionTestCase(DatasetTestCase):
         self.assertIsInstance(geotrajectory, gpd.GeoDataFrame)
         self.assertIsInstance(geotrajectory, GeoTrajectory)
 
+    def test_to_geo_trajectory_position(self):
+
+        geotrajectory = self.ds.trajectory(self.ds.ids[0]).as_geo(position="position")
+
+        self.assertIsInstance(geotrajectory, gpd.GeoDataFrame)
+        self.assertIsInstance(geotrajectory, GeoTrajectory)
+
+    def test_to_geo_trajectory_front(self):
+
+        geotrajectory = self.ds.trajectory(self.ds.ids[0]).as_geo(
+            position=("boundingbox", "front")
+        )
+
+        self.assertIsInstance(geotrajectory, gpd.GeoDataFrame)
+        self.assertIsInstance(geotrajectory, GeoTrajectory)
+
+    def test_to_geo_trajectory_front_and_position(self):
+
+        geotrajectory = self.ds.trajectory(self.ds.ids[0]).as_geo(
+            position=[("boundingbox", "front"), "position"]
+        )
+
+        self.assertIn("position", geotrajectory)
+        self.assertIn("front", geotrajectory)
+
+        self.assertIsInstance(geotrajectory, gpd.GeoDataFrame)
+        self.assertIsInstance(geotrajectory, GeoTrajectory)
+
     def test_to_geo_dataset(self):
 
         geodataset = self.ds.as_geo()

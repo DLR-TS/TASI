@@ -37,7 +37,7 @@ class GeoTrajectory(TrajectoryBase, gpd.GeoDataFrame):  # type: ignore
     def from_trajectory(
         cls,
         tj: Trajectory,
-        position: Union[str, List[str], Tuple[str]] = "position",
+        position: Union[str, List[str | Tuple[str, ...]], Tuple[str, ...]] = "position",
         aggregate: bool = True,
     ):
 
