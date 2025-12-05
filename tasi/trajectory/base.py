@@ -63,9 +63,8 @@ class Trajectory(TrajectoryBase):
         """Convert the trajectory to a geometric representation
 
         Args:
-            position (Union[str, List[str  |  Tuple[str, ...]], Tuple[str,
-            ...]], optional): Objects' reference(s) to be converted into geo object.
-            Defaults to "position".
+            position (Union[str, List[str  |  Tuple[str, ...]], Tuple[str,...]]): Objects' reference(s)
+            to be converted into geo object. Defaults to "position".
             aggregate (bool, optional): If the positions should be aggregated to LineString objects. Defaults to True.
 
         Returns:
