@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Iterable, List, Tuple, Union
+from typing import Iterable, List, Tuple, Union, overload
 
 import numpy as np
 import pandas as pd
@@ -54,7 +54,15 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
 
         return Pose
 
-    def trajectory(self, index: Union[int, Iterable[int]], inverse: bool = False):
+    @overload
+    def trajectory(self, index: int, inverse: bool = False) -> Trajectory: ...
+
+    @overload
+    def trajectory(self, index: Iterable[int], inverse: bool = False) -> Self: ...
+
+    def trajectory(
+        self, index: Union[int, Iterable[int]], inverse: bool = False
+    ) -> Trajectory | Self:
         """
         Select trajectory data for specific indices, or exclude them if inverse is set to True.
 
@@ -67,7 +75,7 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
                 are excluded from the resulting dataset, and all other trajectories are included. Defaults to False.
 
         Returns:
-            TrajectoryDataset: A trajectory or multiple trajectories of the dataset.
+            tasi.Trajectory | TrajectoryDataset: A trajectory or multiple trajectories of the dataset.
         """
 
         if isinstance(index, (int, np.int_)):

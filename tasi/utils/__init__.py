@@ -1,8 +1,6 @@
 from .base import *
 
-try:
-    import geopandas
+extra = has_extra("geo")
 
+if extra:
     from .geo import *
-except ImportError:
-    pass

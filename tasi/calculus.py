@@ -1,7 +1,6 @@
-from tasi.utils import has_extra
+from .utils import has_extra
 
 EXTRA = has_extra("performance")
-
 
 if EXTRA:
     from numba import jit, njit  # pyright: ignore[reportMissingImports]

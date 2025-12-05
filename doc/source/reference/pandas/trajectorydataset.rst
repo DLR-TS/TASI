@@ -7,6 +7,10 @@ TrajectoryDataset
 
 A ``Dataset`` specialized for trajectory data.
 
+.. inheritance-diagram:: tasi.TrajectoryDataset
+    :top-classes: pandas.core.frame.DataFrame, tasi.dataset.Dataset
+    :parts: 1
+
 
 Constructor
 ************
