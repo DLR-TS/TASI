@@ -75,7 +75,7 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
                 are excluded from the resulting dataset, and all other trajectories are included. Defaults to False.
 
         Returns:
-            TrajectoryDataset: A trajectory or multiple trajectories of the dataset.
+            tasi.Trajectory | TrajectoryDataset: A trajectory or multiple trajectories of the dataset.
         """
 
         if isinstance(index, (int, np.int_)):
