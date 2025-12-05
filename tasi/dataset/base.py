@@ -1,11 +1,12 @@
 from functools import wraps
-from typing import Iterable, List, Tuple, Union
+from typing import Iterable, List, Tuple, Union, overload
 
 import numpy as np
 import pandas as pd
 from dtaidistance.dtw import best_path, warping_paths
-from tasi.utils import requires_extra
 from typing_extensions import Self
+
+from tasi.utils import requires_extra
 
 from ..base import CollectionBase, PoseCollectionBase
 from ..trajectory.base import Trajectory
@@ -53,7 +54,15 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
 
         return Pose
 
-    def trajectory(self, index: Union[int, Iterable[int]], inverse: bool = False):
+    @overload
+    def trajectory(self, index: int, inverse: bool = False) -> Trajectory: ...
+
+    @overload
+    def trajectory(self, index: Iterable[int], inverse: bool = False) -> Self: ...
+
+    def trajectory(
+        self, index: Union[int, Iterable[int]], inverse: bool = False
+    ) -> Trajectory | Self:
         """
         Select trajectory data for specific indices, or exclude them if inverse is set to True.
 
