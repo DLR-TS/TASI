@@ -63,7 +63,7 @@ class IndexMixin:
     ID_COLUMN = "id"
 
     @property
-    def ids(self) -> pd.Index:
+    def ids(self) -> List[int]:
         """Returns the unique ids in the dataset
 
         Returns:
@@ -71,7 +71,7 @@ class IndexMixin:
         """
         idx: pd.MultiIndex = self.index  # type: ignore
 
-        return idx.get_level_values(self.ID_COLUMN).unique()
+        return idx.get_level_values(self.ID_COLUMN).unique()  # type: ignore
 
 
 class TASIBase(LocatableEntity):
