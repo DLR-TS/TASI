@@ -1,7 +1,8 @@
 # import recommonmark
 # from recommonmark.transform import AutoStructify
 
-import sys, os
+import os
+import sys
 import warnings
 
 # -- General configuration ---------------------------------------------------
@@ -134,7 +135,7 @@ html_context = {
     "header": header,
 }
 
-html_title = project
+# html_title = project
 
 html_sidebars = {"about": [], "development/index": [], "getting_started/index": []}
 
@@ -161,9 +162,12 @@ html_static_path = ["_static"]
 # Add redirect for previously existing pages, each item is like `(from_old, to_new)`
 
 html_js_files = ["logos/DLR_black.js"]
+html_logo = "_static/logos/TASI_Logo.png"
+
 
 nbsphinx_prolog = r"""
 {% set docname = env.doc2path(env.docname, base=None) %}
+
 
 .. only:: html
 
@@ -266,6 +270,7 @@ def linkcode_resolve(domain, info):
 
 # -- Options for nbsphinx ------------------------------------------------
 import os
+
 import jinja2
 
 nbsphinx_allow_errors = False
