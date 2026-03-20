@@ -184,16 +184,14 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
         boundingbox: pd.DataFrame = None,
     ):
 
-        assert (
-            dimension is None or boundingbox is None
-        ), "either dimension or boundingbox needs to be specified"
+        from tasi.utils.base import resolve_dimension_and_boundingbox
 
-        if boundingbox is None or boundingbox.empty:
-            from tasi.calculus import boundingbox_from_dimension
-
-            boundingbox = boundingbox_from_dimension(
-                dimension, heading, relative_to=position
-            )
+        boundingbox = resolve_dimension_and_boundingbox(
+            dimension=dimension,
+            boundingbox=boundingbox,
+            heading=heading,
+            position=position,
+        )
 
         if velocity.empty:
             from tasi.calculus import calc_velocity_from_origins
