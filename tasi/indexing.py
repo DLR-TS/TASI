@@ -37,10 +37,14 @@ class LocLocator(_LocIndexer):
                 # if the levels do not match, try wrapping the key in a list
                 try:
                     df = super().__getitem__([key])
-                except Exception as err:
-                    # this will not work for slices. Just ignore this.
-                    print(err)
-                    pass
+                except (KeyError, ValueError, TypeError) as err:
+                    # this will not work for slices. Log and ignore gracefully.
+                    import logging
+                    logging.getLogger(__name__).debug(
+                        "Dialog LocLocator index fallback failed for key %r: %s",
+                        key,
+                        err,
+                    )
             return self.obj._ensure_correct_type(df, key)
         except AttributeError:
             # if the result is no pandas object anymore. This occurs if the user selects specific table cell using any

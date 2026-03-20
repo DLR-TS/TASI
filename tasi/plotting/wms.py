@@ -104,10 +104,10 @@ class BoundingboxTiles(Tiles):
         try:
             fp = _io.BytesIO(tile)
             return _Image.open(fp)
-        except BaseException:
+        except (OSError, IOError, ValueError) as err:
             raise RuntimeError(
-                "Failed to decode data for {} - @ {} extent".format(
-                    self.name, [x1, y1, x2, y2]
+                "Failed to decode data for {} - @ {} extent: {}".format(
+                    self.name, [x1, y1, x2, y2], err
                 )
             )
 

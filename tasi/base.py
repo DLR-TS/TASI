@@ -29,7 +29,7 @@ class TimestampMixin:
 
         try:
             len(timestamps)
-        except:
+        except TypeError:
             timestamps = [timestamps]
 
         if self.index.nlevels == 1:
@@ -184,7 +184,7 @@ class CollectionBase(PandasBase, IndexMixin):
         """
         try:
             len(ids)
-        except BaseException:
+        except TypeError:
             ids = [ids]
 
         if attributes is None:
