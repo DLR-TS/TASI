@@ -1,3 +1,9 @@
+"""TASI - Traffic Situation Analysis and Interpretation.
+
+This package exposes core traffic data structures and analysis tools for
+trajectories, poses, and datasets. It initializes the default logger on import.
+"""
+
 from . import _version
 from .dataset import *
 from .pose import *

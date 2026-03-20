@@ -9,6 +9,11 @@ from .utils import MULTI_INDEX_SEPERATOR, add_attributes, to_pandas_multiindex
 
 
 class TimestampMixin:
+    """Mixin that adds timestamp-based indexing and selection helpers.
+
+    This mixin expects a pandas object with a timestamp index level named
+    `TIMESTAMP_COLUMN` and provides convenience methods such as `att`.
+    """
 
     TIMESTAMP_COLUMN = "timestamp"
 
