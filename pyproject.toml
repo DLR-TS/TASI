@@ -42,6 +42,7 @@ tilemapbase = "^0.4.7"
 dtaidistance = "^2.3.13"
 tqdm = "^4.67.1"
 numba = "^0.62.1"
+requests = "^2.33.1"
 
 [tool.poetry.extras]
 geo = [ "geojson-pydantic", "geopandas", "shapely",]
