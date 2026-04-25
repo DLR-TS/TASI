@@ -49,7 +49,7 @@ def flatten_dataframe_columns(df: pd.DataFrame, max_levels=1):
     if df.columns.nlevels > max_levels:
         try:
             df = df.droplevel(level=1, axis=1)
-        except:
+        except (KeyError, ValueError, IndexError):
             df = df.droplevel(level=1)
 
     return df
