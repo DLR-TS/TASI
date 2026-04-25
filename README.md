@@ -19,6 +19,20 @@ Install ``TASI`` from the PyPi registry.
 pip install tasi
 ```
 
+### Project Architecture
+- `tasi.pose`: single object pose/timepoint representation
+- `tasi.trajectory`: ordered trajectory sequences of poses
+- `tasi.dataset`: multi-entity dataset collections and filtering
+- `tasi.io`: conversion to/from pydantic models and ORM
+- `tasi.dlr`: dataset download manager for DLR datasets
+
+### Contribution and Branching
+1. Fork the repository and create a feature branch:
+   `git checkout -b improvements/<topic>`
+2. Add tests for new behavior under `tasi/tests`
+3. Run tests: `pytest`
+4. Open a PR and link to related issues
+
 Download the latest DLR-UT version for demonstration purpose.
 ```python
 from tasi.dlr import DLRUTDatasetManager, DLRUTVersion, 
