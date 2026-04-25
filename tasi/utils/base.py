@@ -450,6 +450,29 @@ def to_pandas_multiindex(
     return pd.MultiIndex.from_arrays(np.array(names).T)
 
 
+def resolve_dimension_and_boundingbox(
+    dimension: Optional[pd.DataFrame],
+    boundingbox: Optional[pd.DataFrame],
+    heading: Union[pd.Series, pd.DataFrame],
+    position: pd.DataFrame,
+):
+    """Resolve missing bounding box from dimensions or validate the provided box.
+
+    Either `dimension` or `boundingbox` must be provided. If `boundingbox` is missing,
+    it is computed from `dimension` and `heading`.
+    """
+    if dimension is None and (boundingbox is None or boundingbox.empty):
+        raise ValueError("either dimension or boundingbox needs to be specified")
+
+    if boundingbox is None or boundingbox.empty:
+        from tasi.calculus import boundingbox_from_dimension
+        boundingbox = boundingbox_from_dimension(
+            dimension, heading, relative_to=position
+        )
+
+    return boundingbox
+
+
 def requires_module(module_name: Union[str, List[str]], extra: Extra | str = ""):
 
     if isinstance(module_name, str):

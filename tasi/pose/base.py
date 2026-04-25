@@ -69,21 +69,16 @@ class Pose(PoseBase):
             "classifications": classifications,
         }
 
-        assert not (
-            dimension is None and boundingbox is None
-        ), "either dimension or boundingbox needs to be specified"
-
         if dimension is not None:
             attributes["dimension"] = dimension
 
-        if (boundingbox is None or boundingbox.empty) and dimension is not None:
-            from tasi.calculus import boundingbox_from_dimension
-
-            boundingbox = boundingbox_from_dimension(
-                dimension, heading, relative_to=position
-            )
-
-        attributes["boundingbox"] = boundingbox
+        from tasi.utils.base import resolve_dimension_and_boundingbox
+        attributes["boundingbox"] = resolve_dimension_and_boundingbox(
+            dimension=dimension,
+            boundingbox=boundingbox,
+            heading=heading,
+            position=position,
+        )
 
         if yaw_rate is not None:
             attributes["yaw_rate"] = yaw_rate
