@@ -4,6 +4,12 @@ from matplotlib.colors import ListedColormap
 
 from tasi.dataset.base import TrajectoryDataset
 
+try:
+    import matplotlib.cm as colormaps
+except ImportError:
+    # for matplotlib version >= 3.9
+    import matplotlib.colormaps as colormaps
+
 
 class TrajectoryPlotter:
     """
@@ -14,7 +20,7 @@ class TrajectoryPlotter:
 
     def __init__(self, color_palette: str = "tab10"):
 
-        self.palette = plt.cm.get_cmap(color_palette)
+        self.palette = colormaps.get_cmap(color_palette)
 
         if not isinstance(self.palette, ListedColormap):
             raise TypeError(
