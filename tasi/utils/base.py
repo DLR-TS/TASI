@@ -332,9 +332,6 @@ def add_attributes(
             0  1  2  3  10
             1  4  5  6  11
 
-    Note: The doctest output format may vary slightly depending on pandas version.
-    Tests use NORMALIZE_WHITESPACE to accommodate formatting differences.
-
     """
 
     if isinstance(df1, dict):
@@ -361,7 +358,7 @@ def add_attributes(
             collection.append(d)
 
     # Check if column levels differ - if so, normalize them before concat
-    # This is required in pandas 3.x which doesn't allow concat with keys when levels differ
+    # This is required in pandas >= 3 which doesn't allow concat with keys when levels differ
     levels = [d.columns.nlevels for d in collection]
     need_level_normalization = keys is not None and np.unique(levels).size > 1
 
@@ -416,7 +413,9 @@ def add_attributes(
                         c
                         for d in [
                             enlarge_index(
-                                c, levels if k != "" else levels + 1, k if k != "" else None
+                                c,
+                                levels if k != "" else levels + 1,
+                                k if k != "" else None,
                             )
                             for c, k in zip(
                                 [df.columns for df in collection],
