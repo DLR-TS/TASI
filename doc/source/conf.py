@@ -93,9 +93,9 @@ copyright = "2024-, DLR TS and contributors"
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-import tasi
+from importlib.metadata import version as get_version
 
-release = release = tasi.__version__
+release = get_version("tasi")
 version = release
 if "+" in version:
     version, remainder = release.split("+")
@@ -212,6 +212,8 @@ def linkcode_resolve(domain, info):
     """
     import inspect
 
+    import tasi
+
     if domain != "py":
         return None
 
@@ -259,13 +261,10 @@ def linkcode_resolve(domain, info):
 
     fn = os.path.relpath(fn, start=os.path.dirname(tasi.__file__))
 
-    if "+" in tasi.__version__:
+    if "+" in version:
         return f"https://github.com/dlr-ts/tasi/blob/main/tasi/{fn}{linespec}"
     else:
-        return (
-            f"https://github.com/dlr-ts/tasi/blob/"
-            f"v{tasi.__version__}/tasi/{fn}{linespec}"
-        )
+        return f"https://github.com/dlr-ts/tasi/blob/" f"v{release}/tasi/{fn}{linespec}"
 
 
 # -- Options for nbsphinx ------------------------------------------------
