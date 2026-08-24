@@ -1,103 +1,148 @@
+
 [build-system]
-requires = [ "poetry-core",]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
-[tool.poetry]
+[project]
 name = "tasi"
-version = "0.0.0"
 description = "Library for Traffic Analysis and Situation Interpretation"
-authors = [ "Lars Klitzke <lars.klitzke@dlr.de>", "Clemens Schicktanz <clemens.schicktanz@dlr.de",]
+authors = [
+    { name = "Lars Klitzke", email = "lars.klitzke@dlr.de" },
+    { name = "Clemens Schicktanz", email = "clemens.schicktanz@dlr.de" },
+]
 readme = "README.md"
+requires-python = ">=3.11,<4.0"
+dynamic = ["version"]
+dependencies = [
+    "coloredlogs>=15.0.1",
+    "shapely>=2.1.0",
+    "geopandas>=1.0.1",
+    "pydantic>=2.11.7",
+    "geojson-pydantic>=2.0.0",
+    "pydantic-settings>=2.10.1",
+    "pandas>=2.3.0",
+    "sqlalchemy>=2.0.41",
+    "geoalchemy2>=0.17.1",
+    "matplotlib>=3.10.3",
+    "mapclassify>=2.8.1",
+    "folium>=0.19.5",
+    "tilemapbase>=0.4.7",
+    "dtaidistance>=2.3.13",
+    "tqdm>=4.67.1",
+    "numba>=0.62.1",
+    "requests>=2.33.1",
+]
 
-[tool.versioneer]
-VCS = "git"
-style = "pep440"
-versionfile_source = "tasi/_version.py"
-versionfile_build = "tasi/_version.py"
-tag_prefix = "v"
-parentdir_prefix = "tasi-"
+[project.optional-dependencies]
+geo = [
+    "geojson-pydantic>=2.0.0",
+    "geopandas>=1.0.1",
+    "shapely>=2.1.0",
+]
+visualization = [
+    "matplotlib>=3.10.3",
+    "mapclassify>=2.8.1",
+    "folium>=0.19.5",
+]
+wms = [
+    "matplotlib>=3.10.3",
+    "mapclassify>=2.8.1",
+    "folium>=0.19.5",
+    "tilemapbase>=0.4.7",
+]
+database = [
+    "psycopg[binary,pool]>=3.2.9",
+]
+performance = [
+    "numba>=0.62.1",
+]
+io = [
+    "pydantic-settings>=2.10.1",
+    "sqlalchemy>=2.0.41",
+    "shapely>=2.1.0",
+]
+all = [
+    "geojson-pydantic>=2.0.0",
+    "geopandas>=1.0.1",
+    "shapely>=2.1.0",
+    "matplotlib>=3.10.3",
+    "mapclassify>=2.8.1",
+    "folium>=0.19.5",
+    "tilemapbase>=0.4.7",
+    "psycopg[binary,pool]>=3.2.9",
+    "numba>=0.62.1",
+    "pydantic-settings>=2.10.1",
+    "sqlalchemy>=2.0.41",
+]
 
+[project.scripts]
+dlr-downloader = "tasi.dlr.dataset:download"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "tasi/_version.py"
+
+[tool.hatch.version.raw-options]
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.hatch.build.targets.wheel]
+packages = ["tasi"]
+
+[tool.hatch.build.targets.sdist]
+include = ["tasi"]
+
+# UV dependency groups (replaces Poetry groups)
+[dependency-groups]
+test = [
+    "coverage>=7.6.4",
+    "ipython>=8.18.1",
+    "pytest>=8.3.3",
+    "pytest-xdist>=3.6.1",
+    "pytest-cov>=5.0.0",
+]
+dev = [
+    "pylint>=3.3.1",
+    "autopep8>=2.3.1",
+    "doc8>=2.0.0",
+    "rstcheck>=6.2.5",
+]
+build = [
+    "wheel",
+    "toml",
+]
+docs = [
+    "ipython>=8.18.1",
+    "sphinx==7.4.7",
+    "nbsphinx==0.8.12",
+    "pydata-sphinx-theme>=0.15.4",
+    "docutils",
+    "markdown",
+    "markdown-it-py",
+    "pymdown-extensions",
+    "sphinxcontrib-apidoc",
+    "sphinx-copybutton",
+    "sphinx-markdown-parser",
+    "sphinx-gallery==0.18.0",
+    "myst-parser==3.0.1",
+    "numpydoc==1.8.0",
+    "sphinx-toggleprompt==0.5.2",
+    "ipykernel",
+    "jupytext>=1.16.4",
+    "sphinxemoji>=0.3.1",
+]
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules"
+testpaths = ["tasi/tests"]
+doctest_optionflags = ["ELLIPSIS", "NORMALIZE_WHITESPACE", "IGNORE_EXCEPTION_DETAIL"]
+
+# Tool configurations (preserved from original)
 [tool.autopep8]
 max_line_length = 100
 ignore = "E501,W6"
 in-place = true
 recursive = true
 aggressive = 3
-
-[tool.poetry.dependencies]
-python = "^3.11.0"
-coloredlogs = "^15.0.1"
-shapely = "^2.1.0"
-geopandas = "^1.0.1"
-pydantic = "^2.11.7"
-geojson-pydantic = "^2.0.0"
-pydantic-settings = "^2.10.1"
-pandas = "^2.3.0"
-sqlalchemy = "^2.0.41"
-geoalchemy2 = "^0.17.1"
-matplotlib = "^3.10.3"
-mapclassify = "^2.8.1"
-folium = "^0.19.5"
-tilemapbase = "^0.4.7"
-dtaidistance = "^2.3.13"
-tqdm = "^4.67.1"
-numba = "^0.62.1"
-requests = "^2.33.1"
-
-[tool.poetry.extras]
-geo = [ "geojson-pydantic", "geopandas", "shapely",]
-visualization = [ "matplotlib", "mapclassify", "folium",]
-wms = [ "matplotlib", "mapclassify", "folium", "tilemapbase",]
-database = [ "psycopg",]
-performance = [ "numba",]
-io = [ "sqlmodel", "pydantic-settings", "sqlalchemy", "geoalchemy", "shapely",]
-all = [ "geojson-pydantic", "geopandas", "matplotlib", "folium", "mapclassify", "tilemapbase", "psycopg", "numba", "sqlmodel", "pydantic-settings", "sqlalchemy", "geoalchemy", "shapely",]
-
-[tool.poetry.scripts]
-dlr-downloader = "tasi.dlr.dataset:download"
-
-[tool.pytest.ini_options]
-addopts = "--doctest-modules"
-testpaths = [ "tasi/tests",]
-doctest_optionflags = [ "ELLIPSIS", "NORMALIZE_WHITESPACE", "IGNORE_EXCEPTION_DETAIL",]
-
-[tool.poetry.dependencies.psycopg]
-extras = [ "binary", "pool",]
-version = "^3.2.9"
-
-[tool.poetry.group.test.dependencies]
-coverage = "^7.6.4"
-ipython = "^8.18.1"
-pytest = "^8.3.3"
-pytest-xdist = "^3.6.1"
-pytest-cov = "^5.0.0"
-
-[tool.poetry.group.dev.dependencies]
-pylint = "^3.3.1"
-autopep8 = "^2.3.1"
-doc8 = "^2.0.0"
-rstcheck = "^6.2.5"
-
-[tool.poetry.group.build.dependencies]
-wheel = "*"
-toml = "*"
-
-[tool.poetry.group.docs.dependencies]
-ipython = "^8.18.1"
-sphinx = "7.4.7"
-nbsphinx = "0.8.12"
-pydata-sphinx-theme = "^0.15.4"
-docutils = "*"
-markdown = "*"
-markdown-it-py = "*"
-pymdown-extensions = "*"
-sphinxcontrib-apidoc = "*"
-sphinx-copybutton = "*"
-sphinx_markdown_parser = "*"
-sphinx-gallery = "0.18.0"
-myst-parser = "3.0.1"
-numpydoc = "1.8.0"
-sphinx-toggleprompt = "0.5.2"
-ipykernel = "*"
-jupytext = "^1.16.4"
-sphinxemoji = "^0.3.1"
