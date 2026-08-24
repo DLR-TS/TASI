@@ -1,5 +1,6 @@
 stages:
   - build
+  - test
   - images
   - extra-test
   - full-test
@@ -11,11 +12,12 @@ stages:
   image: ${DLR_REGISTRY}/python:v3.11.12
 
   before_script:
-    - poetry install --with=build
-    - poetry run python update-version.py
+    - pipx install uv && pipx ensurepath
+    - source ~/.bashrc
+    - uv sync --group build
 
   script:
-    - poetry build --format=${CI_JOB_NAME}
+    - uv build --wheel
 
   artifacts:
     paths:
@@ -30,10 +32,30 @@ stages:
   image: ${DLR_REGISTRY}/python:v3.11.12
 
   before_script:
+    - pipx install uv && pipx ensurepath
+    - source ~/.bashrc
+    - uv venv
     - apt-get update && apt-get install -y pandoc
-    - poetry install --with=test
-    - poetry run python update-version.py
+    - uv sync --all-extras --group docs --group dev --group test
 
+# Template for extra jobs that install from wheel with extras
+.extra_install_base: &extra_install_base
+
+  stage: extra-test
+
+  before_script:
+    - pipx install uv && pipx ensurepath
+    - source ~/.bashrc
+    - uv venv
+    - WHEEL="$(ls dist)"
+
+  artifacts:
+    paths:
+      - dist
+
+  needs:
+    - job: wheel
+    
 wheel:
   <<: *build_base
 
@@ -47,7 +69,7 @@ test:
   coverage: '/TOTAL.* (\d{1,3}%)/'
 
   script:
-    - poetry run pytest tasi/tests --cov=tasi --cov-report=html:coverage
+    - uv run pytest tasi/tests --cov=tasi --cov-report=html:coverage
 
   artifacts:
     paths:
@@ -64,9 +86,12 @@ test:
   stage: extra-test
 
   before_script:
+    - pipx install uv && pipx ensurepath
+    - source ~/.bashrc
+    - uv venv
     - WHEEL="$(ls dist)"
     - SUFFIX="${CI_JOB_NAME#extra-}"
-    - poetry run pip install dist/${WHEEL}[${SUFFIX}]
+    - pipx install dist/${WHEEL}[${SUFFIX}]
 
   artifacts:
     paths:
@@ -80,41 +105,35 @@ extra-io:
   <<: *extra_base
 
   script:
-    - poetry run python -c "from tasi.io import *"
+    - uv run python -c "from tasi.io import *"
 
 extra-visualization:
   <<: *extra_base
 
   script:
-    - poetry run python -c "from tasi.plotting import *"
+    - uv run python -c "from tasi.plotting import *"
 
 extra-wms:
-  <<: *extra_base
-
-  before_script:
-    - WHEEL="$(ls dist)"
-    - poetry run pip install dist/${WHEEL}[wms]
+  <<: *extra_install_base
 
   script:
-    - poetry run python -c "from tasi.plotting.wms import *"
+    - uv pip install dist/${WHEEL}[wms]
+    - uv run python -c "from tasi.plotting.wms import *"
 
 extra-geo:
-  <<: *extra_base
-
-  before_script:
-    - WHEEL="$(ls dist)"
-    - poetry run pip install dist/${WHEEL}[io,geo]
+  <<: *extra_install_base
 
   script:
-    - poetry run python -c "from tasi.io.geo import *"
+    - uv pip install dist/${WHEEL}[io,geo]
+    - uv run python -c "from tasi.io.geo import *"
 
 
 doc:
   <<: *test_base
 
   script:
-    - poetry run python -c "import tilemapbase; tilemapbase.init(create=True);"
-    - SPHINXOPTS="-j 8" poetry run make -C doc html
+    - uv run python -c "import tilemapbase; tilemapbase.init(create=True);"
+    - SPHINXOPTS="-j 8" uv run make -C doc html
     # move the HTML doc to the local directory
     - mv doc/build/html ./html
 
