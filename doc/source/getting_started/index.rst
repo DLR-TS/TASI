@@ -43,6 +43,8 @@ be installed via the following *extras*.
       - Add additional visualization capabilities of layers from WMS/WFS
     * - io 
       - Add the input/output interface based on `pydantic` and `SQLAlchemy`
+    * - osi
+      - Add input/output interfaces for conversion between `TASI` and `ASAM OSI`
 
 
 
