@@ -127,6 +127,14 @@ extra-geo:
     - uv pip install dist/${WHEEL}[io,geo]
     - uv run python -c "from tasi.io.geo import *"
 
+extra-osi:
+  <<: *extra_install_base
+
+  script:
+    - uv pip install dist/${WHEEL}[io,osi]
+    - uv run python -c "from tasi.io.osi import *"
+
+
 
 doc:
   <<: *test_base
