@@ -17,7 +17,7 @@ __all__ = [
 ]
 
 
-Extra = Literal["database", "geo", "performance", "visualization", "wms", "io"]
+Extra = Literal["database", "geo", "performance", "visualization", "wms", "io", "osi"]
 
 ExtraMapping: Dict[Extra, str] = {
     "database": "sqlalchemy",
@@ -26,6 +26,7 @@ ExtraMapping: Dict[Extra, str] = {
     "wms": "tilemapbase",
     "performance": "numba",
     "io": "pydantic",
+    "osi": "betterosi",
 }
 
 
