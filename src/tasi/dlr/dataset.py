@@ -12,6 +12,7 @@ import pandas as pd
 import requests
 from tqdm import tqdm
 
+from tasi import DATA_PATH
 from tasi.base import PandasBase
 from tasi.dataset.base import (
     AirQualityDataset,
@@ -22,7 +23,6 @@ from tasi.dataset.base import (
     WeatherDataset,
 )
 from tasi.io.zenodo import ZenodoConnector
-from tasi.tests import DATA_PATH
 
 __all__ = [
     "DLRDatasetManager",

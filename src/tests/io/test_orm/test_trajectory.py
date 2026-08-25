@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from tasi.io import TrajectoryPublic
 from tasi.io.geo import GeoTrajectoryPublic
 from tasi.io.orm import GeoTrajectoryORM, TrajectoryORM
-from tasi.tests.io.test_public.test_trajectory import TrajectoryTestCase
+from tests.io.test_public.test_trajectory import TrajectoryTestCase
 
 from . import DBTestCase
 

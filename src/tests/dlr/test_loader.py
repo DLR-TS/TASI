@@ -5,13 +5,13 @@ from tempfile import TemporaryDirectory
 from unittest import TestCase
 from unittest.mock import Mock
 
+from tasi import DATA_PATH
 from tasi.dlr.dataset import (
     DLRHTDatasetManager,
     DLRHTVersion,
     DLRUTDatasetManager,
     DLRUTVersion,
 )
-from tasi.tests import DATA_PATH
 
 
 class DLRUTExtractTestCase(TestCase):

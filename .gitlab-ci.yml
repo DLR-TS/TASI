@@ -14,7 +14,6 @@ stages:
   before_script:
     - pipx install uv && pipx ensurepath
     - source ~/.bashrc
-    - uv sync --group build
 
   script:
     - uv build --wheel
@@ -69,7 +68,7 @@ test:
   coverage: '/TOTAL.* (\d{1,3}%)/'
 
   script:
-    - uv run pytest tasi/tests --cov=tasi --cov-report=html:coverage
+    - uv run pytest src/tests --cov=tasi --cov-report=html:coverage
 
   artifacts:
     paths:
@@ -82,7 +81,7 @@ test:
 
 
 .extra_base: &extra_base
-  
+
   stage: extra-test
 
   before_script:
@@ -91,7 +90,8 @@ test:
     - uv venv
     - WHEEL="$(ls dist)"
     - SUFFIX="${CI_JOB_NAME#extra-}"
-    - pipx install dist/${WHEEL}[${SUFFIX}]
+    - uv pip install dist/${WHEEL}[${SUFFIX}]
+    - source .venv/bin/activate
 
   artifacts:
     paths:
@@ -105,34 +105,37 @@ extra-io:
   <<: *extra_base
 
   script:
-    - uv run python -c "from tasi.io import *"
+    - python -c "from tasi.io import *"
 
 extra-visualization:
   <<: *extra_base
 
   script:
-    - uv run python -c "from tasi.plotting import *"
+    - python -c "from tasi.plotting import *"
 
 extra-wms:
   <<: *extra_install_base
 
   script:
     - uv pip install dist/${WHEEL}[wms]
-    - uv run python -c "from tasi.plotting.wms import *"
+    - source .venv/bin/activate
+    - python -c "from tasi.plotting.wms import *"
 
 extra-geo:
   <<: *extra_install_base
 
   script:
     - uv pip install dist/${WHEEL}[io,geo]
-    - uv run python -c "from tasi.io.geo import *"
+    - source .venv/bin/activate
+    - python -c "from tasi.io.geo import *"
 
 extra-osi:
   <<: *extra_install_base
 
   script:
     - uv pip install dist/${WHEEL}[io,osi]
-    - uv run python -c "from tasi.io.osi import *"
+    - source .venv/bin/activate
+    - python -c "from tasi.io.osi import *"
 
 
 

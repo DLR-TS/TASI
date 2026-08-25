@@ -5,7 +5,7 @@ from geojson_pydantic import LineString
 from shapely import LineString as ShapelyLineString
 from shapely import to_geojson, wkt
 
-import tasi
+import tasi as tasi
 
 from ...orm.trajectory.base import TrajectoryORM
 from ...orm.trajectory.geo import GeoTrajectoryORM

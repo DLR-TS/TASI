@@ -10,7 +10,7 @@ from pydantic import field_validator
 from shapely import Point as ShapelyPoint
 from shapely import to_geojson
 
-import tasi
+import tasi as tasi
 from tasi.base import TASIBase
 from tasi.io.orm import PoseORM, PositionORM, TrafficParticipantORM
 from tasi.io.orm.pose.geo import GeoPoseORM

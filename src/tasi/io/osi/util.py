@@ -3,6 +3,7 @@ from typing import List, Union
 import pycountry
 import reverse_geocode
 from pyproj import Transformer
+
 from tasi import Trajectory, TrajectoryDataset
 from tasi.io import PosePublic, TrafficParticipant, TrajectoryPublic
 

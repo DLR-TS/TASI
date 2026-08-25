@@ -13,7 +13,7 @@ from tasi.io import (
     Velocity,
 )
 from tasi.io.geo import GeoPosePublic
-from tasi.tests.io.test_orm import DBTestCase
+from tests.io.test_orm import DBTestCase
 
 
 class TestPoseSave(DBTestCase):

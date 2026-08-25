@@ -7,8 +7,8 @@
 # At first, we need to load the trajectory data of the dataset.
 # %%
 
+from tasi import DATA_PATH
 from tasi.dlr.dataset import DLRTrajectoryDataset, DLRUTDatasetManager, DLRUTVersion
-from tasi.tests import DATA_PATH
 
 dataset = DLRUTDatasetManager(DLRUTVersion.v1_2_0, path=DATA_PATH)
 dataset.load()

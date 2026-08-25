@@ -3,7 +3,7 @@ from typing import Self
 
 from pandas.core.api import DataFrame as DataFrame
 
-import tasi
+import tasi as tasi
 from tasi.base import TASIBase
 from tasi.io.orm import ClassificationsORM, DimensionORM, TrafficParticipantORM
 

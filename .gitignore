@@ -23,5 +23,5 @@ etc
 
 # IDE
 .vscode
+_version.py
 
-*.py

@@ -269,7 +269,7 @@ class TrajectoryDataset(Dataset, PoseCollectionBase):
         by: str = "trajectory",
         tasi: bool = False,
         *args,
-        **kwargs
+        **kwargs,
     ):
 
         if by.lower() == "trajectory":

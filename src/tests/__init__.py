@@ -11,7 +11,7 @@ np.set_printoptions(legacy="1.25", precision=3, suppress=True)
 
 logging.getLogger().setLevel(logging.ERROR)
 
-DATA_PATH = os.path.join(os.path.dirname(__file__), "data")
+from tasi import DATA_PATH
 
 
 class DatasetTestCase(TestCase):

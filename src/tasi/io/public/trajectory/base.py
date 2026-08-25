@@ -2,7 +2,7 @@ from typing import Any, Dict, Optional, Self, Union, overload
 
 import pandas as pd
 
-import tasi
+import tasi as tasi
 
 from ...orm.trajectory.base import TrajectoryORM
 from ..base import PublicEntityMixin

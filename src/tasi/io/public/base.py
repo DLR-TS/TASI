@@ -17,7 +17,7 @@ import pandas as pd
 from pydantic import BaseModel as Base
 from pydantic import ConfigDict, Field, model_validator
 
-import tasi
+import tasi as tasi
 from tasi.base import TASIBase
 from tasi.io.orm.base import (
     AccelerationORM,

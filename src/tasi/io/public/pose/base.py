@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Literal, Self, Sequence, Union, overload
 
 import pandas as pd
 
-import tasi
+import tasi as tasi
 from tasi.base import TASIBase
 from tasi.io.orm import PoseORM, TrafficParticipantORM
 
