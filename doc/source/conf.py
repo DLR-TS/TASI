@@ -261,6 +261,9 @@ def linkcode_resolve(domain, info):
 
     fn = os.path.relpath(fn, start=os.path.dirname(tasi.__file__))
 
+    # Adjust path for src-based structure
+    fn = fn.replace("src/tasi/", "tasi/")
+
     if "+" in version:
         return f"https://github.com/dlr-ts/tasi/blob/main/tasi/{fn}{linespec}"
     else:
