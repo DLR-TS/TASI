@@ -18,8 +18,8 @@
 # %%
 import os
 
+from tasi import DATA_PATH
 from tasi.dlr.dataset import DLRHTDatasetManager, DLRHTVersion
-from tasi.tests import DATA_PATH
 
 dataset = DLRHTDatasetManager(DLRHTVersion.v1_1_0, path=DATA_PATH)
 path = dataset.load()

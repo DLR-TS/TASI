@@ -69,7 +69,7 @@ test:
   coverage: '/TOTAL.* (\d{1,3}%)/'
 
   script:
-    - uv run pytest tasi/tests --cov=tasi --cov-report=html:coverage
+    - uv run pytest src/tests --cov=tasi --cov-report=html:coverage
 
   artifacts:
     paths:

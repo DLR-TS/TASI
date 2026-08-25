@@ -92,7 +92,7 @@ dlr-downloader = "tasi.dlr.dataset:download"
 source = "vcs"
 
 [tool.hatch.build.hooks.vcs]
-version-file = "tasi/_version.py"
+version-file = "src/tasi/_version.py"
 
 [tool.hatch.version.raw-options]
 version_scheme = "post-release"
