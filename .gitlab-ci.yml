@@ -14,7 +14,6 @@ stages:
   before_script:
     - pipx install uv && pipx ensurepath
     - source ~/.bashrc
-    - uv sync --group build
 
   script:
     - uv build --wheel
