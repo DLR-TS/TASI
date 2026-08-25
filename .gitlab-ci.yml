@@ -82,7 +82,7 @@ test:
 
 
 .extra_base: &extra_base
-  
+
   stage: extra-test
 
   before_script:
@@ -91,7 +91,7 @@ test:
     - uv venv
     - WHEEL="$(ls dist)"
     - SUFFIX="${CI_JOB_NAME#extra-}"
-    - pipx install dist/${WHEEL}[${SUFFIX}]
+    - uv pip install dist/${WHEEL}[${SUFFIX}]
 
   artifacts:
     paths:
