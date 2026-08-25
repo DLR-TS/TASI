@@ -92,17 +92,18 @@ dlr-downloader = "tasi.dlr.dataset:download"
 source = "vcs"
 
 [tool.hatch.build.hooks.vcs]
-version-file = "tasi/_version.py"
+version-file = "src/tasi/_version.py"
 
 [tool.hatch.version.raw-options]
 version_scheme = "post-release"
 local_scheme = "no-local-version"
 
 [tool.hatch.build.targets.wheel]
-packages = ["tasi"]
+packages = ["src/tasi"]
+sources = ["src"]
 
 [tool.hatch.build.targets.sdist]
-include = ["tasi"]
+include = ["src/tasi"]
 
 # UV dependency groups (replaces Poetry groups)
 [dependency-groups]
@@ -147,7 +148,7 @@ docs = [
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
-testpaths = ["tasi/tests"]
+testpaths = ["src/tests"]
 doctest_optionflags = ["ELLIPSIS", "NORMALIZE_WHITESPACE", "IGNORE_EXCEPTION_DETAIL"]
 
 # Tool configurations (preserved from original)
