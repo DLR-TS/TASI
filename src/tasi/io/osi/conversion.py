@@ -1,5 +1,5 @@
 from bisect import insort
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from itertools import repeat
 from typing import Dict, List, Sequence, Tuple
 
@@ -14,7 +14,6 @@ from betterosi import (
 )
 from betterosi import MovingObjectVehicleClassificationType as OSIType
 from betterosi import Orientation3D, Timestamp, Vector3D
-
 from tasi.io import (
     Acceleration,
     BoundingBox,
@@ -223,7 +222,7 @@ def convert_pose(pose: PosePublic, offset: Tuple[float, float]) -> MovingObject:
 def convert_poses(
     poses: List[PosePublic],
     offset: Tuple[float, float] = (0, 0),
-    time_reference: datetime = datetime.fromtimestamp(0),
+    time_reference: datetime = datetime.fromtimestamp(0, tz=timezone.utc),
 ) -> GroundTruth:
     """Convert the poses to a OSI `GroundTruth` message.
 
@@ -259,7 +258,7 @@ def convert_poses(
 def convert_trajectories(
     trajectories: List[TrajectoryPublic],
     offset: Tuple[float, float],
-    time_reference: datetime = datetime.fromtimestamp(0),
+    time_reference: datetime = datetime.fromtimestamp(0, timezone.utc),
 ) -> List[GroundTruth]:
 
     # at first, we let's create a mapping of time and list of poses.
