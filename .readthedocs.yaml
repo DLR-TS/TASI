@@ -5,12 +5,18 @@ build:
   tools:
     python: "3.12"
   jobs:
+
+    post_checkout:
+      # Unshallow clone to access Git tags for version resolution
+      - git fetch --unshallow || true
+      - git fetch --tags --force
+    
     post_create_environment:
       - pip install uv
 
     post_install:
       # Install dependencies with 'docs' dependency group using uv
-      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv sync --all-extras
+      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv sync --active --all-extras --group docs
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv run python -c "import tilemapbase; tilemapbase.init(create=True)"
 
   apt_packages:
