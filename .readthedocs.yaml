@@ -16,8 +16,7 @@ build:
 
     post_install:
       # Install dependencies with 'docs' dependency group using uv
-      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv sync --all-extras
-      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv pip install --no-deps -e .
+      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv sync --active --all-extras --group dev
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv run python -c "import tilemapbase; tilemapbase.init(create=True)"
 
   apt_packages:
