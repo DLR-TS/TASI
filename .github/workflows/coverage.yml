@@ -6,38 +6,38 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Upload Python Package
+name: Run Code Coverage
 
 on:
     push: 
         tags: 
             - "*"
+        branches:
+            - "*"
+        
 
 permissions:
   contents: read
 
 jobs:
-  pypi-upload:
+  coverage:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        
-    - uses: actions/setup-python@v4
+    - name: Install poetry
+      run: pipx install poetry
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.11'
-    - name: Install uv
-      uses: astral-sh/setup-uv@v3
+        cache: 'poetry'
+    - name: Set up Python
+      uses: actions/setup-python@v3
       with:
-        version: latest
+        python-version: '3.11.x'
     - name: Install dependencies
-      run: uv sync --all-extras
-    - name: Build package
+      run: poetry install
+    - name: Run code coverage
       run: |
-        uv build
-    - name: Publish package
-      uses: pypa/gh-action-pypi-publish@v1.14.2
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
+        poetry run python update-version.py
+        poetry run pytest tests --cov=tasi --cov-report=html:coverage -n auto
+
