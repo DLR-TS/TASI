@@ -113,6 +113,7 @@ test = [
     "pytest>=8.3.3",
     "pytest-xdist>=3.6.1",
     "pytest-cov>=5.0.0",
+    "pytest-timeout",
 ]
 dev = [
     "pylint>=3.3.1",
