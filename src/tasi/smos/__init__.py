@@ -1,3 +1,4 @@
+from .mttc import MTTC
 from .pet import PET
 
-__all__ = ["PET"]
+__all__ = ["MTTC", "PET"]
