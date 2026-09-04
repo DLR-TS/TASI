@@ -1,0 +1,18 @@
+:html_theme.sidebar_secondary.remove:
+
+.. surrogate_safety_measures:
+
+Surrogate Measures of Safety
+###############################
+
+``tasi.smos`` provides Surrogate Measures of Safety (SMoS) - indicators derived from trajectory data (e.g. time-to-collision
+or post-encroachment time) that quantify how close two traffic participants came to a collision, without an actual crash
+having to occur. Each example below introduces one metric: what it measures, its formula and literature source, and a
+worked example on real ``DLR-UT``/``DLR-HT`` data where the metric's returned value is reproduced by hand from the raw
+trajectory data shown.
+
+
+.. toctree::
+   :maxdepth: 1
+
+{{ examples | indent(3, True) }}
