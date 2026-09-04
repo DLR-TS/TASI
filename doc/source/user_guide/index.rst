@@ -67,6 +67,20 @@ be used for. If you have any questions or comments, feel free to raise an issue!
                 </div>
             </div>
         </div>
+
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 d-flex">
+            <div class="card text-center intro-card shadow">
+                <div class="card-icon">
+                <i class="fa-xl fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="card-body">
+                <h5 class="card-title"><a href="surrogate_safety_measures/index.html">Surrogate Measures of Safety</a></h5>
+                <p class="card-text"><code class="docutils literal notranslate"><span class="pre">tasi.smos</span></code>
+                    provides metrics that quantify how close traffic participants came to a collision. Head over to the
+                    <em>Surrogate Measures of Safety</em> chapter for examples.</p>
+                </div>
+            </div>
+        </div>
     </div>
     </div>
 
@@ -78,3 +92,4 @@ be used for. If you have any questions or comments, feel free to raise an issue!
    data_loading_and_saving/index
    data_visualization/index
    faq/index
+   surrogate_safety_measures/index
