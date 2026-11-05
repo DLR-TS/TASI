@@ -54,8 +54,11 @@ class ZenodoConnector:
             params["custom"] = f'pid_value:"{self.parent_id}"'
 
         try:
-            # query API
-            response = requests.get(self.ZENODO_API, params=params)
+            # query API - bounded timeout so an unreachable/slow Zenodo
+            # degrades gracefully instead of hanging or crashing every
+            # import of this module (datasets already available locally
+            # don't need Zenodo reachable at all).
+            response = requests.get(self.ZENODO_API, params=params, timeout=10)
 
             if response.status_code == 200:
                 # Extract records from response
@@ -71,10 +74,12 @@ class ZenodoConnector:
                 raise requests.exceptions.RequestException(
                     f"Error retrieving data. Status code: {response.status_code}"
                 )
-        except requests.exceptions.ProxyError as err:
+        except requests.exceptions.RequestException as err:
             logging.warning(
-                "Failed to fetch datasets because of a proxy connection error. "
-                + "Ensure that the proxy is properly configured and allows accessing zenodo.org"
+                f"Failed to fetch Zenodo records for {self.title!r} ({err}) - "
+                "continuing without them (version/DOI lookups will be empty; "
+                "only affects downloading datasets from Zenodo, not reading "
+                "already-local data)."
             )
             return []
 

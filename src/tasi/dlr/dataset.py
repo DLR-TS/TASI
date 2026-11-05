@@ -2,6 +2,7 @@ import logging
 import os
 import tarfile
 import zipfile
+from collections import defaultdict
 from enum import Enum, IntEnum
 from io import TextIOWrapper
 from pathlib import Path
@@ -91,8 +92,11 @@ class DLRDatasetManager:
     @property
     def name(self):
 
-        # fix name of DLR UT v1.0.1 dataset
-        if self.version == DLRUTVersion.v1_0_1.value:
+        # fix name of DLR UT v1.0.1 dataset - a fixed literal, not
+        # DLRUTVersion.v1_0_1.value: that enum is None when Zenodo isn't
+        # reachable (see DLRUTConnector above), and this special case does
+        # not depend on Zenodo at all.
+        if self.version == "v1.0.1":
             return "DLR-UT_v1-0-0"
 
         return f"{self.archivename}_{self.version.replace('.', '-')}"
@@ -275,20 +279,35 @@ class DLRUTDatasetManager(DLRDatasetManager):
         """Dict[str, int]: An internal mapping between version and the zenodo id
         """
 
-        ARCHIVE = dict(
-            **{
-                v: "DLR-Urban-Traffic-dataset"
-                for v in [
-                    key
-                    for key in VERSION
-                    if key != DLRUTConnector.get_version_enum().v1_0_0.value
-                ]
-            },
-            **{DLRUTConnector.get_version_enum().v1_0_0.value: "DLR-UT"},
-        )
+        if VERSION_ENUM is not None:
+            # Zenodo was reachable and had records for this dataset -
+            # ARCHIVE maps each known version to its Zenodo archive name.
+            # Uses DLRUTConnector.get_version_enum() (a module global), not
+            # the VERSION_ENUM assigned above, inside the comprehension: a
+            # class body's own locals aren't visible inside a nested
+            # comprehension's scope in Python, only enclosing-module
+            # globals are - referencing VERSION_ENUM there raises NameError.
+            ARCHIVE = dict(
+                **{
+                    v: "DLR-Urban-Traffic-dataset"
+                    for v in [
+                        key
+                        for key in VERSION
+                        if key != DLRUTConnector.get_version_enum().v1_0_0.value
+                    ]
+                },
+                **{VERSION_ENUM.v1_0_0.value: "DLR-UT"},
+            )
+        else:
+            # Zenodo unreachable (or no matching records) - fall back to
+            # the same v1.0.0-special-case rule above without needing
+            # Zenodo's version list, so reading an already-local dataset
+            # (any version) still resolves the right archive name.
+            ARCHIVE = defaultdict(lambda: "DLR-Urban-Traffic-dataset", {"v1.0.0": "DLR-UT"})
     except requests.exceptions.RequestException:
         VERSION_ENUM = None
         VERSION = None
+        ARCHIVE = defaultdict(lambda: "DLR-Urban-Traffic-dataset", {"v1.0.0": "DLR-UT"})
 
     @classmethod
     def area(cls):
@@ -313,12 +332,11 @@ class DLRUTDatasetManager(DLRDatasetManager):
         # join dataset path and name
         path = path.joinpath(self.name)
 
-        # add type of data
-        if self.version not in [
-            self.VERSION_ENUM.v1_0_0.value,
-            self.VERSION_ENUM.v1_0_1.value,
-            self.VERSION_ENUM.v1_1_0.value,
-        ]:
+        # add type of data - fixed literals, not self.VERSION_ENUM.*.value:
+        # that enum is None when Zenodo isn't reachable (see DLRUTConnector
+        # above), and these three early versions' layout doesn't depend on
+        # Zenodo at all.
+        if self.version not in ["v1.0.0", "v1.0.1", "v1.1.0"]:
             path = path.joinpath(self.DATA_TYPES[variant])
 
         # add variant of data
