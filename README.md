@@ -16,8 +16,13 @@ traffic situation analysis and interpretation applications.
 
 Install ``TASI`` from the PyPi registry.
 ```bash
-pip install tasi
+pip install "tasi[all]"
 ```
+
+The base package `tasi` only depends on `numpy` and `pandas`. Optional features are available as extras: `geo`,
+`io`, `database`, `visualization`, `wms`, `performance`, `dtw`, `download` and `osi`. For data pipelines,
+`tasi[io,geo]` provides the models and safety metrics (e.g. `tasi.smos.PET`) without plotting or download
+dependencies.
 
 Download the latest DLR-UT version for demonstration purpose.
 ```python
