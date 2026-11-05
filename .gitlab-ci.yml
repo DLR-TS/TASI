@@ -129,6 +129,45 @@ extra-geo:
     - source .venv/bin/activate
     - python -c "from tasi.io.geo import *"
 
+extra-dtw:
+  <<: *extra_base
+
+  script:
+    - python -c "import dtaidistance; from tasi.dataset import TrafficLightDataset"
+
+extra-download:
+  <<: *extra_base
+
+  script:
+    - python -c "from tasi.dlr import DLRUTDatasetManager"
+
+extra-performance:
+  <<: *extra_base
+
+  script:
+    - python -c "import tasi.calculus as c; assert c.EXTRA"
+
+# The plain wheel must import without any extra
+extra-none:
+  <<: *extra_install_base
+
+  script:
+    - uv pip install dist/${WHEEL}
+    - source .venv/bin/activate
+    - python -c "import tasi; from tasi import Trajectory, Pose"
+
+# Slim install for data pipelines: models and metrics without plotting, numba or downloads
+extra-stream:
+  <<: *extra_install_base
+
+  script:
+    - uv pip install dist/${WHEEL}[io,geo]
+    - source .venv/bin/activate
+    - >-
+      python -c "import sys; from tasi.smos import PET; from tasi.io import TrajectoryPublic;
+      heavy = {'matplotlib', 'folium', 'numba', 'dtaidistance', 'requests', 'tilemapbase'} & set(sys.modules);
+      assert not heavy, heavy"
+
 extra-osi:
   <<: *extra_install_base
 

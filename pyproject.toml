@@ -15,74 +15,65 @@ requires-python = ">=3.11,<4.0"
 dynamic = ["version"]
 dependencies = [
     "coloredlogs>=15.0.1",
-    "shapely>=2.1.0",
-    "geopandas>=1.0.1",
-    "pydantic>=2.11.7",
-    "geojson-pydantic>=2.0.0",
-    "pydantic-settings>=2.10.1",
+    "numpy",
     "pandas>=2.3.0",
-    "sqlalchemy>=2.0.41",
-    "geoalchemy2>=0.17.1",
-    "matplotlib>=3.10.3",
-    "mapclassify>=2.8.1",
-    "folium>=0.19.5",
-    "tilemapbase>=0.4.7",
-    "dtaidistance>=2.3.13",
-    "tqdm>=4.67.1",
-    "numba>=0.62.1",
-    "requests>=2.33.1",
 ]
 
 [project.optional-dependencies]
+# Geometric representations (GeoPose, GeoTrajectory, ...) based on shapely and geopandas
 geo = [
     "geojson-pydantic>=2.0.0",
     "geopandas>=1.0.1",
     "shapely>=2.1.0",
 ]
+# Plotting of trajectories and datasets
 visualization = [
     "matplotlib>=3.10.3",
     "mapclassify>=2.8.1",
     "folium>=0.19.5",
 ]
+# Plotting on top of map tiles from a WMS
 wms = [
-    "matplotlib>=3.10.3",
-    "mapclassify>=2.8.1",
-    "folium>=0.19.5",
+    "tasi[visualization]",
     "tilemapbase>=0.4.7",
 ]
+# Database driver for PostgreSQL / PostGIS
 database = [
+    "tasi[io]",
     "psycopg[binary,pool]>=3.2.9",
 ]
+# JIT compilation of numerical routines
 performance = [
     "numba>=0.62.1",
 ]
+# Public data models (tasi.io.public), the ORM (tasi.io.orm) and safety metrics (tasi.smos)
 io = [
+    "pydantic>=2.11.7",
     "pydantic-settings>=2.10.1",
     "sqlalchemy>=2.0.41",
+    "geoalchemy2>=0.17.1",
     "shapely>=2.1.0",
 ]
+# Synchronization of datasets via dynamic time warping
+dtw = [
+    "dtaidistance>=2.3.13",
+]
+# Download of the DLR datasets (tasi.dlr, dlr-downloader)
+download = [
+    "tasi[io]",
+    "requests>=2.33.1",
+    "tqdm>=4.67.1",
+]
+# Conversion to and from ASAM OSI
 osi = [
+    "tasi[io]",
     "omega-prime==0.2.2",
     "pycountry>=26.2.16",
     "reverse-geocode>=1.6.6",
     "betterosi>=0.8.5",
 ]
 all = [
-    "geojson-pydantic>=2.0.0",
-    "geopandas>=1.0.1",
-    "shapely>=2.1.0",
-    "matplotlib>=3.10.3",
-    "mapclassify>=2.8.1",
-    "folium>=0.19.5",
-    "tilemapbase>=0.4.7",
-    "psycopg[binary,pool]>=3.2.9",
-    "numba>=0.62.1",
-    "pydantic-settings>=2.10.1",
-    "sqlalchemy>=2.0.41",
-    "omega-prime==0.2.2",
-    "pycountry>=26.2.16",
-    "reverse-geocode>=1.6.6",
-    "betterosi>=0.8.5",
+    "tasi[geo,visualization,wms,database,performance,io,dtw,download,osi]",
 ]
 
 [project.scripts]

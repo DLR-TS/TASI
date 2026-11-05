@@ -24,14 +24,15 @@ it is just a  matter of installing tasi with
     pip install tasi
 
 
-The previous command will install the base version of ``TASI``. Extensions can
-be installed via the following *extras*. 
+The previous command will install the base version of ``TASI``, which only
+depends on `numpy` and `pandas`. Extensions can be installed via the following
+*extras*, e.g. ``pip install "tasi[io,geo]"``.
 
 .. list-table:: Available extras
     :widths: auto
     :header-rows: 1
 
-    * - Extra 
+    * - Extra
       - Description
     * - all
       - Full version of ``TASI`` with all extensions
@@ -39,12 +40,25 @@ be installed via the following *extras*.
       - Models for representing data using GeoObjects
     * - visualization
       - Add visualization capabilities
-    * - wms 
+    * - wms
       - Add additional visualization capabilities of layers from WMS/WFS
-    * - io 
-      - Add the input/output interface based on `pydantic` and `SQLAlchemy`
+    * - io
+      - Add the input/output interface based on `pydantic` and `SQLAlchemy`, required by
+        the public models (``tasi.io``) and the safety metrics (``tasi.smos``)
+    * - database
+      - Add the `psycopg` driver to connect to PostgreSQL/PostGIS
+    * - performance
+      - Speed up numerical routines with `numba`
+    * - dtw
+      - Synchronize datasets via dynamic time warping (`dtaidistance`)
+    * - download
+      - Download the DLR datasets (``tasi.dlr``, ``dlr-downloader``)
     * - osi
       - Add input/output interfaces for conversion between `TASI` and `ASAM OSI`
+
+For data pipelines and services, ``tasi[io,geo]`` provides the models and
+metrics without plotting, `numba` or download dependencies. Notebooks and
+scripts typically use ``tasi[all]``.
 
 
 

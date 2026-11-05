@@ -1,10 +1,8 @@
 from functools import wraps
-from typing import Iterable, List, Tuple, Union, overload
+from typing import Iterable, List, Self, Tuple, Union, overload
 
 import numpy as np
 import pandas as pd
-from dtaidistance.dtw import best_path, warping_paths
-from typing_extensions import Self
 
 from tasi.utils import requires_extra
 
@@ -343,6 +341,13 @@ class TrafficLightDataset(Dataset, PoseCollectionBase):
         Returns:
             Tuple[TrajectoryDataset, Self]: Both datasets synchronized
         """
+        try:
+            from dtaidistance.dtw import best_path, warping_paths
+        except ImportError as err:
+            raise RuntimeError(
+                "The function 'synchronize' requires the dtw extra. Please install it with 'tasi[dtw]'."
+            ) from err
+
         # ensure given dataset is in the traffic light interval
         mask = (ds.timestamps > self.interval.left) & (
             ds.timestamps < self.interval.right

@@ -7,11 +7,10 @@ if not GEO_EXTRA:
         "geopandas is not avaliable but required for this module. Please install tasi[geo] to get access to it."
     )
 
-from typing import List
+from typing import List, Self
 
 import geopandas as gpd
 import pandas as pd
-from typing_extensions import Self
 
 from ..trajectory import GeoTrajectory
 from ..utils import requires_extra
