@@ -1,14 +1,11 @@
 from datetime import datetime
-from typing import Tuple, Union
-
-import numpy as np
+from typing import Tuple
 
 from tasi import Trajectory
 from tasi.io import Position
-from tasi.trajectory.geo import GeoTrajectory
-from tasi.utils.geo import BasicGeometry, MultiGeometry, geometry_to_coords
 
 from .base import SMOS
+from .geometry import conflict_point
 
 
 class PET(SMOS):
@@ -34,51 +31,17 @@ class PET(SMOS):
         return_first: bool = True,
     ):
 
-        # get the reference positions
-        ego_reference, challenger_reference = position
-
-        # we use their geometric representation, while representing the trajectory with a LineString
-        tj1: GeoTrajectory = ego.as_geo(aggregate=True, position=ego_reference)
-        tj2: GeoTrajectory = challenger.as_geo(
-            aggregate=True, position=challenger_reference
+        result = conflict_point(
+            ego, challenger, position=position, return_first=return_first
         )
 
-        if not isinstance(ego_reference, str):
-            # we a sequence of str. The last element will be the column name
-            ego_ref = ego_reference[-1]
-        else:
-            ego_ref = ego_reference
-
-        if not isinstance(challenger_reference, str):
-            # we a sequence of str. The last element will be the column name
-            challenger_ref = challenger_reference[-1]
-        else:
-            challenger_ref = challenger_reference
-
-        # we use shapely to find the intersection points of both linestrings
-        intersections: Union[BasicGeometry, MultiGeometry] = (
-            tj1[ego_ref].intersection(tj2[challenger_ref], align=False).item()
-        )
-
-        # estimate the intersection point - note that the first intersection point
-        # is used
-        point = geometry_to_coords(intersections, return_first=return_first)
-
-        # find the closest point for both traffic participants
-        if point is None:
+        if result is None:
             raise RuntimeError(
-                f"Failed to convert intersection {point} between trajectories into propery geometry"
+                "Failed to find an intersection point between the ego's and "
+                "challenger's trajectories"
             )
 
-        # get the index of the position which is clostest to the current trajectory
-        ego_idx = np.nanargmin(
-            np.linalg.norm(point - ego[ego_reference].values, axis=1)
-        )
-
-        # get the index of the intersection point which is closest to other trajectory
-        challenger_idx = np.nanargmin(
-            np.linalg.norm(point - challenger[challenger_reference].values, axis=1)
-        )
+        point, ego_idx, challenger_idx = result
 
         return cls(
             value=(

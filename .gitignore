@@ -1,6 +1,9 @@
 # virtual environments
 .venv
 
+# Claude Code agent worktrees
+.claude/worktrees
+
 # documentation
 doc/build
 doc/source/user_guide/faq/index.rst
