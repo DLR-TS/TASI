@@ -130,7 +130,7 @@ class Pose(PoseBase):
         # convert all positions to points
         positions = (
             gpd.GeoSeries(
-                list(map(partial(position_to_point, self), position)),
+                list(map(partial(position_to_point, pd.DataFrame(self)), position)),
                 index=index,
             )
             .to_frame()

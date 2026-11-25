@@ -50,7 +50,9 @@ class GeoTrajectory(TrajectoryBase, gpd.GeoDataFrame):  # type: ignore
             # convert all positions to points
             positions = (
                 gpd.GeoSeries(
-                    list(map(partial(position_to_linestring, tj), position)),
+                    list(
+                        map(partial(position_to_linestring, pd.DataFrame(tj)), position)
+                    ),
                     index=index,
                 )
                 .to_frame()

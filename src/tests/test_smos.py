@@ -75,7 +75,9 @@ class PETTestCase(DatasetTestCase):
         tj2 = self.ds.trajectory(ids[1])
 
         # Use ("boundingbox", "front") from tj1, ("boundingbox", "rear") from tj2
-        pet = tj1.smos.pet(tj2, position=(("boundingbox", "front"), ("boundingbox", "rear")))
+        pet = tj1.smos.pet(
+            tj2, position=(("boundingbox", "front"), ("boundingbox", "rear"))
+        )
 
         self.assertIsInstance(pet.value, float)
         self.assertIsNotNone(pet.ego)
@@ -95,10 +97,14 @@ class PETTestCase(DatasetTestCase):
         pet_position = tj1.smos.pet(tj2, position=("position", "position"))
 
         # PET using ("boundingbox", "front") from both
-        pet_front = tj1.smos.pet(tj2, position=(("boundingbox", "front"), ("boundingbox", "front")))
+        pet_front = tj1.smos.pet(
+            tj2, position=(("boundingbox", "front"), ("boundingbox", "front"))
+        )
 
         # PET using ("boundingbox", "rear") from both
-        pet_rear = tj1.smos.pet(tj2, position=(("boundingbox", "rear"), ("boundingbox", "rear")))
+        pet_rear = tj1.smos.pet(
+            tj2, position=(("boundingbox", "rear"), ("boundingbox", "rear"))
+        )
 
         # All should be valid floats
         self.assertIsInstance(pet_position.value, float)
