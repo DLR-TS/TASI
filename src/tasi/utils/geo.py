@@ -44,7 +44,9 @@ def _position_to_geometry(
             if len(next_level_values) > 2:  # More than just easting/northing
                 return multi_geom(
                     [
-                        _position_to_geometry(df, position + (p,), single_geom, multi_geom)
+                        _position_to_geometry(
+                            df, position + (p,), single_geom, multi_geom
+                        )
                         for p in sorted(next_level_values)
                         if p
                     ]
@@ -61,8 +63,14 @@ def _position_to_geometry(
             # Leaf column - the Series values are already the coordinates
             # Check if it's a 2D array (easting, northing) or needs reshaping
             if subset.ndim == 1:
+                print(subset)
+                print(subset.shape)
+                print(subset.index)
+
                 # Single values - need to check structure
-                raise ValueError(f"Position '{position}' returned a Series, expected DataFrame with easting/northing columns")
+                raise ValueError(
+                    f"Position '{position}' returned a Series, expected DataFrame with easting/northing columns"
+                )
             values = subset
         else:
             # DataFrame with MultiIndex columns
