@@ -53,7 +53,21 @@ def _position_to_geometry(
         return single_geom(values.values[:, :2])
     else:
         # For string positions like "position"
-        values = df[position][["easting", "northing"]]
+        subset = df[position]
+
+        # Handle case where df[position] returns a Series (leaf column)
+        # vs DataFrame (MultiIndex columns)
+        if isinstance(subset, pd.Series):
+            # Leaf column - the Series values are already the coordinates
+            # Check if it's a 2D array (easting, northing) or needs reshaping
+            if subset.ndim == 1:
+                # Single values - need to check structure
+                raise ValueError(f"Position '{position}' returned a Series, expected DataFrame with easting/northing columns")
+            values = subset
+        else:
+            # DataFrame with MultiIndex columns
+            values = subset[["easting", "northing"]]
+
         flat_columns = flatten_index(values.columns)
 
         if flat_columns.nlevels == 2:
