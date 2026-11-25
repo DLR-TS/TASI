@@ -1,54 +1,54 @@
 ## Summary
 
-<!-- Kurze Zusammenfassung der Änderungen in 1-2 Sätzen -->
+<!-- Brief summary of changes in 1-2 sentences -->
 
 ## Problem
 
-<!-- Warum ist diese Änderung notwendig? Welches Problem wird behoben? -->
-<!-- Bei Bugfixes: Was war der Fehler, wie ist er aufgetreten? -->
+<!-- Why is this change necessary? What problem is being fixed? -->
+<!-- For bugfixes: What was the error, how did it occur? -->
 
 ## Solution
 
-<!-- Was wurde geändert? Bitte Hauptpunkte auflisten -->
+<!-- What was changed? Please list main points -->
 
-- [ ] Änderung 1
-- [ ] Änderung 2
+- [ ] Change 1
+- [ ] Change 2
 - [ ] ...
 
 ## Testing
 
-<!-- Wie wurde getestet? -->
+<!-- How was this tested? -->
 
-- [ ] Bestehende Tests laufen erfolgreich
-- [ ] Neue Tests hinzugefügt (falls zutreffend)
-- [ ] Manuelle Prüfung durchgeführt (falls zutreffend)
+- [ ] Existing tests pass successfully
+- [ ] New tests added (if applicable)
+- [ ] Manual verification performed (if applicable)
 
 ## Files Changed
 
-<!-- Wichtige geänderte Dateien auflisten -->
+<!-- List important changed files -->
 
-- `pfad/datei.ext` - Beschreibung
-- `pfad/datei.ext` - Beschreibung
+- `path/to/file.ext` - Description
+- `path/to/file.ext` - Description
 
 ## Breaking Changes
 
-<!-- Falls zutreffend, hier auflisten. Sonst "None" -->
+<!-- If applicable, list here. Otherwise "None" -->
 
 - [ ] None
-- [ ] Breaking Change 1 (Migration erforderlich)
+- [ ] Breaking Change 1 (migration required)
 
 ## Related Issues
 
-<!-- Verknüpfte Issues oder PRs -->
+<!-- Linked issues or PRs -->
 
 Fixes #<issue-number>
 Related to #<issue-number>
 
 ---
 
-**Checklist vor dem Merge:**
+**Checklist before merge:**
 
-- [ ] Commit-Nachrichten folgen [Conventional Commits](https://www.conventionalcommits.org/)
-- [ ] Code ist nach Projektstandards formatiert
-- [ ] Dokumentation wurde aktualisiert (falls erforderlich)
-- [ ] Changelog wurde aktualisiert (falls erforderlich)
+- [ ] Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/)
+- [ ] Code is formatted according to project standards
+- [ ] Documentation updated (if required)
+- [ ] Changelog updated (if required)
